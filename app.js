@@ -134,6 +134,7 @@ function render() {
   $("#reviewBar").style.width = `${Math.min(100, (review / Math.max(totalSpend, 1)) * 500)}%`;
   $("#dataPeriod").textContent = state.source || "Sin datos cargados";
   $("#demoNotice").classList.toggle("hidden", !state.isDemo);
+  renderFirstMinute();
 
   renderTopAlerts(alerts);
   renderSupplierImpact(alerts);
@@ -142,6 +143,25 @@ function render() {
   renderAllAlerts(allAlerts);
   renderSuppliers();
   persistDataset();
+}
+
+function renderFirstMinute() {
+  const section = $("#firstMinute");
+  const rows = state.rows.filter((row) => row.previous > 0 && row.delta > 0 && !row.reviewed);
+  const first = rows.sort((a, b) => b.priceImpact - a.priceImpact)[0];
+  if (!first) {
+    section.classList.toggle("hidden", !state.isDemo && state.rows.length > 0);
+    $("#firstMinuteLabel").textContent = state.isDemo ? "EJEMPLO CON DATOS FICTICIOS" : "CONTROL DE PRECIOS";
+    $("#firstMinuteTitle").textContent = state.rows.length ? "Sin subidas pendientes detectadas" : "Prueba Margen con tus compras";
+    $("#firstMinuteDetail").textContent = "Las diferencias detectadas requieren revisión; no son ahorro confirmado.";
+    return;
+  }
+  section.classList.remove("hidden");
+  $("#firstMinuteLabel").textContent = state.isDemo ? "EJEMPLO CON DATOS FICTICIOS" : "DIFERENCIA PENDIENTE DE REVISIÓN";
+  $("#firstMinuteTitle").textContent = `${first.item}: +${number.format(first.percent)} % · ${euros.format(first.priceImpact)} en esta compra`;
+  $("#firstMinuteDetail").textContent = state.isDemo
+    ? `Si esta misma compra de ${number.format(first.quantity)} unidades se repitiera 4 veces al mes, la diferencia hipotética sería ${euros.format(first.priceImpact * 4)}/mes. No es un ahorro confirmado.`
+    : `Proveedor: ${first.supplier}. Diferencia estimada de la compra registrada; no hay frecuencia mensual verificada.`;
 }
 
 function persistDataset() {
@@ -766,6 +786,7 @@ function init() {
   $$("[data-action='open-manual']").forEach((button) => button.addEventListener("click", openManual));
   $$("[data-action='open-backup']").forEach((button) => button.addEventListener("click", openBackup));
   $("#importButton").onclick = openImport;
+  $("#firstMinuteImport").onclick = openImport;
   $("#manualButton").onclick = openManual;
   $("#loadDemoButton").onclick = loadDemo;
   $("#clearDemoButton").onclick = clearDemo;
