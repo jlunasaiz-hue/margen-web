@@ -11,9 +11,9 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Demo de Margen — Control de compras" />
     <meta property="og:description" content="Prueba con datos ficticios cómo Margen señala subidas y posibles duplicados." />
-    <meta property="og:url" content="https://jlunasaiz-hue.github.io/margen-web/app.html" />
+    <meta property="og:url" content="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <title>Margen — Control de costes</title>
-    <link rel="canonical" href="https://jlunasaiz-hue.github.io/margen-web/app.html" />
+    <link rel="canonical" href="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body class="app-page">
@@ -76,13 +76,20 @@
             <h1 id="pageTitle">Resumen</h1>
           </div>
           <div class="top-actions">
-            <button class="button ghost" id="loadDemoButton">Cargar demo</button>
-            <button class="button ghost accent-ghost" id="manualButton"><span aria-hidden="true">＋</span> Añadir compra</button>
-            <button class="button primary" id="importButton"><span aria-hidden="true">↑</span> Importar archivo</button>
+            <button class="button ghost" id="loadDemoButton" hidden>Cargar demo</button>
+            <button class="button ghost accent-ghost" id="manualButton" hidden><span aria-hidden="true">＋</span> Añadir compra</button>
+            <button class="button primary" id="importButton" hidden><span aria-hidden="true">↑</span> Probar con mis datos</button>
           </div>
         </header>
 
         <section class="content" id="overviewView">
+          <section class="first-minute" id="firstMinute" aria-label="Alerta destacada" aria-live="polite">
+            <div><span class="first-minute-eyebrow" id="firstMinuteLabel">EJEMPLO CON DATOS FICTICIOS</span>
+              <h2 id="firstMinuteTitle">Calculando diferencia de precios…</h2>
+              <p id="firstMinuteDetail">Importes a revisar; no son cobros incorrectos ni ahorro recuperado.</p>
+            </div>
+            <button type="button" class="button primary first-minute-cta" id="firstMinuteImport">Probar con mis datos</button>
+          </section>
           <aside class="demo-notice" id="demoNotice" aria-label="Aviso de datos de ejemplo">
             <div>
               <span class="demo-badge">DEMO</span>
