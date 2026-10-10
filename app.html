@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Margen controla las subidas de precio de proveedores para restaurantes y negocios de hostelería." />
+    <meta name="theme-color" content="#f6f5f0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Demo de Margen — Control de compras" />
+    <meta property="og:description" content="Prueba con datos ficticios cómo Margen señala subidas y posibles duplicados." />
+    <meta property="og:url" content="https://jlunasaiz-hue.github.io/margen-web/app.html" />
+    <title>Margen — Control de costes</title>
+    <link rel="canonical" href="https://jlunasaiz-hue.github.io/margen-web/app.html" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="app-page">
+    <a class="skip-link" href="#appMain">Saltar al contenido</a>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#" aria-label="Margen, inicio">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <span>margen</span>
+        </a>
+
+        <nav class="nav" aria-label="Navegación principal">
+          <button class="nav-item active" data-view="overview">
+            <span class="nav-icon" aria-hidden="true">⌂</span>
+            Resumen
+          </button>
+          <button class="nav-item" data-view="alerts">
+            <span class="nav-icon" aria-hidden="true">!</span>
+            Alertas
+            <span class="nav-count" id="navAlertCount">0</span>
+          </button>
+          <button class="nav-item" data-view="suppliers">
+            <span class="nav-icon" aria-hidden="true">◎</span>
+            Proveedores
+          </button>
+          <button class="nav-item" data-action="open-import">
+            <span class="nav-icon" aria-hidden="true">↑</span>
+            Importar compras
+          </button>
+          <button class="nav-item" data-action="open-manual">
+            <span class="nav-icon" aria-hidden="true">＋</span>
+            Añadir compra
+          </button>
+          <button class="nav-item" data-action="open-backup">
+            <span class="nav-icon" aria-hidden="true">⇄</span>
+            Copia de seguridad
+          </button>
+        </nav>
+
+        <div class="sidebar-card">
+          <span class="eyebrow">MARGEN HOSTELERÍA</span>
+          <p>En esta versión, tus archivos se procesan en este navegador.</p>
+          <span class="privacy-pill"><span></span> Excel y CSV locales</span>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="avatar">MG</div>
+          <div>
+            <strong>Mi restaurante</strong>
+            <span>Espacio de trabajo</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main" id="appMain">
+        <header class="topbar">
+          <button class="menu-button" id="menuButton" aria-label="Abrir menú" aria-expanded="false">☰</button>
+          <div>
+            <p class="breadcrumb">HOSTELERÍA · CONTROL DE COMPRAS</p>
+            <h1 id="pageTitle">Resumen</h1>
+          </div>
+          <div class="top-actions">
+            <button class="button ghost" id="loadDemoButton">Cargar demo</button>
+            <button class="button ghost accent-ghost" id="manualButton"><span aria-hidden="true">＋</span> Añadir compra</button>
+            <button class="button primary" id="importButton"><span aria-hidden="true">↑</span> Importar archivo</button>
+          </div>
+        </header>
+
+        <section class="content" id="overviewView">
+          <aside class="demo-notice" id="demoNotice" aria-label="Aviso de datos de ejemplo">
+            <div>
+              <span class="demo-badge">DEMO</span>
+              <p><strong>Estás viendo datos de ejemplo.</strong> Son compras ficticias de un restaurante para que puedas probar Margen sin subir ningún archivo.</p>
+            </div>
+            <button class="button ghost" id="clearDemoButton" type="button">Vaciar y usar mis datos</button>
+          </aside>
+          <div class="welcome-row">
+            <div>
+              <span class="status-line"><span></span> Análisis actualizado</span>
+              <h2>Protege el margen de tu restaurante.</h2>
+              <p>Comparamos cada compra con tu propio historial para señalar las subidas que más cuestan.</p>
+            </div>
+            <div class="period-box">
+              <span>DATOS ANALIZADOS</span>
+              <strong id="dataPeriod">Ejemplo de demostración</strong>
+            </div>
+          </div>
+
+          <div class="metrics-grid" aria-label="Indicadores principales">
+            <article class="metric-card accent">
+              <div class="metric-top"><span>Importe a revisar</span><span class="metric-icon">↗</span></div>
+              <strong id="reviewAmount">0,00 €</strong>
+              <p id="reviewCaption">Sin diferencias positivas</p>
+              <div class="metric-bar"><span id="reviewBar"></span></div>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>Compras analizadas</span><span class="metric-icon neutral">Σ</span></div>
+              <strong id="totalSpend">0,00 €</strong>
+              <p id="spendCaption">0 líneas procesadas</p>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>Alertas detectadas</span><span class="metric-icon warning">!</span></div>
+              <strong id="increaseCount">0</strong>
+              <p id="increaseCaption">0 necesitan revisión prioritaria</p>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>Mayor variación</span><span class="metric-icon neutral">%</span></div>
+              <strong id="largestIncrease">0,0 %</strong>
+              <p id="largestCaption">No hay variaciones</p>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="panel alerts-panel">
+              <div class="panel-header">
+                <div>
+                  <span class="eyebrow">PRIORIDAD</span>
+                  <h3>Alertas principales</h3>
+                </div>
+                <button class="text-button" data-view="alerts">Ver todas <span>→</span></button>
+              </div>
+              <div id="topAlerts" class="alert-list"></div>
+            </section>
+
+            <section class="panel impact-panel">
+              <div class="panel-header">
+                <div>
+                  <span class="eyebrow">DISTRIBUCIÓN</span>
+                  <h3>Impacto por proveedor</h3>
+                </div>
+              </div>
+              <div id="supplierImpact" class="supplier-impact"></div>
+              <div class="impact-note">
+                <span aria-hidden="true">i</span>
+                <p>El importe es una estimación para revisar, no una acusación ni un ahorro confirmado.</p>
+              </div>
+            </section>
+          </div>
+
+          <section class="panel recent-panel">
+            <div class="panel-header table-header">
+              <div>
+                <span class="eyebrow">TRAZABILIDAD</span>
+                <h3>Compras analizadas</h3>
+              </div>
+              <div class="table-actions">
+                <label class="search-box">
+                  <span aria-hidden="true">⌕</span>
+                  <input id="tableSearch" type="search" placeholder="Buscar producto, proveedor o factura" aria-label="Buscar compras" />
+                </label>
+                <select id="supplierFilter" aria-label="Filtrar por proveedor">
+                  <option value="all">Todos los proveedores</option>
+                </select>
+                <button class="button small ghost" id="exportButton">Exportar alertas</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Producto</th><th>Proveedor</th><th>Antes</th><th>Ahora</th><th>Variación</th><th>Impacto</th></tr></thead>
+                <tbody id="recentRows"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="content hidden" id="alertsView">
+          <div class="alerts-toolbar">
+            <div>
+              <h2>Alertas de precios</h2>
+              <p>Prioriza las diferencias que más pueden afectar al margen.</p>
+            </div>
+            <div class="alert-filters">
+              <label class="select-label">Estado
+                <select id="statusFilter">
+                  <option value="pending">Pendientes</option>
+                  <option value="reviewed">Revisadas</option>
+                  <option value="all">Todas</option>
+                </select>
+              </label>
+              <label class="select-label">Prioridad
+                <select id="severityFilter">
+                  <option value="all">Todas</option>
+                  <option value="high">Alta</option>
+                  <option value="medium">Media</option>
+                  <option value="low">Baja</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="panel">
+            <div id="allAlerts" class="full-alert-list"></div>
+          </div>
+        </section>
+
+        <section class="content hidden" id="suppliersView">
+          <div class="alerts-toolbar supplier-heading">
+            <div>
+              <span class="status-line"><span></span> Centro de negociación</span>
+              <h2>Decide con qué proveedor hablar primero.</h2>
+              <p>Ordenamos el gasto y las subidas para convertir los datos en conversaciones concretas.</p>
+            </div>
+          </div>
+          <div class="supplier-summary-grid">
+            <article class="supplier-kpi">
+              <span>Mayor impacto pendiente</span>
+              <strong id="topSupplierName">—</strong>
+              <small id="topSupplierImpact">Sin datos</small>
+            </article>
+            <article class="supplier-kpi">
+              <span>Proveedores analizados</span>
+              <strong id="supplierCount">0</strong>
+              <small id="supplierRiskCount">0 con alertas prioritarias</small>
+            </article>
+            <article class="supplier-kpi accent-kpi">
+              <span>Potencial anualizado estimado</span>
+              <strong id="annualizedImpact">0,00 €</strong>
+              <small>Estimación si estas compras se repiten cada mes; no es ahorro recuperado</small>
+            </article>
+          </div>
+          <div class="supplier-card-grid" id="supplierCards"></div>
+        </section>
+
+        <footer class="app-legal"><a href="./">Información del piloto</a><a href="./aviso-legal.html">Aviso legal</a><a href="./privacidad.html">Privacidad</a><a href="./cookies.html">Cookies</a></footer>
+      </main>
+    </div>
+
+    <dialog id="importDialog" class="modal">
+      <form method="dialog" class="modal-card" id="importForm">
+        <div class="modal-header">
+          <div>
+            <span class="eyebrow">NUEVO ANÁLISIS</span>
+            <h2>Importa tus compras</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Cerrar">×</button>
+        </div>
+        <p class="modal-copy">Sube cualquier Excel o CSV. Después podrás indicar qué columna corresponde a cada dato; no necesitas preparar una plantilla especial.</p>
+        <label class="drop-zone" id="dropZone" for="fileInput">
+          <span class="upload-icon" aria-hidden="true">↑</span>
+          <strong id="dropTitle">Arrastra el Excel o CSV aquí</strong>
+          <span id="dropSubtitle">o pulsa para seleccionar un archivo</span>
+          <input id="fileInput" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" />
+        </label>
+        <div class="format-box" id="formatHelp">
+          <div><strong>Formatos admitidos</strong><span>Excel (.xlsx, .xls) y CSV con coma o punto y coma. Precio anterior y fecha son opcionales.</span></div>
+          <button type="button" class="text-button" id="downloadSample">Descargar ejemplo</button>
+        </div>
+        <div class="mapping-panel hidden" id="mappingPanel">
+          <div class="mapping-heading"><div><span class="eyebrow">PASO 2</span><h3>Relaciona tus columnas</h3></div><span id="mappingRows">0 filas</span></div>
+          <p>Hemos propuesto una relación automática. Comprueba los cuatro campos obligatorios.</p>
+          <div class="mapping-grid" id="mappingGrid"></div>
+          <div class="mapping-note"><strong>Historial automático:</strong> si no existe una columna de precio anterior, buscaremos la última compra equivalente guardada.</div>
+        </div>
+        <p class="form-error" id="importError" role="alert"></p>
+        <div class="modal-actions">
+          <button class="button ghost" value="cancel">Cancelar</button>
+          <button class="button primary" type="button" id="analyzeButton" disabled>Importar y analizar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="backupDialog" class="modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div><span class="eyebrow">PORTABILIDAD</span><h2>Copia de seguridad</h2></div>
+          <button class="icon-button" type="button" id="closeBackup" aria-label="Cerrar">×</button>
+        </div>
+        <p class="modal-copy">Descarga todo tu historial y los estados de las alertas en un único archivo. Podrás restaurarlo en este u otro dispositivo.</p>
+        <div class="backup-options">
+          <button class="backup-card" type="button" id="exportWorkspace"><span class="backup-icon">↓</span><span><strong>Descargar espacio</strong><small>Historial, alertas y proveedores</small></span></button>
+          <label class="backup-card" for="workspaceInput"><span class="backup-icon">↑</span><span><strong>Restaurar una copia</strong><small>Importar un archivo .json de Margen</small></span><input id="workspaceInput" type="file" accept="application/json,.json" /></label>
+        </div>
+        <p class="form-error" id="backupError" role="alert"></p>
+        <div class="privacy-callout"><strong>Importante:</strong> esta copia contiene datos de tus compras. Guárdala en un lugar seguro.</div>
+      </div>
+    </dialog>
+
+    <dialog id="manualDialog" class="modal">
+      <form class="modal-card" id="manualForm">
+        <div class="modal-header">
+          <div>
+            <span class="eyebrow">REGISTRO RÁPIDO</span>
+            <h2>Añade una compra</h2>
+          </div>
+          <button class="icon-button" type="button" id="closeManual" aria-label="Cerrar">×</button>
+        </div>
+        <p class="modal-copy">Introduce una línea de factura. Margen calculará automáticamente la variación y el importe que conviene revisar.</p>
+        <div class="form-grid">
+          <label class="field field-wide"><span>Proveedor</span><input name="supplier" required autocomplete="organization" placeholder="Ej. Distribuciones Costa" /></label>
+          <label class="field"><span>N.º de factura</span><input name="invoice" placeholder="Ej. FAC-2048" /></label>
+          <label class="field"><span>Fecha</span><input name="date" type="date" /></label>
+          <label class="field field-wide"><span>Producto</span><input name="item" required placeholder="Ej. Aceite de oliva 5 L" /></label>
+          <label class="field"><span>Unidad</span><input name="unit" required value="unidad" placeholder="kg, caja, unidad…" /></label>
+          <label class="field"><span>Cantidad</span><input name="quantity" required type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0" /></label>
+          <label class="field"><span>Precio anterior (€) · opcional</span><input name="previous" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Se busca en el historial" /></label>
+          <label class="field"><span>Precio actual (€)</span><input name="current" required type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00" /></label>
+        </div>
+        <div class="live-preview" id="manualPreview">
+          <span>Impacto estimado</span><strong>Completa los precios y la cantidad</strong>
+        </div>
+        <p class="form-error" id="manualError" role="alert"></p>
+        <div class="modal-actions">
+          <button class="button ghost" type="button" id="cancelManual">Cancelar</button>
+          <button class="button primary" type="submit">Guardar compra</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="detailDialog" class="modal detail-modal">
+      <div class="modal-card" id="detailContent"></div>
+    </dialog>
+
+    <dialog id="supplierDialog" class="modal supplier-modal">
+      <div class="modal-card" id="supplierDetailContent"></div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./vendor/xlsx.full.min.js"></script>
+    <script src="./metrics.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
+
