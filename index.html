@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Descubre cuánto te han subido los proveedores y qué importes conviene revisar en tus facturas." />
+    <meta name="theme-color" content="#10251c" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Margen — Detecta subidas de proveedores" />
+    <meta property="og:description" content="Margen detecta subidas de precio y posibles facturas duplicadas de tus proveedores, para que sepas qué revisar, reclamar o negociar." />
+    <meta property="og:url" content="https://jlunasaiz-hue.github.io/margen-web/" />
+    <title>Margen — Detecta subidas de proveedores</title>
+    <link rel="canonical" href="https://jlunasaiz-hue.github.io/margen-web/" />
+    <link rel="stylesheet" href="./landing.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <header class="landing-header">
+      <a class="landing-brand" href="./" aria-label="Margen, inicio"><span aria-hidden="true">M</span> margen</a>
+      <nav class="header-nav" aria-label="Enlaces principales"><a href="./app.html?demo=1" class="demo-link" data-demo-link>Ver demo interactiva</a><a class="pilot-link" href="#solicitud">Solicitar el piloto</a></nav>
+    </header>
+
+    <main id="contenido">
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="kicker">CONTROL DE COMPRAS PARA RESTAURANTES</span>
+          <h1>Margen detecta subidas de precio y posibles facturas duplicadas de tus proveedores, para que sepas qué revisar, reclamar o negociar.</h1>
+          <p>Revisamos tus facturas y albaranes para localizar cambios de precio, posibles duplicados e importes que merece la pena comprobar.</p>
+          <p class="clear-warning"><strong>Importante:</strong> las diferencias de coste son importes a revisar, no cobros incorrectos ni dinero recuperado o recuperable confirmado. Los archivos Excel y CSV de la aplicación se procesan en tu navegador.</p><div class="hero-actions"><a class="primary-cta" href="#solicitud">Solicitar el piloto</a><a class="secondary-cta" href="./app.html?demo=1" data-demo-link>Probar la demo con datos ficticios</a></div>
+          <small>39 € · 30 días · hasta 30 documentos</small>
+        </div>
+        <aside class="result-card" aria-label="Ejemplo de resultado del análisis">
+          <span>Ejemplo de análisis</span>
+          <strong>40,80 €</strong>
+          <p>Ejemplo: aceite de 31,80 € a 36,90 € · 8 garrafas</p>
+          <ul>
+            <li><b>5,10 €</b> de diferencia por garrafa</li>
+            <li><b>8</b> garrafas compradas</li>
+            <li><b>40,80 €</b> de diferencia total</li>
+          </ul>
+          <small>Datos ficticios. El resultado real depende de tus documentos.</small>
+        </aside>
+      </section>
+
+      <section class="calculator section-shell" id="simulador">
+        <div class="section-heading">
+          <span class="kicker">SIMULA EL IMPACTO</span>
+          <h2>¿Cuánto puede costarte una subida pequeña?</h2>
+          <p>Prueba distintos escenarios con tus cifras. Es una simulación matemática, no un análisis de tus facturas ni una promesa de ahorro.</p>
+        </div>
+        <div class="calculator-grid">
+          <form class="calculator-form" id="costCalculator">
+            <label>Compras mensuales a proveedores (€)<input id="monthlyPurchases" name="monthlyPurchases" type="number" min="0" max="100000000" step="100" value="5000" required inputmode="decimal" /></label>
+            <label>Parte de las compras afectada (%)<input id="affectedShare" name="affectedShare" type="number" min="0" max="100" step="1" value="30" required inputmode="decimal" /></label>
+            <label>Subida de precio hipotética (%)<input id="priceRise" name="priceRise" type="number" min="0" max="100" step="0.5" value="6" required inputmode="decimal" /></label>
+          </form>
+          <div class="calculator-result" aria-live="polite">
+            <span>Coste adicional hipotético</span>
+            <strong id="monthlyExtra">90,00 € al mes</strong>
+            <p id="annualExtra">1.080,00 € al año, si el mismo escenario se mantiene 12 meses.</p>
+            <small>Supone cantidades constantes y un aumento sobre el importe anterior, sin IVA ni descuentos. No representa dinero recuperado.</small>
+            <a href="#solicitud" class="primary-cta">Revisar mis facturas con Margen</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-cta section-shell"><a class="primary-cta demo-main-cta" data-demo-link href="./app.html?demo=1">Probar la demo con datos ficticios</a><p>Se abrirá la aplicación con información ficticia. La demo no sustituye la revisión de documentos reales.</p></section>
+      <section class="demo-section section-shell" id="ejemplo">
+        <div class="section-heading">
+          <span class="kicker">ASÍ SERÍA UN INFORME</span>
+          <h2>Del dato suelto a una decisión concreta.</h2>
+          <p>Este ejemplo es ficticio y sirve para explicar el método. Una alerta identifica algo que comprobar, no confirma que el proveedor haya cometido un error.</p>
+        </div>
+        <div class="demo-grid">
+          <div class="sample-report">
+            <div class="report-head"><strong>Informe de revisión · Ejemplo</strong><span>DATOS FICTICIOS</span></div>
+            <div class="sample-item"><div><strong>Aceite de oliva · Costa Distribución</strong><small>Factura CD-1842 · 8 garrafas</small></div><div><b>+40,80 €</b><small>31,80 € → 36,90 €</small></div></div>
+            <div class="sample-item"><div><strong>Pollo · Frío Levante</strong><small>Factura FL-9031 · 36 kg</small></div><div><b>+30,96 €</b><small>6,42 € → 7,28 €</small></div></div>
+            <div class="sample-item"><div><strong>Refresco cola · Bebidas Sureste</strong><small>Factura BS-2219 · 14 cajas</small></div><div><b>+24,50 €</b><small>13,20 € → 14,95 €</small></div></div>
+            <div class="report-foot">Variaciones de precio de estas tres líneas: <strong>96,26 €</strong><small>No incluye otros productos, duplicados ni ahorro confirmado.</small></div>
+          </div>
+          <div class="report-steps">
+            <div><span>01</span><h3>Detecta</h3><p>Identifica las diferencias más relevantes del historial.</p></div>
+            <div><span>02</span><h3>Comprueba</h3><p>Revisa unidades, cantidades, fechas, condiciones y facturas originales.</p></div>
+            <div><span>03</span><h3>Decide</h3><p>Negocia o reclama únicamente cuando hayas verificado la diferencia.</p></div>
+            <a class="primary-cta" href="./app.html?demo=1" data-demo-link>Probar el panel con datos de ejemplo →</a>
+          </div>
+        </div>
+      </section>
+      <section class="pilot section-shell">
+        <div>
+          <span class="kicker light">PILOTO DE VALIDACIÓN</span>
+          <h2>Una prueba pequeña, con alcance y precio cerrados.</h2>
+          <p>El objetivo es comprobar con datos reales si Margen encuentra información útil para tu restaurante.</p>
+        </div>
+        <dl class="pilot-facts">
+          <div><dt>Precio · pago único</dt><dd>39 €</dd></div>
+          <div><dt>Duración</dt><dd>30 días</dd></div>
+          <div><dt>Documentos</dt><dd>Hasta 30</dd></div>
+          <div><dt>Primera entrega</dt><dd>Plazo acordado en el piloto</dd></div>
+        </dl>
+      </section>
+
+      <section class="request section-shell" id="solicitud">
+        <div>
+          <span class="kicker">SOLICITAR EL PILOTO</span>
+          <h2>Cuéntanos brevemente cómo revisas tus compras.</h2>
+          <p>El formulario prepara una solicitud, pero no la envía automáticamente. Configura el correo de contacto antes de activar el envío. No subas facturas aquí.</p>
+        </div>
+        <form id="pilotForm" class="pilot-form">
+          <label>Nombre del restaurante<input name="restaurant" required autocomplete="organization" /></label>
+          <label>Tu nombre<input name="name" required autocomplete="name" /></label>
+          <label>Correo o teléfono de contacto<input name="contact" required autocomplete="email" /></label>
+          <label>Formato habitual<select name="format" required><option value="">Selecciona uno</option><option>PDF</option><option>Papel</option><option>WhatsApp</option><option>Excel</option><option>ERP o programa de facturación</option><option>Varios formatos</option></select></label>
+          <label class="wide">¿Qué cambio de precio o problema has tenido recientemente?<textarea name="problem" rows="4" required></textarea></label>
+          <label class="consent wide"><input type="checkbox" name="consent" required /> <span>He leído la información de privacidad y acepto que se utilicen estos datos para responder a mi solicitud.</span></label>
+          <p class="form-message wide" id="pilotFormMessage" role="alert"></p>
+          <button class="primary-cta wide" type="submit">Preparar solicitud por correo</button><p class="contact-placeholder wide">Correo de contacto pendiente de configurar: <strong>[TU_CORREO_DE_CONTACTO]</strong></p><button class="secondary-cta wide" type="button" id="copyPilotButton">Copiar solicitud para enviarla manualmente</button><p class="form-explainer wide">El formulario no envía datos automáticamente. Comprueba que el mensaje se haya enviado desde tu correo. No adjuntes facturas con datos personales a la primera solicitud.</p>
+        </form>
+      </section>
+      <section class="problem section-shell">
+        <div class="section-heading">
+          <span class="kicker">EL PROBLEMA</span>
+          <h2>Una subida pequeña, repetida cada semana, acaba pesando en el margen.</h2>
+        </div>
+        <div class="problem-grid">
+          <article><span>01</span><h3>Tarifas que cambian</h3><p>El precio unitario sube y se pierde entre decenas de líneas de factura.</p></article>
+          <article><span>02</span><h3>Revisiones a mano</h3><p>Comparar facturas una por una exige un tiempo que casi nunca sobra.</p></article>
+          <article><span>03</span><h3>Sin una cifra clara</h3><p>Sin datos concretos es difícil saber con qué proveedor hablar primero.</p></article>
+        </div>
+      </section>
+
+      <section class="steps section-shell">
+        <div class="section-heading centered">
+          <span class="kicker">CÓMO FUNCIONA</span>
+          <h2>Tres pasos y una respuesta concreta.</h2>
+        </div>
+        <ol class="steps-grid">
+          <li><span>1</span><div><h3>Nos das tus documentos</h3><p>Hasta 30 facturas o albaranes reales de los últimos tres meses.</p></div></li>
+          <li><span>2</span><div><h3>Comparamos las compras</h3><p>Buscamos cambios de precio, líneas repetidas y diferencias que conviene verificar.</p></div></li>
+          <li><span>3</span><div><h3>Recibes un informe claro</h3><p>Te enseñamos qué revisar, en qué documento aparece y cuánto representa.</p></div></li>
+        </ol>
+      </section>
+
+
+
+      <section class="privacy section-shell">
+        <div class="section-heading">
+          <span class="kicker">PRIVACIDAD</span>
+          <h2>Tus documentos se usan solo para realizar el análisis acordado.</h2>
+        </div>
+        <div class="privacy-grid">
+          <p>No vendemos los datos ni los utilizamos para publicidad. Antes de recibir documentación real se acuerda el canal de entrega y el tratamiento aplicable.</p>
+          <p>El informe diferencia siempre entre importe detectado, reclamado y recuperado. Una estimación no se presenta como dinero ahorrado.</p>
+        </div>
+      </section>
+
+      <section class="faq section-shell">
+        <div class="section-heading"><span class="kicker">PREGUNTAS FRECUENTES</span><h2>Antes de empezar.</h2></div>
+        <div class="faq-list">
+          <details><summary>¿Tengo que preparar las facturas?</summary><p>No. Aceptamos el formato que utilices habitualmente y te indicamos si hace falta ordenar algo.</p></details>
+          <details><summary>¿Qué ocurre si están en papel o WhatsApp?</summary><p>Lo anotamos durante la entrevista y acordamos la forma más sencilla y segura de trabajar con ellas.</p></details>
+          <details><summary>¿Garantizáis que voy a recuperar dinero?</summary><p>No. Identificamos importes que conviene comprobar. La decisión de reclamar y el resultado dependen de cada caso.</p></details>
+          <details><summary>¿Esto es una suscripción?</summary><p>No. El piloto cuesta 39 € y dura 30 días. Cualquier continuación se decidiría después y por separado.</p></details>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="landing-footer">
+      <a class="landing-brand" href="./"><span aria-hidden="true">M</span> margen</a>
+      <p>Proyecto en fase de validación con restaurantes.</p>
+      <nav aria-label="Información legal"><a href="./aviso-legal.html">Aviso legal</a><a href="./privacidad.html">Privacidad</a><a href="./cookies.html">Cookies</a></nav>
+    </footer>
+    <script src="./metrics.js"></script>
+    <script src="./landing.js"></script>
+  </body>
+</html>
