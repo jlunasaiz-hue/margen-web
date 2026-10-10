@@ -388,3 +388,13 @@ select { border: 1px solid var(--line); border-radius: 8px; background: white; p
   .section-title { align-items: flex-start; flex-direction: column; }
 }
 
+
+/* Primer minuto: alerta visible sin interacción inicial */
+.first-minute {display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 30px;margin-bottom:24px;background:#e5f2eb;border:1px solid #9bcbb1;border-radius:18px}
+.first-minute > div {min-width:0;flex:1}
+.first-minute-eyebrow {font-size:10px;font-weight:800;letter-spacing:1px;color:#176b49}
+.first-minute h2 {font-size:clamp(22px,2.5vw,31px);line-height:1.18;margin:10px 0;color:#17221d;overflow-wrap:anywhere}
+.first-minute p {font-size:13px;line-height:1.55;margin:0;color:#405e4f}
+.first-minute-cta {min-height:48px;white-space:nowrap}
+.top-actions [hidden] {display:none!important}
+@media(max-width:760px) {.first-minute {flex-direction:column;align-items:stretch;padding:19px}.first-minute-cta {width:100%}}
