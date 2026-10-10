@@ -267,6 +267,9 @@
           <div><strong>Formatos admitidos</strong><span>Excel (.xlsx, .xls) y CSV con coma o punto y coma. Precio anterior y fecha son opcionales.</span></div>
           <button type="button" class="text-button" id="downloadSample">Descargar ejemplo</button>
         </div>
+        <div class="format-box"><div><strong>¿Tienes el texto de una factura PDF?</strong><span>Copia el texto seleccionable de la factura y pégalo aquí. No se envía a servidores. Formato experimental: proveedor y líneas tabuladas (producto, cantidad, precio).</span></div></div>
+        <label class="field field-wide" for="invoicePastedText"><span>Texto copiado de factura (sin datos personales)</span><textarea id="invoicePastedText" rows="5" placeholder="Proveedor: Distribuciones Costa&#10;Factura: F-100&#10;Aceite de oliva 5 L&#9;8&#9;36,90"></textarea></label>
+        <button class="button ghost" type="button" id="parseInvoiceTextButton">Revisar texto de factura</button>
         <div class="mapping-panel hidden" id="mappingPanel">
           <div class="mapping-heading"><div><span class="eyebrow">PASO 2</span><h3>Relaciona tus columnas</h3></div><span id="mappingRows">0 filas</span></div>
           <p>Hemos propuesto una relación automática. Comprueba los cuatro campos obligatorios.</p>
@@ -339,6 +342,7 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="./vendor/xlsx.full.min.js"></script>
     <script src="./metrics.js"></script>
+    <script src="./pdf-text-parser.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
