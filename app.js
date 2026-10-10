@@ -794,6 +794,17 @@ function init() {
   $("#downloadSample").onclick = downloadSample;
   $("#fileInput").onchange = (event) => selectFile(event.target.files[0]);
   $("#analyzeButton").onclick = analyzeFile;
+  $("#parseInvoiceTextButton").onclick = () => {
+    try {
+      const parsed = window.margenPdfText.parseInvoiceText($("#invoicePastedText").value);
+      if (!parsed.records.length) throw Error("No se han detectado líneas con producto, cantidad y precio separados por tabuladores. Revisa el texto original.");
+      state.pendingFile = {name:"Texto de factura revisado"};
+      state.pendingHeaders = parsed.headers;
+      state.pendingRows = parsed.records;
+      $("#dropSubtitle").textContent = parsed.records.length + " líneas encontradas en el texto";
+      renderMapping();
+    } catch (error) { $("#importError").textContent = error.message; }
+  };
   $("#severityFilter").onchange = (event) => { state.severity = event.target.value; renderAllAlerts(getAlerts()); };
   $("#statusFilter").onchange = (event) => { state.status = event.target.value; renderAllAlerts(getAlerts()); };
   $("#tableSearch").oninput = (event) => { state.query = event.target.value; renderTable(state.rows); };
