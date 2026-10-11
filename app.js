@@ -850,6 +850,7 @@ function init() {
       const parsed = window.margenPdfText.parseInvoiceText($("#invoicePastedText").value);
       if (!parsed.records.length) throw Error("No se han detectado líneas con producto, cantidad y precio separados por tabuladores. Revisa el texto original.");
       state.pendingFile = {name:"Texto de factura revisado"};
+      $("#confirmPartialImport").checked = false;
       state.pendingHeaders = parsed.headers;
       state.pendingRows = parsed.records;
       state.rejectedPdfLines = parsed.rejected || [];
