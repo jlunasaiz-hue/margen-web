@@ -17,6 +17,6 @@ jobs:
       - name: Preparar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Comprobar motor de cálculo
         run: npm test

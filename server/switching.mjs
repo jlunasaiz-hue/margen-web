@@ -12,7 +12,7 @@ export async function authorizeAndQueue(input,{repository,now=()=>Date.now()}){
     if(authority?.status!=='verified')fail('Titularidad o representación sin verificar.');
     if(!offer||offer.status!=='verified'||offer.supplyId!==input.supplyId||!Number.isFinite(Date.parse(offer.expiresAt))||Date.parse(offer.expiresAt)<=now())fail('Oferta no verificada, ajena al suministro o caducada.');
     if(consent?.status!=='verified'||consent.actorId!==input.actorId||consent.supplyId!==input.supplyId||consent.offerId!==offer.id||!offer.contractHash||consent.contractHash!==offer.contractHash||consent.revokedAt||!consent.signatureEvidenceId)fail('Se necesita consentimiento verificado para este contrato concreto.');
-    if(!Number.isFinite(offer.currentAnnualTotal)||!Number.isFinite(offer.newAnnualTotal)||offer.costsReviewed!==true||offer.exitPenaltyReviewed!==true||offer.eligibilityVerified!==true||offer.newAnnualTotal>=offer.currentAnnualTotal)fail('La comparación completa no acredita ahorro estimado.');
+    if(!Number.isFinite(offer.currentAnnualTotal)||!Number.isFinite(offer.newAnnualTotal)||offer.newAnnualTotal<0||offer.costsReviewed!==true||offer.exitPenaltyReviewed!==true||offer.eligibilityVerified!==true||offer.newAnnualTotal>=offer.currentAnnualTotal)fail('La comparación completa no acredita ahorro estimado.');
     const connection=await tx.getConnection(offer.providerId);
     if(connection?.status!=='live'||connection.contractingEnabled!==true)fail('No hay conexión de contratación habilitada.');
     // Unique consent and supply locking must be enforced by persistent storage.
@@ -48,7 +48,7 @@ export async function applyProviderEvent(raw,{repository,verifyProviderEvent}){
     if(!request)fail('Evento sin solicitud asociada.');
     if(['activated','rejected'].includes(request.status))return request;
     if(!['submitted','accepted','reconciliation_required'].includes(request.status))fail('Estado incompatible con la respuesta.');
-    if(!await tx.recordEventOnce(event.id))return request;
+    if(!await tx.recordEventOnce(`${event.providerId}:${event.id}`))return request;
     return tx.update(request.id,{status:event.status});
   });
 }
