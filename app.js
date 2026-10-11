@@ -463,6 +463,7 @@ async function readImportFile(file) {
       all.push(window.margenPdfText.textItemsToLines(content.items));
     }
     const parsed = window.margenPdfText.parseInvoiceText(all.join("\n"));
+    if (parsed.records.length && parsed.records.some(row => !row.Proveedor)) throw new Error("No se ha podido confirmar el proveedor de la factura.");
     if(!parsed.records.length) throw new Error("No se han reconocido líneas completas. Si el PDF es escaneado, hará falta OCR; si contiene texto, copia y revisa sus líneas manualmente.");
     return parsed;
   } else if (extension === "csv") {
