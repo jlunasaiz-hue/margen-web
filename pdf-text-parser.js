@@ -15,7 +15,7 @@
       let cols = line.split(/\t/).map(s => s.trim()).filter(Boolean);
       // PDF.js suele dividir cada palabra del producto en una pieza independiente.
       // Solo se reagrupan piezas si las dos últimas son números claros (cantidad y precio).
-      if (cols.length > 4 && /^\d+(?:[.,]\d+)?$/.test(cols.at(-2)) && /^\d+(?:[.,]\d{1,2})?$/.test(cols.at(-1))) {
+      if (cols.length >= 4 && !/^\d+(?:[.,]\d+)?$/.test(cols[1]) && /^\d+(?:[.,]\d+)?$/.test(cols.at(-2)) && /^\d+(?:[.,]\d{1,2})?$/.test(cols.at(-1))) {
         cols = [cols.slice(0,-2).join(" "), ...cols.slice(-2)];
       }
       if (cols.length < 3) continue;
