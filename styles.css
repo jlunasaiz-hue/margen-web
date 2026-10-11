@@ -426,3 +426,4 @@ select { border: 1px solid var(--line); border-radius: 8px; background: white; p
 @media(max-width:1080px) { .full-alert-item {grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto} }
 @media(max-width:760px) { .full-alert-item {grid-template-columns:minmax(0,1fr) auto} }
 @media(max-width:480px) { .alert-row {grid-template-columns:minmax(0,1fr) max-content;gap:8px} .alert-row .alert-value {grid-column:auto;text-align:right;min-width:65px} .alert-primary .severity-icon {width:auto;font-size:10px} .full-alert-item {grid-template-columns:minmax(0,1fr) auto} }
+\n/* Importación: mostrar solo controles pertinentes */\n#removeImportFile { margin: 9px 0 0; justify-self:start; }\n#partialImportConfirmation.hidden {display:none!important;}\n#removeImportFile.hidden {display:none!important;}\n
