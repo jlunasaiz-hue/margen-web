@@ -21,6 +21,7 @@ const state = {
   pendingRows: [],
   pendingHeaders: [],
   mapping: {},
+  reviewPage: 0,
   rejectedPdfLines: [],
   severity: "all",
   status: "pending",
@@ -516,8 +517,15 @@ function renderImportReview() {
   const box = $("#importReviewRows");
   box.replaceChildren();
   const fields = [["supplier","Proveedor"],["item","Producto"],["quantity","Cantidad"],["current","Precio unitario"]];
-  if (state.pendingRows.length > 30) {const notice=document.createElement("p");notice.textContent="Mostrando 30 de "+state.pendingRows.length+" líneas. Las restantes se conservan para el análisis; revisa el archivo completo antes de importar.";box.append(notice);}
-  state.pendingRows.slice(0, 30).forEach((record,index) => {
+  const pageSize=20;
+  const pages=Math.max(1,Math.ceil(state.pendingRows.length/pageSize));
+  state.reviewPage=Math.max(0,Math.min(state.reviewPage,pages-1));
+  const start=state.reviewPage*pageSize;
+  $("#importReviewPage").textContent="Página "+(state.reviewPage+1)+" de "+pages+" · "+state.pendingRows.length+" líneas";
+  $("#reviewPrevious").disabled=state.reviewPage===0;
+  $("#reviewNext").disabled=state.reviewPage>=pages-1;
+  state.pendingRows.slice(start,start+pageSize).forEach((record,offset) => {
+    const index=start+offset;
     const card=document.createElement("div"); card.className="import-review-row";
     const title=document.createElement("strong"); title.textContent="Línea "+(index+1);card.append(title);
     for(const [key,label] of fields) {
@@ -526,7 +534,13 @@ function renderImportReview() {
       const input=document.createElement("input");
       input.type="text";input.value=heading ? String(record[heading] ?? "") : "";
       input.setAttribute("aria-label",label+" línea "+(index+1));
-      input.addEventListener("input",()=>{if(heading){record[heading]=input.value;}});
+      input.addEventListener("input",()=>{
+        if(heading) record[heading]=input.value;
+        const value=input.value.trim();
+        const valid=(key==="quantity"||key==="current") ? Number.isFinite(parseSpanishNumber(value)) && parseSpanishNumber(value)>0 : Boolean(value);
+        input.setAttribute("aria-invalid", String(!valid));
+        validateMapping();
+      });
       wrap.append(input);card.append(wrap);
     }
     box.append(card);
@@ -534,6 +548,7 @@ function renderImportReview() {
 }
 function renderMapping() {
   state.mapping = suggestMapping(state.pendingHeaders);
+  state.reviewPage = 0;
   const options = `<option value="">No incluida</option>${state.pendingHeaders.map((header) => `<option value="${escapeHtml(header)}">${escapeHtml(header)}</option>`).join("")}`;
   $("#mappingGrid").innerHTML = MAPPING_FIELDS.map((field) => `<label class="mapping-field"><span>${field.label}${field.required ? " <em>*</em>" : ""}</span><select data-map="${field.key}">${options}</select></label>`).join("");
   $$('[data-map]').forEach((select) => {
@@ -548,8 +563,9 @@ function renderMapping() {
 
 function validateMapping() {
   const missing = MAPPING_FIELDS.filter((field) => field.required && !state.mapping[field.key]);
-  $("#analyzeButton").disabled = missing.length > 0 || !state.pendingRows.length;
-  $("#importError").textContent = missing.length ? `Falta relacionar: ${missing.map((field) => field.label.toLowerCase()).join(", ")}.` : "";
+  const invalid=state.pendingRows.some(record=>["supplier","item","quantity","current"].some(key=>{const header=state.mapping[key];const value=header ? String(record[header] ?? "").trim() : "";return !value || (["quantity","current"].includes(key) && !(parseSpanishNumber(value)>0));}));
+  $("#analyzeButton").disabled = missing.length > 0 || !state.pendingRows.length || invalid;
+  $("#importError").textContent = missing.length ? `Falta relacionar: ${missing.map((field) => field.label.toLowerCase()).join(", ")}.` : invalid ? "Revisa los campos vacíos y las cantidades o precios no válidos antes de importar." : "";
 }
 
 function normalizeProduct(value) {
@@ -906,6 +922,8 @@ function init() {
   $("#downloadSample").onclick = downloadSample;
   $("#fileInput").onchange = (event) => selectFile(event.target.files[0]);
   $("#analyzeButton").onclick = analyzeFile;
+  $("#reviewPrevious").onclick = () => {state.reviewPage--;renderImportReview();};
+  $("#reviewNext").onclick = () => {state.reviewPage++;renderImportReview();};
   $("#removeImportFile").onclick = resetImportFile;
   $("#parseInvoiceTextButton").onclick = () => {
     try {
