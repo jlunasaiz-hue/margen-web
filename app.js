@@ -561,11 +561,27 @@ function renderMapping() {
   renderImportReview();
 }
 
+function invalidImportRowIndices() {
+  return state.pendingRows.flatMap((record,index) => {
+    const bad=["supplier","item","quantity","current"].some(key=>{
+      const header=state.mapping[key];
+      const value=header ? String(record[header] ?? "").trim() : "";
+      return !value || (["quantity","current"].includes(key) && !(parseSpanishNumber(value)>0));
+    });
+    return bad ? [index] : [];
+  });
+}
+
 function validateMapping() {
   const missing = MAPPING_FIELDS.filter((field) => field.required && !state.mapping[field.key]);
-  const invalid=state.pendingRows.some(record=>["supplier","item","quantity","current"].some(key=>{const header=state.mapping[key];const value=header ? String(record[header] ?? "").trim() : "";return !value || (["quantity","current"].includes(key) && !(parseSpanishNumber(value)>0));}));
+  const invalidIndices = missing.length ? [] : invalidImportRowIndices();
+  const invalid = invalidIndices.length > 0;
   $("#analyzeButton").disabled = missing.length > 0 || !state.pendingRows.length || invalid;
-  $("#importError").textContent = missing.length ? `Falta relacionar: ${missing.map((field) => field.label.toLowerCase()).join(", ")}.` : invalid ? "Revisa los campos vacíos y las cantidades o precios no válidos antes de importar." : "";
+  const jump = $("#reviewFirstError");
+  jump.classList.toggle("hidden", !invalid);
+  jump.disabled = !invalid;
+  if (invalid) jump.textContent = `Ir a la línea ${invalidIndices[0]+1}`;
+  $("#importError").textContent = missing.length ? `Falta relacionar: ${missing.map((field) => field.label.toLowerCase()).join(", ")}.` : invalid ? `${invalidIndices.length} línea(s) con errores. La primera es la ${invalidIndices[0]+1}. Corrige cantidad, precio o campos vacíos antes de importar.` : "";
 }
 
 function normalizeProduct(value) {
@@ -924,6 +940,7 @@ function init() {
   $("#analyzeButton").onclick = analyzeFile;
   $("#reviewPrevious").onclick = () => {state.reviewPage--;renderImportReview();};
   $("#reviewNext").onclick = () => {state.reviewPage++;renderImportReview();};
+  $("#reviewFirstError").onclick = () => {const errors=invalidImportRowIndices();if(errors.length){state.reviewPage=Math.floor(errors[0]/20);renderImportReview();}};
   $("#removeImportFile").onclick = resetImportFile;
   $("#parseInvoiceTextButton").onclick = () => {
     try {
