@@ -53,6 +53,7 @@
           </button>
         </nav>
 
+        <button class="nav-item electricity-link" data-view="electricity" type="button"><span class="nav-icon" aria-hidden="true">⚡</span> Factura de luz</button>
         <div class="sidebar-card">
           <span class="eyebrow">MARGEN HOSTELERÍA</span>
           <p>En esta versión, tus archivos se procesan en este navegador.</p>
@@ -243,6 +244,28 @@
           <div class="supplier-card-grid" id="supplierCards"></div>
         </section>
 
+        <section class="content hidden" id="electricityView">
+          <div class="electricity-intro"><span class="eyebrow">HERRAMIENTA EXPERIMENTAL · USO DOMÉSTICO</span><h2>¿Por qué ha subido la factura de la luz?</h2><p>Compara dos facturas del mismo suministro. Introduce el consumo, el precio medio de energía y los demás conceptos de cada periodo. Todo se calcula en este navegador y no se envía ni se guarda.</p></div>
+          <form id="electricityForm" class="electricity-form">
+            <div class="electricity-columns">
+              <fieldset class="electricity-panel"><legend>Factura anterior</legend>
+                <label>Consumo (kWh)<input required type="number" min="0" step="any" name="oldKwh" placeholder="Ej. 250"></label>
+                <label>Precio medio energía (€/kWh)<input required type="number" min="0" step="any" name="oldRate" placeholder="Ej. 0,15"></label>
+                <label>Potencia y costes fijos (€)<input required type="number" min="0" step="any" name="oldFixed" placeholder="Ej. 12"></label>
+                <label>Otros conceptos, impuestos y alquiler (€)<input required type="number" min="0" step="any" name="oldOther" placeholder="Ej. 14"></label>
+              </fieldset>
+              <fieldset class="electricity-panel"><legend>Factura actual</legend>
+                <label>Consumo (kWh)<input required type="number" min="0" step="any" name="newKwh" placeholder="Ej. 280"></label>
+                <label>Precio medio energía (€/kWh)<input required type="number" min="0" step="any" name="newRate" placeholder="Ej. 0,18"></label>
+                <label>Potencia y costes fijos (€)<input required type="number" min="0" step="any" name="newFixed" placeholder="Ej. 12"></label>
+                <label>Otros conceptos, impuestos y alquiler (€)<input required type="number" min="0" step="any" name="newOther" placeholder="Ej. 16"></label>
+              </fieldset>
+            </div>
+            <button class="button primary" type="submit">Comparar mis facturas</button>
+          </form>
+          <section id="electricityResult" class="panel electricity-result hidden" aria-live="polite"></section>
+          <p class="electricity-disclaimer">Compara periodos de duración similar y usa precios y conceptos de la misma base fiscal. En tarifas con periodos horarios, el precio medio debe calcularse con el consumo de cada periodo. No es asesoramiento tarifario ni un ahorro garantizado.</p>
+        </section>
         <footer class="app-legal"><a href="./">Información del piloto</a><a href="./aviso-legal.html">Aviso legal</a><a href="./privacidad.html">Privacidad</a><a href="./cookies.html">Cookies</a></footer>
       </main>
     </div>
@@ -344,6 +367,7 @@
     <script src="./metrics.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./pdf-text-parser.js"></script>
+    <script src="./electricity.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
