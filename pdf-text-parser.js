@@ -9,22 +9,25 @@
     const invoice = (lines.find(l => /^(factura|n[úu]mero de factura)\s*:/i.test(l)) || "").replace(/^[^:]+:\s*/, "").trim();
     const date = (lines.find(l => /^fecha\s*:/i.test(l)) || "").replace(/^fecha\s*:/i, "").trim();
     const records = [];
+    const rejected = [];
     for (const line of lines) {
       // Columnas separadas por tabulador: descripción | cantidad | precio unitario.
       const cols = line.split(/\t/).map(s => s.trim());
-      if ((cols.length !== 3 && cols.length !== 4) || !cols[0] || !/^\d+(?:[.,]\d+)?$/.test(cols[1]) || !/^\d+(?:[.,]\d{1,2})?$/.test(cols[2])) continue;
+      if (cols.length < 3) continue;
+      const reject = (reason) => rejected.push({line: line.slice(0, 180), reason});
+      if ((cols.length !== 3 && cols.length !== 4) || !cols[0] || !/^\d+(?:[.,]\d+)?$/.test(cols[1]) || !/^\d+(?:[.,]\d{1,2})?$/.test(cols[2])) {reject("Columnas, cantidad o precio no reconocidos");continue;}
       if (cols.length === 4) {
-        if (!/^\d+(?:[.,]\d{1,2})?$/.test(cols[3])) continue;
+        if (!/^\d+(?:[.,]\d{1,2})?$/.test(cols[3])) {reject("Total no reconocido");continue;}
         const quantity = Number(cols[1].replace(",", "."));
         const unitPrice = Number(cols[2].replace(",", "."));
         const total = Number(cols[3].replace(",", "."));
         // Una diferencia mayor a dos céntimos puede significar columnas mal interpretadas.
-        if (Math.abs(quantity * unitPrice - total) > 0.02) continue;
+        if (Math.abs(quantity * unitPrice - total) > 0.02) {reject("Total distinto de cantidad × precio; revisar descuentos o impuestos");continue;}
       }
-      if (!supplier) continue; // Nunca atribuir compras a un proveedor desconocido.
+      if (!supplier) {reject("Proveedor no identificado");continue;}
       records.push({ Proveedor: supplier, Producto: cols[0], Cantidad: cols[1], "Precio actual": cols[2], Factura: invoice, Fecha: date });
     }
-    return {headers:["Proveedor","Producto","Cantidad","Precio actual","Factura","Fecha"],records};
+    return {headers:["Proveedor","Producto","Cantidad","Precio actual","Factura","Fecha"],records,rejected};
   }
   function textItemsToLines(items) {
     const sorted = (items || []).filter(i => i && i.str && i.transform).map(i=>({str:i.str.trim(),x:i.transform[4],y:i.transform[5]})).filter(i=>i.str);
