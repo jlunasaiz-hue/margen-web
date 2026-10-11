@@ -286,6 +286,7 @@
           <span id="dropSubtitle">o pulsa para seleccionar un archivo</span>
           <input id="fileInput" type="file" accept=".pdf,.csv,.xlsx,.xls,application/pdf,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" />
         </label>
+        <button class="button ghost hidden" id="removeImportFile" type="button">Quitar archivo y elegir otro</button>
         <div class="format-box" id="formatHelp">
           <div><strong>Formatos admitidos</strong><span>PDF con texto seleccionable (experimental), Excel (.xlsx, .xls) o CSV. La extracción de PDF se revisa antes de importar.</span></div>
           <button type="button" class="text-button" id="downloadSample">Descargar ejemplo</button>
@@ -300,7 +301,7 @@
           <div class="mapping-note"><strong>Historial automático:</strong> si no existe una columna de precio anterior, buscaremos la última compra equivalente guardada.</div>
         </div>
         <div id="pdfImportIssues" class="mapping-note hidden" role="status"></div>
-        <label class="mapping-note"><input id="confirmPartialImport" type="checkbox" /> He revisado las líneas descartadas y acepto importar solo las válidas.</label>
+        <label class="mapping-note hidden" id="partialImportConfirmation"><input id="confirmPartialImport" type="checkbox" /> He revisado las líneas descartadas y acepto importar solo las válidas.</label>
         <p class="form-error" id="importError" role="alert"></p>
         <div class="modal-actions">
           <button class="button ghost" value="cancel">Cancelar</button>
