@@ -12,7 +12,12 @@
     const rejected = [];
     for (const line of lines) {
       // Columnas separadas por tabulador: descripción | cantidad | precio unitario.
-      const cols = line.split(/\t/).map(s => s.trim());
+      let cols = line.split(/\t/).map(s => s.trim()).filter(Boolean);
+      // PDF.js suele dividir cada palabra del producto en una pieza independiente.
+      // Solo se reagrupan piezas si las dos últimas son números claros (cantidad y precio).
+      if (cols.length > 4 && /^\d+(?:[.,]\d+)?$/.test(cols.at(-2)) && /^\d+(?:[.,]\d{1,2})?$/.test(cols.at(-1))) {
+        cols = [cols.slice(0,-2).join(" "), ...cols.slice(-2)];
+      }
       if (cols.length < 3) continue;
       const reject = (reason) => rejected.push({line: line.slice(0, 180), reason});
       if ((cols.length !== 3 && cols.length !== 4) || !cols[0] || !/^\d+(?:[.,]\d+)?$/.test(cols[1]) || !/^\d+(?:[.,]\d{1,2})?$/.test(cols[2])) {reject("Columnas, cantidad o precio no reconocidos");continue;}
