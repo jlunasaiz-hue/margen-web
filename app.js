@@ -172,6 +172,8 @@ function persistDataset() {
   }
 }
 
+function priorityLabel(row) { return row.possibleDuplicate ? "Duplicado" : row.severity === "high" ? "Alta" : row.severity === "medium" ? "Media" : "Baja"; }
+
 function renderTopAlerts(alerts) {
   const box = $("#topAlerts");
   if (!alerts.length) {
@@ -180,7 +182,7 @@ function renderTopAlerts(alerts) {
   }
   box.innerHTML = alerts.slice(0, 4).map((row, index) => `
     <article class="alert-row" data-detail="${state.rows.indexOf(row)}" tabindex="0">
-      <span class="severity-icon ${row.severity}">${row.possibleDuplicate ? "2×" : row.severity === "high" ? "!!" : row.severity === "medium" ? "!" : "↗"}</span>
+      <span class="severity-icon ${row.severity}">${priorityLabel(row)}</span>
       <div><strong class="alert-title">${escapeHtml(row.item)}</strong><span class="alert-sub">${row.possibleDuplicate ? "Posible duplicado · " : ""}${escapeHtml(row.supplier)} · ${escapeHtml(row.invoice || "Sin factura")}</span></div>
       <div class="alert-value"><strong>${euros.format(row.impact)}</strong><span>${row.possibleDuplicate ? "a comprobar" : `+${number.format(row.percent)} %`}</span></div>
     </article>`).join("");
@@ -268,7 +270,7 @@ function renderAllAlerts(alerts) {
   });
   $("#allAlerts").innerHTML = filtered.length ? filtered.map((row) => `
     <article class="full-alert-item ${row.reviewed ? "is-reviewed" : ""}">
-      <span class="severity-icon ${row.severity}">${row.possibleDuplicate ? "2×" : row.severity === "high" ? "!!" : "!"}</span>
+      <span class="severity-icon ${row.severity}">${priorityLabel(row)}</span>
       <div><span class="data-label">${row.possibleDuplicate ? "Posible duplicado" : "Producto"}</span><strong>${escapeHtml(row.item)}</strong><span class="alert-sub">${escapeHtml(row.supplier)}${row.reviewed ? " · Revisada" : ""}</span></div>
       <div class="hide-mobile"><span class="data-label">Precio</span><strong>${euros.format(row.previous)} → ${euros.format(row.current)}</strong></div>
       <div class="hide-tablet"><span class="data-label">Variación</span><strong>${row.possibleDuplicate ? "Línea repetida" : `+${number.format(row.percent)} %`}</strong></div>
