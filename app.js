@@ -448,6 +448,22 @@ async function readImportFile(file) {
     const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: true });
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
     matrix = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "", raw: false, dateNF: "yyyy-mm-dd" });
+  } else if (extension === "pdf") {
+    if (!window.pdfjsLib) throw new Error("El lector PDF no está disponible. Comprueba la conexión y recarga la página.");
+    if (file.size > 8 * 1024 * 1024) throw new Error("PDF demasiado grande (máximo 8 MB).");
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const task = window.pdfjsLib.getDocument({data:await file.arrayBuffer()});
+    const pdf = await task.promise;
+    if (pdf.numPages > 15) throw new Error("PDF demasiado largo (máximo 15 páginas).");
+    const all = [];
+    for (let n=1;n<=pdf.numPages;n++) {
+      const page=await pdf.getPage(n);
+      const content=await page.getTextContent();
+      all.push(window.margenPdfText.textItemsToLines(content.items));
+    }
+    const parsed = window.margenPdfText.parseInvoiceText(all.join("\n"));
+    if(!parsed.records.length) throw new Error("No se han reconocido líneas completas. Si el PDF es escaneado, hará falta OCR; si contiene texto, copia y revisa sus líneas manualmente.");
+    return parsed;
   } else if (extension === "csv") {
     const buffer = await file.arrayBuffer();
     let text = new TextDecoder("utf-8", { fatal: false }).decode(buffer);
@@ -739,7 +755,7 @@ function openImport() {
 
 async function selectFile(file) {
   if (!file || !/\.(csv|xlsx|xls)$/i.test(file.name)) {
-    $("#importError").textContent = "Selecciona un archivo Excel (.xlsx, .xls) o CSV."; return;
+    $("#importError").textContent = "Selecciona PDF con texto, Excel (.xlsx, .xls) o CSV."; return;
   }
   state.pendingFile = file;
   $("#dropTitle").textContent = file.name;
@@ -751,7 +767,7 @@ async function selectFile(file) {
     const parsed = await readImportFile(file);
     state.pendingHeaders = parsed.headers;
     state.pendingRows = parsed.records;
-    $("#dropSubtitle").textContent = `${number.format(file.size / 1024)} KB · ${parsed.records.length} filas encontradas`;
+    $("#dropSubtitle").textContent = `${number.format(file.size / 1024)} KB · ${parsed.records.length} líneas propuestas (revísalas)`;
     renderMapping();
   } catch (error) {
     state.pendingRows = [];
