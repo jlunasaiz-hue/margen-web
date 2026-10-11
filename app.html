@@ -294,6 +294,7 @@
         <div class="format-box"><div><strong>¿Tienes el texto de una factura PDF?</strong><span>Copia el texto seleccionable de la factura y pégalo aquí. No se envía a servidores. Formato experimental: proveedor y líneas tabuladas (producto, cantidad, precio).</span></div></div>
         <label class="field field-wide" for="invoicePastedText"><span>Texto copiado de factura (sin datos personales)</span><textarea id="invoicePastedText" rows="5" placeholder="Proveedor: Distribuciones Costa&#10;Factura: F-100&#10;Aceite de oliva 5 L&#9;8&#9;36,90"></textarea></label>
         <button class="button ghost" type="button" id="parseInvoiceTextButton">Revisar texto de factura</button>
+        <section class="import-audit hidden" id="importAudit" aria-live="polite"><span class="eyebrow">AUDITOR DE IMPORTACIÓN</span><h3 id="importAuditTitle">Revisión de datos</h3><p id="importAuditSummary"></p><div id="importAuditFacts" class="import-audit-facts"></div><p class="import-audit-note">Este diagnóstico no certifica que los datos sean correctos. Comprueba la factura original antes de importar.</p></section>
         <div class="mapping-panel hidden" id="mappingPanel">
           <div class="mapping-heading"><div><span class="eyebrow">PASO 2</span><h3>Relaciona tus columnas</h3></div><span id="mappingRows">0 filas</span></div>
           <p>Hemos propuesto una relación automática. Comprueba los cuatro campos obligatorios.</p>
