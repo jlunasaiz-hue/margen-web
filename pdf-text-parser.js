@@ -13,7 +13,14 @@
       // Columnas separadas por tabulador: descripción | cantidad | precio unitario.
       const cols = line.split(/\t/).map(s => s.trim());
       if ((cols.length !== 3 && cols.length !== 4) || !cols[0] || !/^\d+(?:[.,]\d+)?$/.test(cols[1]) || !/^\d+(?:[.,]\d{1,2})?$/.test(cols[2])) continue;
-      if (cols.length === 4 && !/^\d+(?:[.,]\d{1,2})?$/.test(cols[3])) continue;
+      if (cols.length === 4) {
+        if (!/^\d+(?:[.,]\d{1,2})?$/.test(cols[3])) continue;
+        const quantity = Number(cols[1].replace(",", "."));
+        const unitPrice = Number(cols[2].replace(",", "."));
+        const total = Number(cols[3].replace(",", "."));
+        // Una diferencia mayor a dos céntimos puede significar columnas mal interpretadas.
+        if (Math.abs(quantity * unitPrice - total) > 0.02) continue;
+      }
       if (!supplier) continue; // Nunca atribuir compras a un proveedor desconocido.
       records.push({ Proveedor: supplier, Producto: cols[0], Cantidad: cols[1], "Precio actual": cols[2], Factura: invoice, Fecha: date });
     }
