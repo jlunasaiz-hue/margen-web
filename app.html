@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <title>Margen — Control de costes</title>
     <link rel="canonical" href="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
-    <link rel="stylesheet" href="./styles.css?v=20261011-energy-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261011-switch-1" />
   </head>
   <body class="app-page">
     <a class="skip-link" href="#appMain">Saltar al contenido</a>
@@ -54,6 +54,7 @@
         </nav>
 
         <button class="nav-item electricity-link" data-view="electricity" type="button"><span class="nav-icon" aria-hidden="true">⚡</span> Factura de luz</button>
+        <button class="nav-item electricity-link" data-view="switch" type="button"><span class="nav-icon" aria-hidden="true">⇄</span> Cambiar compañía</button>
         <div class="sidebar-card">
           <span class="eyebrow">MARGEN HOSTELERÍA</span>
           <p>En esta versión, tus archivos se procesan en este navegador.</p>
@@ -275,6 +276,13 @@
           <section id="electricityResult" class="panel electricity-result hidden" aria-live="polite"></section>
           <p class="electricity-disclaimer">Compara periodos de duración similar y usa precios y conceptos de la misma base fiscal. En tarifas con periodos horarios, el precio medio debe calcularse con el consumo de cada periodo. No es asesoramiento tarifario ni un ahorro garantizado.</p>
         </section>
+        <section class="content hidden" id="switchView">
+          <div class="electricity-intro"><span class="eyebrow">CAMBIO DE COMERCIALIZADORA</span><h2>Revisa la oferta. Autoriza el cambio.</h2><p>El objetivo de Margen es tramitar el cambio después de tu autorización y mostrarte su estado hasta que la compañía confirme la activación.</p></div>
+          <section class="panel energy-live"><div class="energy-live-heading"><div><span class="eyebrow">DISPONIBILIDAD ACTUAL</span><h3>Tramitación real pendiente de integración</h3><p>Margen todavía no tiene una comercializadora conectada para contratar. La consulta de precios PVPC y el acceso a consumo no tramitan cambios de compañía.</p></div><span class="energy-state">Sin conexión de contratación</span></div><button class="button primary" type="button" disabled aria-describedby="switchUnavailable">Autorizar cambio de compañía</button><p id="switchUnavailable">Se habilitará cuando exista una oferta vigente para tu suministro, un contrato revisable, tu autorización verificable y una conexión de contratación operativa.</p><button class="button ghost" type="button" id="switchDemoOpen">Ver ejemplo del flujo</button></section>
+          <div class="switch-steps" aria-label="Proceso previsto"><article><span>01</span><h3>Oferta completa</h3><p>Consumo, energía, potencia, servicios, impuestos y costes de salida en un mismo periodo.</p></article><article><span>02</span><h3>Tu autorización</h3><p>Aceptas la oferta y el contrato concretos. El cambio se solicita una sola vez.</p></article><article><span>03</span><h3>Seguimiento automático</h3><p>Solicitud recibida, aceptación y activación son estados distintos. La activación la confirma la compañía.</p></article></div>
+          <section class="panel energy-live" id="switchDemo" hidden aria-labelledby="switchDemoTitle"><span class="demo-badge">DEMOSTRACIÓN · DATOS FICTICIOS</span><h3 id="switchDemoTitle">Así sería la revisión de una oferta</h3><p>Compañía A y Compañía B son nombres ficticios. Los importes son un ejemplo del mismo suministro durante 12 meses; no son tarifas disponibles para contratar.</p><div class="table-wrap"><table><caption>Ejemplo anual para 3.000 kWh · importes en euros</caption><thead><tr><th>Concepto</th><th>Actual · A</th><th>Oferta · B</th></tr></thead><tbody><tr><td>Energía</td><td>570 €</td><td>465 €</td></tr><tr><td>Potencia</td><td>120 €</td><td>120 €</td></tr><tr><td>Impuestos y otros conceptos</td><td>65 €</td><td>60 €</td></tr><tr><td>Servicios adicionales</td><td>60 €</td><td>0 €</td></tr><tr><td>Coste de contratación</td><td>0 €</td><td>35 €</td></tr><tr><td>Penalización de salida del contrato actual</td><td>0 €</td><td>20 €</td></tr><tr><th>Total del periodo</th><td>815 €</td><td>700 €</td></tr></tbody></table></div><p><strong>Diferencia estimada del ejemplo: 115 € en 12 meses.</strong> Depende del consumo y de las condiciones del contrato; no es ahorro confirmado.</p><details><summary>Condiciones ficticias del ejemplo</summary><p>Precio de energía: 0,155 €/kWh. Periodo comparado: 12 meses. Sin permanencia ni servicios adicionales en la oferta B. Costes de contratación y de salida incluidos arriba. Este ejemplo no contiene un contrato firmable.</p></details><label class="switch-consent"><input type="checkbox" id="switchDemoConsent"><span>Quiero probar la autorización de esta oferta ficticia. Entiendo que esta demostración no firma un contrato ni solicita un cambio real.</span></label><div class="switch-actions"><button class="button primary" type="button" id="switchDemoAuthorize" disabled>Simular autorización con un clic</button><button class="button ghost" type="button" id="switchDemoClose">Cerrar ejemplo</button></div><p id="switchDemoStatus" role="status" aria-live="polite"></p></section>
+          <p class="electricity-disclaimer">El nuevo comercializador tramita el cambio con la distribuidora tras el consentimiento y la contratación. <a href="https://www.cnmc.es/sectores-que-regulamos/energia/cambio-de-comercializador-en-espa%C3%B1a/guia-informativa" target="_blank" rel="noopener noreferrer">Consultar la guía de la CNMC</a>.</p>
+        </section>
         <footer class="app-legal"><a href="./">Información del piloto</a><a href="./aviso-legal.html">Aviso legal</a><a href="./privacidad.html">Privacidad</a><a href="./cookies.html">Cookies</a></footer>
       </main>
     </div>
@@ -383,7 +391,8 @@
     <script src="./pdf-text-parser.js?v=20261011-fixtures-5"></script>
     <script src="./electricity.js"></script>
     <script src="./official-prices.js?v=20261011-energy-1"></script>
-    <script src="./app.js?v=20261011-energy-1"></script>
+    <script src="./switch-demo.js?v=20261011-switch-1"></script>
+    <script src="./app.js?v=20261011-switch-1"></script>
   </body>
 </html>
 

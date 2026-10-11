@@ -3,6 +3,6 @@
   "private": true,
   "scripts": {
     "test": "node --test tests/*.test.cjs",
-    "check": "node --check app.js && node --check official-prices.js && node --check electricity.js && node --check pdf-text-parser.js && npm test"
+    "check": "node --check app.js && node --check official-prices.js && node --check electricity.js && node --check pdf-text-parser.js && node --check switch-demo.js && node --check server/switching.mjs && npm test"
   }
 }

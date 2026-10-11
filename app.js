@@ -387,7 +387,8 @@ function showView(view) {
   $("#alertsView").classList.toggle("hidden", view !== "alerts");
   $("#suppliersView").classList.toggle("hidden", view !== "suppliers");
   $("#electricityView").classList.toggle("hidden", view !== "electricity");
-  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "electricity" ? "Factura de luz" : "Resumen";
+  $("#switchView").classList.toggle("hidden", view !== "switch");
+  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "electricity" ? "Factura de luz" : view === "switch" ? "Cambiar compañía" : "Resumen";
   $$(".nav-item").forEach((item) => {
     const active = item.dataset.view === view;
     item.classList.toggle("active", active);
@@ -1004,3 +1005,5 @@ function init() {
 init();
 if (new URLSearchParams(location.search).get("view") === "electricity") showView("electricity");
 
+
+if (new URLSearchParams(location.search).get("view") === "switch") showView("switch");
