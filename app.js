@@ -756,7 +756,28 @@ function openImport() {
   $("#importDialog").showModal();
 }
 
+function updateImportAudit() {
+  const audit = $("#importAudit");
+  const accepted = state.pendingRows.length;
+  const rejected = state.rejectedPdfLines.length;
+  audit.classList.toggle("hidden", accepted + rejected === 0);
+  if (!accepted && !rejected) return;
+  const incomplete = state.pendingRows.filter(r => !String(r.Proveedor ?? r.proveedor ?? "").trim()).length;
+  const needsReview = rejected > 0 || incomplete > 0;
+  $("#importAuditTitle").textContent = needsReview ? "Revisión necesaria" : "Datos propuestos para revisión";
+  $("#importAuditSummary").textContent = needsReview
+    ? "Hay líneas que necesitan comprobación antes de importar. Ningún importe descartado se cuenta como ahorro."
+    : "Se han identificado líneas de compra. Confirma proveedor, producto, cantidad y precio con el original.";
+  const facts = $("#importAuditFacts");
+  facts.replaceChildren();
+  for (const [label, value] of [["Líneas propuestas",accepted],["Líneas rechazadas",rejected],["Sin proveedor",incomplete]]) {
+    const item=document.createElement("span");
+    item.textContent=label+": "+value;
+    facts.append(item);
+  }
+}
 function showPdfImportIssues() {
+  updateImportAudit();
   const box = $("#pdfImportIssues");
   const issues = state.rejectedPdfLines;
   box.replaceChildren();
@@ -818,6 +839,7 @@ async function selectFile(file) {
     showPdfImportIssues();
     $("#dropSubtitle").textContent = `${number.format(file.size / 1024)} KB · ${parsed.records.length} líneas propuestas (revísalas)`;
     renderMapping();
+    updateImportAudit();
   } catch (error) {
     state.pendingRows = [];
     state.rejectedPdfLines = [];
