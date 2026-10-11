@@ -443,11 +443,37 @@ function parseDelimited(text) {
   return matrix;
 }
 
+let excelLoaderPromise = null;
+function ensureExcelReader() {
+  if (typeof XLSX !== "undefined" && typeof XLSX.read === "function" && XLSX.utils?.sheet_to_json) {
+    return Promise.resolve();
+  }
+  // Fallback temporal: el archivo no sale del navegador. Solo descargamos el lector.
+  if (!excelLoaderPromise) {
+    excelLoaderPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
+      script.crossOrigin = "anonymous";
+      script.referrerPolicy = "no-referrer";
+      script.onload = () => {
+        if (typeof XLSX !== "undefined" && typeof XLSX.read === "function" && XLSX.utils?.sheet_to_json) resolve();
+        else reject(new Error("No se ha podido verificar el lector de Excel."));
+      };
+      script.onerror = () => reject(new Error("No se ha podido descargar el lector de Excel. Comprueba tu conexión y vuelve a intentarlo."));
+      document.head.appendChild(script);
+    }).catch(error => {
+      excelLoaderPromise = null;
+      throw error;
+    });
+  }
+  return excelLoaderPromise;
+}
+
 async function readImportFile(file) {
   const extension = file.name.toLowerCase().split(".").pop();
   let matrix;
   if (extension === "xlsx" || extension === "xls") {
-    if (typeof XLSX === "undefined") throw new Error("No se ha podido iniciar el lector de Excel. Recarga la página e inténtalo de nuevo.");
+    await ensureExcelReader();
     const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: true });
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
     matrix = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "", raw: false, dateNF: "yyyy-mm-dd" });
