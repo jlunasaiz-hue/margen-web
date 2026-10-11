@@ -482,7 +482,7 @@ async function readImportFile(file) {
   } else if (extension === "pdf") {
     if (!window.pdfjsLib) throw new Error("El lector PDF no está disponible. Comprueba la conexión y recarga la página.");
     if (file.size > 8 * 1024 * 1024) throw new Error("PDF demasiado grande (máximo 8 MB).");
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "./vendor/pdf.worker.min.js";
     const task = window.pdfjsLib.getDocument({data:await file.arrayBuffer()});
     const pdf = await task.promise;
     if (pdf.numPages > 15) throw new Error("PDF demasiado largo (máximo 15 páginas).");

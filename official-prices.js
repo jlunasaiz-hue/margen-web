@@ -34,9 +34,12 @@
     return {rows,average:rows.reduce((n,r)=>n+r.price,0)/rows.length,min:rows.reduce((a,b)=>a.price<=b.price?a:b),max:rows.reduce((a,b)=>a.price>=b.price?a:b),sourceUpdated:series.attributes["last-update"]||payload.data?.attributes?.["last-update"]||null};
   }
   async function loadPrices(date,fetcher=root.fetch.bind(root),signal) {
-    const response=await fetcher(requestUrl(date),{headers:{Accept:"application/json"},signal});
+    const uri=root.location&&!root.location.hostname.endsWith("github.io")?new URL("/api/energy/prices?date="+encodeURIComponent(date),root.location.origin).href:requestUrl(date);
+    const response=await fetcher(uri,{headers:{Accept:"application/json"},signal});
     if(!response.ok)throw Error("La fuente oficial no está disponible (HTTP "+response.status+").");
-    return parsePrices(await response.json(),date);
+    const payload=await response.json();const parsed=parsePrices(payload,date);
+    try{root.localStorage?.setItem("margen-public-pvpc",JSON.stringify({date,payload,consultedAt:new Date().toISOString()}));}catch{}
+    return parsed;
   }
   function attach(document) {
     const form=document.getElementById("energyPriceForm");if(!form)return;
@@ -50,7 +53,9 @@
       el("energyState").textContent="Consultando";el("energyStatus").textContent="Consultando la fuente oficial…";
       el("energyData").hidden=true;el("energyRefresh").disabled=true;
       try{
+        if(root.navigator?.onLine===false)throw Error("OFFLINE");
         const result=await loadPrices(requested,root.fetch.bind(root),own.signal);
+        el("energySaved").hidden=false;
         if(own!==controller)return;
         el("energyAverage").textContent=price(result.average);el("energyMinimum").textContent=price(result.min.price);el("energyMaximum").textContent=price(result.max.price);
         el("energyMinimumTime").textContent=time(result.min.datetime);el("energyMaximumTime").textContent=time(result.max.datetime);
@@ -62,12 +67,15 @@
         el("energyStatus").textContent=`Día ${requested} · ${result.rows.length} horas · Consultado: ${stamp.format(new Date())}.`+(result.sourceUpdated&&!Number.isNaN(Date.parse(result.sourceUpdated))?` Publicación de la fuente: ${stamp.format(new Date(result.sourceUpdated))}.`:"");
       }catch(error){
         if(own!==controller)return;
+        try{const saved=JSON.parse(root.localStorage?.getItem("margen-public-pvpc")||"null");if(saved?.date===requested){const result=parsePrices(saved.payload,requested);el("energyAverage").textContent=price(result.average);el("energyMinimum").textContent=price(result.min.price);el("energyMaximum").textContent=price(result.max.price);el("energyMinimumTime").textContent=time(result.min.datetime);el("energyMaximumTime").textContent=time(result.max.datetime);const fragment=document.createDocumentFragment();result.rows.forEach(r=>{const tr=document.createElement("tr");[time(r.datetime),price(r.price)].forEach(value=>{const td=document.createElement("td");td.textContent=value;tr.append(td);});fragment.append(tr);});el("energyPriceRows").replaceChildren(fragment);el("energyData").hidden=false;el("energyState").textContent="Datos guardados";el("energyStatus").textContent="No se pudo actualizar. Precios guardados del "+saved.date+" · Consulta original: "+saved.consultedAt+". No son datos actualizados.";return;}}catch{}
         el("energyState").textContent="Sin datos disponibles";
         el("energyStatus").textContent=error.name==="AbortError"?"La consulta tardó demasiado. Puedes volver a intentarlo.":error.message+" No se muestran precios de ejemplo ni de otro día.";
       }finally{if(own===controller){el("energyRefresh").disabled=false;controller=null;}}
     }
     function visible(){return !document.hidden&&!el("electricityView").classList.contains("hidden");}
     function maybeRefresh(){if(!visible()||controller)return;if(selectedToday&&date.value!==madridDate()){date.value=madridDate();lastAttempt=0;}if(Date.now()-lastAttempt>=15*60*1000)refresh();}
+    try{const saved=JSON.parse(root.localStorage?.getItem("margen-public-pvpc")||"null");if(saved){parsePrices(saved.payload,saved.date);el("energySaved").hidden=false;}}catch{}
+    el("energySaved").addEventListener("click",()=>{try{const saved=JSON.parse(root.localStorage.getItem("margen-public-pvpc"));parsePrices(saved.payload,saved.date);date.value=saved.date;selectedToday=false;refresh();}catch{el("energySaved").hidden=true;}});
     form.addEventListener("submit",event=>{event.preventDefault();selectedToday=date.value===madridDate();refresh();});
     date.addEventListener("change",()=>{selectedToday=date.value===madridDate();refresh();});
     document.addEventListener("margen:view",maybeRefresh);document.addEventListener("visibilitychange",maybeRefresh);

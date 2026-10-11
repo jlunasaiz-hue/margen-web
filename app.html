@@ -14,8 +14,9 @@
     <meta property="og:url" content="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <title>Margen — Control de costes</title>
     <link rel="canonical" href="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
-    <link rel="stylesheet" href="./styles.css?v=20261011-switch-1" />
-  </head>
+    <link rel="stylesheet" href="./styles.css?v=20261011-offline-1" />
+  <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/margen-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
+</head>
   <body class="app-page">
     <a class="skip-link" href="#appMain">Saltar al contenido</a>
     <div class="app-shell">
@@ -71,6 +72,7 @@
       </aside>
 
       <main class="main" id="appMain">
+        <aside class="connectivity-strip" aria-label="Conexión"><span id="offlineStatusText" role="status" aria-live="polite">Preparando acceso sin conexión…</span><div><button type="button" id="offlineUpdateButton" hidden>Actualizar versión</button><button type="button" id="offlineInstallButton">Instalar Margen</button></div></aside>
         <header class="topbar">
           <button class="menu-button" id="menuButton" aria-label="Abrir menú" aria-expanded="false">☰</button>
           <div>
@@ -249,7 +251,7 @@
           <div class="electricity-intro"><span class="eyebrow">HERRAMIENTA EXPERIMENTAL · USO DOMÉSTICO</span><h2>¿Por qué ha subido la factura de la luz?</h2><p>Compara dos facturas del mismo suministro. Introduce el consumo, el precio medio de energía y los demás conceptos de cada periodo. Todo se calcula en este navegador y no se envía ni se guarda.</p></div>
           <section class="panel energy-live" aria-labelledby="energyLiveTitle">
             <div class="energy-live-heading"><div><span class="eyebrow">RED ELÉCTRICA · DATOS PÚBLICOS</span><h3 id="energyLiveTitle">Precio de energía PVPC</h3><p>Consulta el precio horario publicado para Península. Es una referencia regulada, no la tarifa de tu compañía.</p></div><span class="energy-state" id="energyState">Sin consultar</span></div>
-            <form id="energyPriceForm" class="energy-controls"><label for="energyDate">Día de consulta<input id="energyDate" type="date" required></label><button class="button primary" id="energyRefresh" type="submit">Consultar precios</button></form>
+            <form id="energyPriceForm" class="energy-controls"><label for="energyDate">Día de consulta<input id="energyDate" type="date" required></label><button class="button primary" id="energyRefresh" type="submit">Consultar precios</button><button class="button ghost" id="energySaved" type="button" hidden>Ver consulta guardada</button></form>
             <p id="energyStatus" role="status" aria-live="polite">Los precios se consultan al abrir esta sección. La actualización automática funciona mientras esta pestaña está visible.</p>
             <div id="energyData" hidden><div class="energy-stats"><article><span>Media simple del día</span><strong id="energyAverage"></strong></article><article><span>Hora más económica</span><strong id="energyMinimum"></strong><small id="energyMinimumTime"></small></article><article><span>Hora más cara</span><strong id="energyMaximum"></strong><small id="energyMaximumTime"></small></article></div><details><summary>Ver precios y horas publicados</summary><div class="table-wrap"><table><caption>Precio del término de energía · €/kWh · hora de Madrid</caption><thead><tr><th>Hora (Madrid)</th><th>Precio (€/kWh)</th></tr></thead><tbody id="energyPriceRows"></tbody></table></div></details></div>
             <p class="energy-note">La media simple no calcula tu factura: el coste depende de tu consumo en cada hora. Estos precios no incluyen potencia, alquiler ni impuestos. Revisa que tu suministro sea elegible para PVPC.</p>
@@ -387,12 +389,14 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="./vendor/xlsx.full.min.js"></script>
     <script src="./metrics.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="./vendor/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./pdf-text-parser.js?v=20261011-fixtures-5"></script>
     <script src="./electricity.js"></script>
-    <script src="./official-prices.js?v=20261011-energy-1"></script>
+    <script src="./official-prices.js?v=20261011-offline-1"></script>
     <script src="./switch-demo.js?v=20261011-switch-1"></script>
-    <script src="./app.js?v=20261011-switch-1"></script>
-  </body>
+    <script src="./app.js?v=20261011-offline-1"></script>
+  <dialog id="installHelp" class="install-help"><form method="dialog"><h2>Margen en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
+<script src="./offline.js?v=20261011-offline-1"></script>
+</body>
 </html>
 
