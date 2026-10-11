@@ -761,6 +761,7 @@ function showPdfImportIssues() {
   const issues = state.rejectedPdfLines;
   box.replaceChildren();
   box.classList.toggle("hidden", !issues.length);
+  $("#partialImportConfirmation").classList.toggle("hidden", !issues.length);
   if (!issues.length) return;
   const title = document.createElement("strong");
   title.textContent = issues.length + " línea(s) sin importar: requieren revisión";
@@ -779,11 +780,28 @@ function showPdfImportIssues() {
   }
 }
 
+function resetImportFile() {
+  state.pendingFile = null;
+  state.pendingRows = [];
+  state.pendingHeaders = [];
+  state.rejectedPdfLines = [];
+  $("#fileInput").value = "";
+  $("#dropTitle").textContent = "Arrastra un PDF, Excel o CSV aquí";
+  $("#dropSubtitle").textContent = "o pulsa para seleccionar un archivo";
+  $("#removeImportFile").classList.add("hidden");
+  $("#mappingPanel").classList.add("hidden");
+  $("#analyzeButton").disabled = true;
+  $("#confirmPartialImport").checked = false;
+  $("#importError").textContent = "";
+  showPdfImportIssues();
+}
+
 async function selectFile(file) {
   if (!file || !/\.(pdf|csv|xlsx|xls)$/i.test(file.name)) {
     $("#importError").textContent = "Selecciona PDF con texto, Excel (.xlsx, .xls) o CSV."; return;
   }
   state.pendingFile = file;
+  $("#removeImportFile").classList.remove("hidden");
   state.rejectedPdfLines = [];
   $("#confirmPartialImport").checked = false;
   showPdfImportIssues();
@@ -805,7 +823,7 @@ async function selectFile(file) {
     state.rejectedPdfLines = [];
     showPdfImportIssues();
     $("#dropSubtitle").textContent = "No se ha podido leer el archivo";
-    $("#importError").textContent = error.message;
+    $("#importError").textContent = /PDF demasiado largo/.test(error.message) ? "Este PDF supera 15 páginas. Margen está preparado para facturas breves, no para apuntes o documentos largos. Puedes quitarlo y elegir una factura de prueba." : error.message;
   }
 }
 
@@ -845,6 +863,7 @@ function init() {
   $("#downloadSample").onclick = downloadSample;
   $("#fileInput").onchange = (event) => selectFile(event.target.files[0]);
   $("#analyzeButton").onclick = analyzeFile;
+  $("#removeImportFile").onclick = resetImportFile;
   $("#parseInvoiceTextButton").onclick = () => {
     try {
       const parsed = window.margenPdfText.parseInvoiceText($("#invoicePastedText").value);
