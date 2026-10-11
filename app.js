@@ -512,17 +512,38 @@ function suggestMapping(headers) {
   return result;
 }
 
+function renderImportReview() {
+  const box = $("#importReviewRows");
+  box.replaceChildren();
+  const fields = [["supplier","Proveedor"],["item","Producto"],["quantity","Cantidad"],["current","Precio unitario"]];
+  if (state.pendingRows.length > 30) {const notice=document.createElement("p");notice.textContent="Mostrando 30 de "+state.pendingRows.length+" líneas. Las restantes se conservan para el análisis; revisa el archivo completo antes de importar.";box.append(notice);}
+  state.pendingRows.slice(0, 30).forEach((record,index) => {
+    const card=document.createElement("div"); card.className="import-review-row";
+    const title=document.createElement("strong"); title.textContent="Línea "+(index+1);card.append(title);
+    for(const [key,label] of fields) {
+      const heading=state.mapping[key];
+      const wrap=document.createElement("label");wrap.textContent=label;
+      const input=document.createElement("input");
+      input.type="text";input.value=heading ? String(record[heading] ?? "") : "";
+      input.setAttribute("aria-label",label+" línea "+(index+1));
+      input.addEventListener("input",()=>{if(heading){record[heading]=input.value;}});
+      wrap.append(input);card.append(wrap);
+    }
+    box.append(card);
+  });
+}
 function renderMapping() {
   state.mapping = suggestMapping(state.pendingHeaders);
   const options = `<option value="">No incluida</option>${state.pendingHeaders.map((header) => `<option value="${escapeHtml(header)}">${escapeHtml(header)}</option>`).join("")}`;
   $("#mappingGrid").innerHTML = MAPPING_FIELDS.map((field) => `<label class="mapping-field"><span>${field.label}${field.required ? " <em>*</em>" : ""}</span><select data-map="${field.key}">${options}</select></label>`).join("");
   $$('[data-map]').forEach((select) => {
     select.value = state.mapping[select.dataset.map] || "";
-    select.onchange = () => { state.mapping[select.dataset.map] = select.value; validateMapping(); };
+    select.onchange = () => { state.mapping[select.dataset.map] = select.value; validateMapping(); renderImportReview(); };
   });
   $("#mappingRows").textContent = `${state.pendingRows.length} filas detectadas`;
   $("#mappingPanel").classList.remove("hidden");
   validateMapping();
+  renderImportReview();
 }
 
 function validateMapping() {
