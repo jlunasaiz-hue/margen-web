@@ -384,7 +384,8 @@ function showView(view) {
   $("#overviewView").classList.toggle("hidden", view !== "overview");
   $("#alertsView").classList.toggle("hidden", view !== "alerts");
   $("#suppliersView").classList.toggle("hidden", view !== "suppliers");
-  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : "Resumen";
+  $("#electricityView").classList.toggle("hidden", view !== "electricity");
+  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "electricity" ? "Factura de luz" : "Resumen";
   $$(".nav-item").forEach((item) => {
     const active = item.dataset.view === view;
     item.classList.toggle("active", active);
@@ -803,6 +804,7 @@ function init() {
   $$("[data-action='open-backup']").forEach((button) => button.addEventListener("click", openBackup));
   $("#importButton").onclick = openImport;
   $("#firstMinuteImport").onclick = openImport;
+  window.margenElectricity.attach(document);
   $("#manualButton").onclick = openManual;
   $("#loadDemoButton").onclick = loadDemo;
   $("#clearDemoButton").onclick = clearDemo;
