@@ -256,15 +256,15 @@
           </div>
           <button class="icon-button" value="cancel" aria-label="Cerrar">×</button>
         </div>
-        <p class="modal-copy">Sube cualquier Excel o CSV. Después podrás indicar qué columna corresponde a cada dato; no necesitas preparar una plantilla especial.</p>
+        <p class="modal-copy">Sube CSV, Excel o PDF con texto seleccionable. Revisarás los campos antes de guardar las compras. Los PDF escaneados necesitan OCR (todavía no disponible).</p>
         <label class="drop-zone" id="dropZone" for="fileInput">
           <span class="upload-icon" aria-hidden="true">↑</span>
-          <strong id="dropTitle">Arrastra el Excel o CSV aquí</strong>
+          <strong id="dropTitle">Arrastra un PDF, Excel o CSV aquí</strong>
           <span id="dropSubtitle">o pulsa para seleccionar un archivo</span>
-          <input id="fileInput" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" />
+          <input id="fileInput" type="file" accept=".pdf,.csv,.xlsx,.xls,application/pdf,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" />
         </label>
         <div class="format-box" id="formatHelp">
-          <div><strong>Formatos admitidos</strong><span>Excel (.xlsx, .xls) y CSV con coma o punto y coma. Precio anterior y fecha son opcionales.</span></div>
+          <div><strong>Formatos admitidos</strong><span>PDF con texto seleccionable (experimental), Excel (.xlsx, .xls) o CSV. La extracción de PDF se revisa antes de importar.</span></div>
           <button type="button" class="text-button" id="downloadSample">Descargar ejemplo</button>
         </div>
         <div class="format-box"><div><strong>¿Tienes el texto de una factura PDF?</strong><span>Copia el texto seleccionable de la factura y pégalo aquí. No se envía a servidores. Formato experimental: proveedor y líneas tabuladas (producto, cantidad, precio).</span></div></div>
@@ -342,6 +342,7 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="./vendor/xlsx.full.min.js"></script>
     <script src="./metrics.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./pdf-text-parser.js"></script>
     <script src="./app.js"></script>
   </body>
