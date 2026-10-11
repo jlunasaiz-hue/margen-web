@@ -17,5 +17,16 @@
     }
     return {headers:["Proveedor","Producto","Cantidad","Precio actual","Factura","Fecha"],records};
   }
-  root.margenPdfText = {parseInvoiceText};
+  function textItemsToLines(items) {
+    const sorted = (items || []).filter(i => i && i.str && i.transform).map(i=>({str:i.str.trim(),x:i.transform[4],y:i.transform[5]})).filter(i=>i.str);
+    sorted.sort((a,b)=> b.y-a.y || a.x-b.x);
+    const lines=[];
+    for (const item of sorted) {
+      let line=lines.find(l=>Math.abs(l.y-item.y)<3);
+      if(!line){line={y:item.y,parts:[]};lines.push(line)}
+      line.parts.push(item);
+    }
+    return lines.map(l=>l.parts.sort((a,b)=>a.x-b.x).map(v=>v.str).join("\t")).join("\n");
+  }
+  root.margenPdfText = {parseInvoiceText,textItemsToLines};
 })(typeof window !== "undefined" ? window : globalThis);
