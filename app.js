@@ -762,7 +762,7 @@ function updateImportAudit() {
   const rejected = state.rejectedPdfLines.length;
   audit.classList.toggle("hidden", accepted + rejected === 0);
   if (!accepted && !rejected) return;
-  const incomplete = state.pendingRows.filter(r => !String(r.Proveedor ?? r.proveedor ?? "").trim()).length;
+  const incomplete = state.pendingFile && /\.pdf$/i.test(state.pendingFile.name) || state.pendingFile?.name === "Texto de factura revisado" ? state.pendingRows.filter(r => !String(r.Proveedor ?? "").trim()).length : 0;
   const needsReview = rejected > 0 || incomplete > 0;
   $("#importAuditTitle").textContent = needsReview ? "Revisión necesaria" : "Datos propuestos para revisión";
   $("#importAuditSummary").textContent = needsReview
