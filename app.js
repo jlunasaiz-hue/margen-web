@@ -394,6 +394,7 @@ function showView(view) {
     if (active) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current");
   });
   $("#sidebar").classList.remove("open");
+  document.dispatchEvent(new Event("margen:view"));
 }
 
 function normalizeHeader(value) {
@@ -1001,4 +1002,5 @@ function init() {
 }
 
 init();
+if (new URLSearchParams(location.search).get("view") === "electricity") showView("electricity");
 

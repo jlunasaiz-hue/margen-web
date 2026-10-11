@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <title>Margen — Control de costes</title>
     <link rel="canonical" href="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
-    <link rel="stylesheet" href="./styles.css?v=20261011-pager-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261011-energy-1" />
   </head>
   <body class="app-page">
     <a class="skip-link" href="#appMain">Saltar al contenido</a>
@@ -246,6 +246,15 @@
 
         <section class="content hidden" id="electricityView">
           <div class="electricity-intro"><span class="eyebrow">HERRAMIENTA EXPERIMENTAL · USO DOMÉSTICO</span><h2>¿Por qué ha subido la factura de la luz?</h2><p>Compara dos facturas del mismo suministro. Introduce el consumo, el precio medio de energía y los demás conceptos de cada periodo. Todo se calcula en este navegador y no se envía ni se guarda.</p></div>
+          <section class="panel energy-live" aria-labelledby="energyLiveTitle">
+            <div class="energy-live-heading"><div><span class="eyebrow">RED ELÉCTRICA · DATOS PÚBLICOS</span><h3 id="energyLiveTitle">Precio de energía PVPC</h3><p>Consulta el precio horario publicado para Península. Es una referencia regulada, no la tarifa de tu compañía.</p></div><span class="energy-state" id="energyState">Sin consultar</span></div>
+            <form id="energyPriceForm" class="energy-controls"><label for="energyDate">Día de consulta<input id="energyDate" type="date" required></label><button class="button primary" id="energyRefresh" type="submit">Consultar precios</button></form>
+            <p id="energyStatus" role="status" aria-live="polite">Los precios se consultan al abrir esta sección. La actualización automática funciona mientras esta pestaña está visible.</p>
+            <div id="energyData" hidden><div class="energy-stats"><article><span>Media simple del día</span><strong id="energyAverage"></strong></article><article><span>Hora más económica</span><strong id="energyMinimum"></strong><small id="energyMinimumTime"></small></article><article><span>Hora más cara</span><strong id="energyMaximum"></strong><small id="energyMaximumTime"></small></article></div><details><summary>Ver precios y horas publicados</summary><div class="table-wrap"><table><caption>Precio del término de energía · €/kWh · hora de Madrid</caption><thead><tr><th>Hora (Madrid)</th><th>Precio (€/kWh)</th></tr></thead><tbody id="energyPriceRows"></tbody></table></div></details></div>
+            <p class="energy-note">La media simple no calcula tu factura: el coste depende de tu consumo en cada hora. Estos precios no incluyen potencia, alquiler ni impuestos. Revisa que tu suministro sea elegible para PVPC.</p>
+            <p class="energy-source">Fuente: <a href="https://www.ree.es/es/datos/apidatos" target="_blank" rel="noopener noreferrer">Red Eléctrica (REData)</a> · <a href="https://www.esios.ree.es/es/pvpc" target="_blank" rel="noopener noreferrer">www.esios.ree.es</a></p>
+          </section>
+          <section class="energy-connections" aria-label="Estado de acceso a datos"><article><span class="eyebrow">CONSUMO DEL SUMINISTRO</span><h3>Datadis: pendiente de conexión</h3><p>El consumo particular requiere una cuenta y acceso autorizado al suministro. Margen todavía no lo consulta. Los datos llegan con la actualización de la distribuidora.</p><a href="https://datadis.es/" target="_blank" rel="noopener noreferrer">Consultar Datadis</a></article><article><span class="eyebrow">TARIFA CONTRATADA</span><h3>Utiliza tu contrato o factura</h3><p>La consulta de PVPC no proporciona las tarifas negociadas de todas las comercializadoras. El comparador inferior utiliza únicamente los importes que introduces.</p></article></section>
           <form id="electricityForm" class="electricity-form">
             <div class="electricity-columns">
               <fieldset class="electricity-panel"><legend>Factura anterior</legend>
@@ -373,7 +382,8 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./pdf-text-parser.js?v=20261011-fixtures-5"></script>
     <script src="./electricity.js"></script>
-    <script src="./app.js?v=20261011-excel-fallback-1"></script>
+    <script src="./official-prices.js?v=20261011-energy-1"></script>
+    <script src="./app.js?v=20261011-energy-1"></script>
   </body>
 </html>
 
