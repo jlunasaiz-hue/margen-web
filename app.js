@@ -21,6 +21,7 @@ const state = {
   pendingRows: [],
   pendingHeaders: [],
   mapping: {},
+  rejectedPdfLines: [],
   severity: "all",
   status: "pending",
   query: "",
@@ -464,7 +465,7 @@ async function readImportFile(file) {
     }
     const parsed = window.margenPdfText.parseInvoiceText(all.join("\n"));
     if (parsed.records.length && parsed.records.some(row => !row.Proveedor)) throw new Error("No se ha podido confirmar el proveedor de la factura.");
-    if(!parsed.records.length) throw new Error("No se han reconocido líneas completas. Si el PDF es escaneado, hará falta OCR; si contiene texto, copia y revisa sus líneas manualmente.");
+    if(!parsed.records.length && !parsed.rejected.length) throw new Error("No se han reconocido líneas completas. Si el PDF es escaneado, hará falta OCR; si contiene texto, copia y revisa sus líneas manualmente.");
     return parsed;
   } else if (extension === "csv") {
     const buffer = await file.arrayBuffer();
@@ -755,11 +756,37 @@ function openImport() {
   $("#importDialog").showModal();
 }
 
+function showPdfImportIssues() {
+  const box = $("#pdfImportIssues");
+  const issues = state.rejectedPdfLines;
+  box.replaceChildren();
+  box.classList.toggle("hidden", !issues.length);
+  if (!issues.length) return;
+  const title = document.createElement("strong");
+  title.textContent = issues.length + " línea(s) sin importar: requieren revisión";
+  box.append(title);
+  const list = document.createElement("ul");
+  for (const issue of issues.slice(0, 20)) {
+    const item = document.createElement("li");
+    item.textContent = issue.reason + ": " + issue.line;
+    list.append(item);
+  }
+  box.append(list);
+  if (issues.length > 20) {
+    const note=document.createElement("p");
+    note.textContent = "Mostrando 20 de " + issues.length + " líneas descartadas.";
+    box.append(note);
+  }
+}
+
 async function selectFile(file) {
-  if (!file || !/\.(csv|xlsx|xls)$/i.test(file.name)) {
+  if (!file || !/\.(pdf|csv|xlsx|xls)$/i.test(file.name)) {
     $("#importError").textContent = "Selecciona PDF con texto, Excel (.xlsx, .xls) o CSV."; return;
   }
   state.pendingFile = file;
+  state.rejectedPdfLines = [];
+  $("#confirmPartialImport").checked = false;
+  showPdfImportIssues();
   $("#dropTitle").textContent = file.name;
   $("#dropSubtitle").textContent = `${number.format(file.size / 1024)} KB · leyendo columnas…`;
   $("#importError").textContent = "";
@@ -769,10 +796,14 @@ async function selectFile(file) {
     const parsed = await readImportFile(file);
     state.pendingHeaders = parsed.headers;
     state.pendingRows = parsed.records;
+    state.rejectedPdfLines = parsed.rejected || [];
+    showPdfImportIssues();
     $("#dropSubtitle").textContent = `${number.format(file.size / 1024)} KB · ${parsed.records.length} líneas propuestas (revísalas)`;
     renderMapping();
   } catch (error) {
     state.pendingRows = [];
+    state.rejectedPdfLines = [];
+    showPdfImportIssues();
     $("#dropSubtitle").textContent = "No se ha podido leer el archivo";
     $("#importError").textContent = error.message;
   }
@@ -782,6 +813,7 @@ function analyzeFile() {
   try {
     const result = buildImportedRows();
     if (!result.rows.length) throw new Error("No se han encontrado filas válidas con este mapeo.");
+    if (state.rejectedPdfLines.length && !$("#confirmPartialImport").checked) throw new Error("Hay líneas descartadas. Revísalas y marca la confirmación para importar solo las válidas.");
     state.rows = [...result.baseRows, ...result.rows];
     state.source = `${state.pendingFile.name} · ${result.rows.length} líneas importadas`;
     state.isDemo = false;
@@ -820,6 +852,8 @@ function init() {
       state.pendingFile = {name:"Texto de factura revisado"};
       state.pendingHeaders = parsed.headers;
       state.pendingRows = parsed.records;
+      state.rejectedPdfLines = parsed.rejected || [];
+      showPdfImportIssues();
       $("#dropSubtitle").textContent = parsed.records.length + " líneas encontradas en el texto";
       renderMapping();
     } catch (error) { $("#importError").textContent = error.message; }
