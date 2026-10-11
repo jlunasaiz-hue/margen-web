@@ -415,3 +415,14 @@ select { border: 1px solid var(--line); border-radius: 8px; background: white; p
  .full-alert-item { grid-template-columns: 70px minmax(0,1fr) auto; gap: 8px; }
  .full-alert-item .severity-icon { width: 68px; font-size: 9px; }
 }
+
+/* Layout definitivo: prioridad y nombre comparten un único bloque, sin columnas rivales. */
+.alert-row { grid-template-columns: minmax(0,1fr) max-content; gap: 16px; }
+.alert-primary { display:flex; flex-direction:column; align-items:flex-start; gap:5px; min-width:0; }
+.alert-primary .severity-icon { display:inline-flex; width:auto; min-width:0; min-height:23px; padding:4px 9px; font-size:10px; }
+.alert-primary .alert-title { display:block; white-space:normal; overflow-wrap:anywhere; font-size:13px; line-height:1.4; }
+.alert-primary .alert-sub { display:block; overflow-wrap:anywhere; margin-top:0; }
+.full-alert-item { grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(85px,.55fr)) auto; }
+@media(max-width:1080px) { .full-alert-item {grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto} }
+@media(max-width:760px) { .full-alert-item {grid-template-columns:minmax(0,1fr) auto} }
+@media(max-width:480px) { .alert-row {grid-template-columns:minmax(0,1fr) max-content;gap:8px} .alert-row .alert-value {grid-column:auto;text-align:right;min-width:65px} .alert-primary .severity-icon {width:auto;font-size:10px} .full-alert-item {grid-template-columns:minmax(0,1fr) auto} }
