@@ -181,7 +181,7 @@ input { color: var(--ink); }
 .alert-list { display: grid; }
 .alert-row { display: grid; grid-template-columns: 41px minmax(0,1fr) auto; align-items: center; gap: 13px; padding: 13px 0; border-top: 1px solid #ecece7; cursor: pointer; }
 .alert-row:first-child { border-top: 0; }
-.severity-icon { display: grid; place-items: center; width: 39px; height: 39px; border-radius: 10px; font-weight: 800; }
+.severity-icon { display: inline-flex; justify-content: center; align-items: center; flex-shrink: 0; min-width: 76px; min-height: 35px; padding: 6px 10px; border-radius: 10px; font-size: 11px; line-height: 1.2; font-weight: 800; letter-spacing: .1px; text-align: center; white-space: nowrap; }
 .severity-icon.high { color: var(--red); background: var(--red-soft); }
 .severity-icon.medium { color: var(--orange); background: var(--orange-soft); }
 .severity-icon.low { color: var(--green); background: var(--green-soft); }
