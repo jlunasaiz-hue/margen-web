@@ -398,3 +398,8 @@ select { border: 1px solid var(--line); border-radius: 8px; background: white; p
 .first-minute-cta {min-height:48px;white-space:nowrap}
 .top-actions [hidden] {display:none!important}
 @media(max-width:760px) {.first-minute {flex-direction:column;align-items:stretch;padding:19px}.first-minute-cta {width:100%}}
+
+/* Herramienta eléctrica independiente: no altera los datos de proveedores */
+.electricity-link{margin:14px 0 0;width:100%;background:rgba(201,255,74,.09);color:#dceacf}
+.electricity-intro{max-width:780px;margin:0 0 24px}.electricity-intro h2{font-size:clamp(25px,3vw,36px);margin:10px 0}.electricity-intro p,.electricity-disclaimer{color:var(--muted);line-height:1.65}
+.electricity-form{display:grid;gap:20px}.electricity-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.electricity-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;min-width:0}.electricity-panel legend{font-weight:800;padding:0 7px}.electricity-panel label{display:grid;gap:6px;font-size:13px;color:var(--muted);font-weight:600}.electricity-panel input{background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px;width:100%;color:var(--ink)}.electricity-form>.button{justify-self:start}.electricity-result{padding:24px;margin-top:20px}.electricity-result h3{font-size:23px;margin:0 0 16px}.electricity-breakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.electricity-breakdown p{margin:0;padding:13px;background:var(--paper);border-radius:8px}.electricity-disclaimer{font-size:12px;margin-top:22px}@media(max-width:720px){.electricity-columns,.electricity-breakdown{grid-template-columns:1fr}.electricity-form>.button{width:100%}}
