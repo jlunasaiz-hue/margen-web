@@ -533,6 +533,8 @@ async function readImportFile(file) {
     seenHeaders.set(base, count);
     return count === 1 ? base : `${base} (${count})`;
   });
+  if (width > 120) throw new Error("El archivo supera las 120 columnas admitidas.");
+  if (matrix.length - 1 > 5000) throw new Error("El archivo supera las 5.000 filas admitidas por importación.");
   const records = matrix.slice(1).map((row) => Object.fromEntries(headers.map((header, index) => [header, row[index] ?? ""]))).filter((record) => Object.values(record).some((value) => String(value).trim() !== ""));
   return { headers, records };
 }
@@ -563,7 +565,7 @@ function suggestMapping(headers) {
 function renderImportReview() {
   const box = $("#importReviewRows");
   box.replaceChildren();
-  const fields = [["supplier","Proveedor"],["item","Producto"],["unit","Unidad o formato"],["quantity","Cantidad"],["current","Precio unitario"]];
+  const fields = [["supplier","Proveedor"],["item","Producto"],["unit","Unidad o formato"],["quantity","Cantidad"],["current","Precio unitario"],["previous","Precio anterior"],["date","Fecha"],["invoice","Factura"]].filter(([key])=>["supplier","item","unit","quantity","current"].includes(key)||Boolean(state.mapping[key]));
   const pageSize=20;
   const pages=Math.max(1,Math.ceil(state.pendingRows.length/pageSize));
   state.reviewPage=Math.max(0,Math.min(state.reviewPage,pages-1));
@@ -579,12 +581,14 @@ function renderImportReview() {
       const heading=state.mapping[key];
       const wrap=document.createElement("label");wrap.textContent=label;
       const input=document.createElement("input");
-      input.type="text";input.value=heading ? String(record[heading] ?? "") : key==="unit" ? String(record.__margenUnit || "sin especificar") : "";
+      input.type="text";input.inputMode=["quantity","current","previous"].includes(key)?"decimal":key==="date"?"numeric":"text";input.value=heading ? String(record[heading] ?? "") : key==="unit" ? String(record.__margenUnit || "sin especificar") : "";
+      input.dataset.importField=key;
+      input.setAttribute("aria-invalid",String(!validImportCell(key,input.value)));
       input.setAttribute("aria-label",label+" línea "+(index+1));
       input.addEventListener("input",()=>{
         if(heading) record[heading]=input.value;else if(key==="unit")record.__margenUnit=input.value;
         const value=input.value.trim();
-        const valid=(key==="quantity"||key==="current") ? Number.isFinite(parseSpanishNumber(value)) && parseSpanishNumber(value)>0 : Boolean(value);
+        const valid=validImportCell(key,value);
         input.setAttribute("aria-invalid", String(!valid));
         validateMapping();
         window.margenMatchingUI?.schedule();
@@ -610,27 +614,40 @@ function renderMapping() {
   window.margenMatchingUI?.refresh();
 }
 
+function validImportCell(key,value) {
+  const text=String(value??"").trim();
+  if(["quantity","current"].includes(key))return text!=="" && Number.isFinite(parseSpanishNumber(text)) && parseSpanishNumber(text)>0;
+  if(key==="previous")return text==="" || (Number.isFinite(parseSpanishNumber(text)) && parseSpanishNumber(text)>=0);
+  if(key==="date")return text==="" || normalizeDate(text)!=="";
+  if(key==="invoice")return true;
+  return Boolean(text);
+}
 function invalidImportRowIndices() {
   return state.pendingRows.flatMap((record,index) => {
-    const bad=["supplier","item","quantity","current"].some(key=>{
+    const bad=["supplier","item","quantity","current","previous","date"].some(key=>{
       const header=state.mapping[key];
-      const value=header ? String(record[header] ?? "").trim() : "";
-      return !value || (["quantity","current"].includes(key) && !(parseSpanishNumber(value)>0));
+      if(!header)return ["supplier","item","quantity","current"].includes(key);
+      return !validImportCell(key,record[header]);
     });
-    return bad ? [index] : [];
+    return bad?[index]:[];
   });
 }
 
 function validateMapping() {
-  const missing = MAPPING_FIELDS.filter((field) => field.required && !state.mapping[field.key]);
-  const invalidIndices = missing.length ? [] : invalidImportRowIndices();
-  const invalid = invalidIndices.length > 0;
-  $("#analyzeButton").disabled = missing.length > 0 || !state.pendingRows.length || invalid;
-  const jump = $("#reviewFirstError");
-  jump.classList.toggle("hidden", !invalid);
-  jump.disabled = !invalid;
-  if (invalid) jump.textContent = `Ir a la línea ${invalidIndices[0]+1}`;
-  $("#importError").textContent = missing.length ? `Falta relacionar: ${missing.map((field) => field.label.toLowerCase()).join(", ")}.` : invalid ? `${invalidIndices.length} línea(s) con errores. La primera es la ${invalidIndices[0]+1}. Corrige cantidad, precio o campos vacíos antes de importar.` : "";
+  const missing=MAPPING_FIELDS.filter(field=>field.required&&!state.mapping[field.key]);
+  const active=Object.values(state.mapping).filter(Boolean);
+  const repeated=active.find((header,index)=>active.indexOf(header)!==index);
+  const invalidIndices=missing.length||repeated?[]:invalidImportRowIndices();
+  const invalid=invalidIndices.length>0;
+  $("#analyzeButton").disabled=Boolean(missing.length||repeated||!state.pendingRows.length||invalid);
+  const jump=$("#reviewFirstError");
+  jump.classList.toggle("hidden",!invalid);
+  jump.disabled=!invalid;
+  if(invalid)jump.textContent=`Ir a la línea ${invalidIndices[0]+1}`;
+  $("#importError").textContent=missing.length
+    ? `Falta relacionar: ${missing.map(field=>field.label.toLowerCase()).join(", ")}.`
+    : repeated ? `La columna «${repeated}» está asignada a varios campos. Selecciona columnas diferentes.`
+    : invalid ? `${invalidIndices.length} línea(s) con errores. Primera: ${invalidIndices[0]+1}. Corrige los campos marcados, incluido precio anterior o fecha si los has incluido.` : "";
 }
 
 function normalizeProduct(value) {
@@ -685,28 +702,29 @@ function reconcileMatchingHistory(rows,map=matchingMap()) {
 
 function buildImportedRows() {
   const map=matchingMap();
-  const mapped=mapPendingRows().map(row=>canonicalPurchase(row,map));
-  const invalid = mapped.filter((row) => !row.supplier || !row.item || !Number.isFinite(row.current) || !Number.isFinite(row.quantity) || row.quantity <= 0);
-  const valid = mapped.filter((row) => !invalid.includes(row));
-  const baseRows = state.isDemo ? [] : [...state.rows];
-  const history = baseRows.map(row=>canonicalPurchase(row,map)).sort(compareDates);
-  const latestByProduct = new Map();
-  history.forEach((row) => latestByProduct.set(historyKey(row), row));
-  const importedRows = [];
-  valid.sort(compareDates).forEach((row) => {
-    if (!Number.isFinite(row.previous)) {
-      const previous = latestByProduct.get(historyKey(row));
-      row.previous = previous ? previous.current : row.current;
-      row.previousSource = previous ? "history" : "first_purchase";
-    } else {
-      row.previousSource = "file";
+  const mapped=mapPendingRows();
+  const invalid=mapped.filter(row=>!row.supplier||!row.item||!Number.isFinite(row.current)||row.current<=0||!Number.isFinite(row.quantity)||row.quantity<=0);
+  const valid=mapped.filter(row=>!invalid.includes(row)).map(row=>canonicalPurchase(row,map));
+  const baseRows=state.isDemo?[]:[...state.rows];
+  const events=[
+    ...baseRows.map(row=>({row:canonicalPurchase(row,map),incoming:false})),
+    ...valid.map(row=>({row,incoming:true}))
+  ].sort((a,b)=>compareDates(a.row,b.row)||(Number(a.incoming)-Number(b.incoming)));
+  const latestByProduct=new Map(),importedRows=[];
+  for(const {row,incoming} of events){
+    const key=historyKey(row);
+    if(incoming){
+      if(!Number.isFinite(row.previous)){
+        const previous=row.date?latestByProduct.get(key):null;
+        row.previous=previous?previous.current:row.current;
+        row.previousSource=previous?"history":"first_purchase";
+      }else row.previousSource="file";
+      importedRows.push(normalizeRow(row));
     }
-    const normalized = normalizeRow(row);
-    history.push(normalized);
-    importedRows.push(normalized);
-    latestByProduct.set(historyKey(normalized), normalized);
-  });
-  return { rows: importedRows, baseRows, invalid };
+    // Sin fecha verificable no hay orden temporal y no se infiere un precio anterior.
+    if(row.date)latestByProduct.set(key,row);
+  }
+  return {rows:importedRows,baseRows,invalid};
 }
 
 function compareDates(a, b) {
@@ -874,10 +892,9 @@ function escapeHtml(value) { return String(value ?? "").replace(/[&<>'"]/g, (cha
 function showToast(message) { const toast = $("#toast"); toast.textContent = message; toast.classList.add("show"); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove("show"), 2300); }
 
 function openImport() {
-  state.pendingFile = null;
-  state.pendingRows = [];
-  state.pendingHeaders = [];
+  resetImportFile();
   state.mapping = {};
+  $("#invoicePastedText").value = "";
   $("#fileInput").value = "";
   $("#dropTitle").textContent = "Arrastra el Excel o CSV aquí";
   $("#dropSubtitle").textContent = "o pulsa para seleccionar un archivo";
@@ -932,7 +949,9 @@ function showPdfImportIssues() {
   }
 }
 
+let importReadToken=0;
 function resetImportFile() {
+  importReadToken++;
   state.pendingFile = null;
   state.pendingRows = [];
   state.pendingHeaders = [];
@@ -949,9 +968,11 @@ function resetImportFile() {
 }
 
 async function selectFile(file) {
+  const token=++importReadToken;
   if (!file || !/\.(pdf|csv|xlsx|xls)$/i.test(file.name)) {
     $("#importError").textContent = "Selecciona PDF con texto, Excel (.xlsx, .xls) o CSV."; return;
   }
+  if(file.size>12*1024*1024){$("#importError").textContent="El archivo supera 12 MB. Divide la importación en archivos más pequeños.";return;}
   state.pendingFile = file;
   $("#removeImportFile").classList.remove("hidden");
   state.rejectedPdfLines = [];
@@ -964,6 +985,7 @@ async function selectFile(file) {
   $("#analyzeButton").disabled = true;
   try {
     const parsed = await readImportFile(file);
+    if(token!==importReadToken||state.pendingFile!==file)return;
     state.pendingHeaders = parsed.headers;
     state.pendingRows = parsed.records;
     state.rejectedPdfLines = parsed.rejected || [];
@@ -972,6 +994,7 @@ async function selectFile(file) {
     renderMapping();
     updateImportAudit();
   } catch (error) {
+    if(token!==importReadToken||state.pendingFile!==file)return;
     state.pendingRows = [];
     state.rejectedPdfLines = [];
     showPdfImportIssues();
@@ -985,7 +1008,7 @@ function analyzeFile() {
     const result = buildImportedRows();
     if (!result.rows.length) throw new Error("No se han encontrado filas válidas con este mapeo.");
     if (state.rejectedPdfLines.length && !$("#confirmPartialImport").checked) throw new Error("Hay líneas descartadas. Revísalas y marca la confirmación para importar solo las válidas.");
-    state.rows = [...result.baseRows, ...result.rows];
+    state.rows = analyze([...result.baseRows, ...result.rows]);
     state.source = `${state.pendingFile.name} · ${result.rows.length} líneas importadas`;
     state.isDemo = false;
     render(); $("#importDialog").close(); showView("overview");
@@ -1027,10 +1050,13 @@ function init() {
   $("#exportButton").onclick = exportAlerts;
   $("#downloadSample").onclick = downloadSample;
   $("#fileInput").onchange = (event) => selectFile(event.target.files[0]);
+  $("#importForm").onsubmit = event => event.preventDefault();
+  $("#closeImport").onclick = () => $("#importDialog").close();
+  $("#cancelImport").onclick = () => $("#importDialog").close();
   $("#analyzeButton").onclick = analyzeFile;
   $("#reviewPrevious").onclick = () => {state.reviewPage--;renderImportReview();};
   $("#reviewNext").onclick = () => {state.reviewPage++;renderImportReview();};
-  $("#reviewFirstError").onclick = () => {const errors=invalidImportRowIndices();if(errors.length){state.reviewPage=Math.floor(errors[0]/20);renderImportReview();}};
+  $("#reviewFirstError").onclick = () => {const errors=invalidImportRowIndices();if(errors.length){state.reviewPage=Math.floor(errors[0]/20);renderImportReview();const field=$("#importReviewRows").querySelector('[aria-invalid="true"]');field?.focus();field?.scrollIntoView({block:"nearest",behavior:"smooth"});}};
   $("#removeImportFile").onclick = resetImportFile;
   $("#parseInvoiceTextButton").onclick = () => {
     try {
