@@ -78,3 +78,18 @@ test("el motor de la aplicación no cuenta dos veces una línea duplicada y reca
   assert.equal(afterRemove[0].possibleDuplicate,false);
   near(afterRemove[0].impact,8);
 });
+
+test("ordena los proveedores por el coste pendiente y separa importes ya revisados",()=>{
+  const summary=report.supplierPriority([
+    sample({supplier:"B",current:7,previous:5,quantity:5}),
+    sample({supplier:"A",current:12,previous:7,quantity:10}),
+    sample({supplier:"A",reviewed:true,current:20,previous:7,quantity:10})
+  ]);
+  assert.equal(summary[0].supplier,"A");
+  near(summary[0].pendingAmount,50);
+  near(summary[0].totalAmount,180);
+  assert.equal(summary[0].reviewed,1);
+  near(summary[1].pendingAmount,10);
+  const html=report.reportHtml([sample({supplier:"A"})]);
+  assert.match(html,/Proveedores prioritarios/);
+});
