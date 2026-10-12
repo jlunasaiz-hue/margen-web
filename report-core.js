@@ -104,8 +104,8 @@
     ].join("");
     return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
       +'<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; base-uri &#39;none&#39;; form-action &#39;none&#39;">'
-      +'<title>Margen — Informe de revisión</title><style>'+styles+'</style></head><body>'
-      +'<header><div><div class="tag">MARGEN · CONTROL DE COMPRAS</div><h1>Informe de revisión</h1><p>'+context+'</p></div><div><p><strong>Generado:</strong> '+moment+'</p><p><strong>Alcance:</strong> '+(demo?"Datos ficticios de demostración":"Compras registradas")+'</p></div></header>'
+      +'<title>ZARVIQO — Informe de revisión</title><style>'+styles+'</style></head><body>'
+      +'<header><div><div class="tag">ZARVIQO · CONTROL DE COMPRAS</div><h1>Informe de revisión</h1><p>'+context+'</p></div><div><p><strong>Generado:</strong> '+moment+'</p><p><strong>Alcance:</strong> '+(demo?"Datos ficticios de demostración":"Compras registradas")+'</p></div></header>'
       +'<section class="metrics" aria-label="Indicadores"><div class="metric"><span>Compras analizadas</span><strong>'+totals.lines+'</strong></div>'
       +'<div class="metric"><span>Proveedores</span><strong>'+totals.suppliers+'</strong></div>'
       +'<div class="metric"><span>Alertas pendientes</span><strong>'+totals.pending+'</strong></div>'
@@ -120,7 +120,7 @@
       +'<h2>Alertas documentadas ('+totals.alerts+')</h2><div class="table-scroll"><table><thead><tr>'
       +'<th>Producto y trazabilidad</th><th>Proveedor</th><th>Factura y fecha</th><th>Cantidad</th><th>Precio anterior</th><th>Precio actual</th><th>Motivo y estado</th><th>Revisión estimada</th>'
       +'</tr></thead><tbody>'+body+'</tbody></table></div>'
-      +'<footer>Margen · Informe local. Revisa este documento antes de compartirlo; puede contener información comercial sensible.</footer></body></html>';
+      +'<footer>ZARVIQO · Informe local. Revisa este documento antes de compartirlo; puede contener información comercial sensible.</footer></body></html>';
   }
   return {escape,csvCell,amount,isAlert,summarize,supplierPriority,reportHtml};
 });
