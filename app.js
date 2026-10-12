@@ -68,7 +68,8 @@ function normalizeRow(row) {
   const percent = previous > 0 ? (delta / previous) * 100 : 0;
   const priceImpact = Math.max(0, delta * quantity);
   const duplicateImpact = row.possibleDuplicate ? current * quantity : 0;
-  const impact = priceImpact + duplicateImpact;
+  // En una línea posiblemente duplicada, el importe completo ya incorpora la posible subida.
+  const impact = row.possibleDuplicate ? duplicateImpact : priceImpact;
   const severity = row.possibleDuplicate || percent >= 10 ? "high" : percent >= 5 ? "medium" : "low";
   return {
     ...row,
@@ -92,7 +93,7 @@ function analyze(rows) {
   const seen = new Set();
   return rows.map((row) => {
     const key = row.invoice ? [row.supplier, row.invoice, row.item, row.unit, Number(row.current), Number(row.quantity)].join("|").toLowerCase() : "";
-    const possibleDuplicate = Boolean(row.possibleDuplicate || (key && seen.has(key)));
+    const possibleDuplicate = Boolean(key && seen.has(key));
     if (key) seen.add(key);
     return normalizeRow({ ...row, possibleDuplicate });
   });
@@ -328,7 +329,7 @@ function openDetail(index) {
     showToast(row.reviewed ? "Alerta marcada como revisada" : "Alerta reabierta");
   };
   $("#deleteDetail").onclick = () => {
-    state.rows = state.rows.filter((candidate) => candidate.id !== row.id);
+    state.rows = analyze(state.rows.filter((candidate) => candidate.id !== row.id));
     render();
     $("#detailDialog").close();
     showToast("Línea eliminada");
@@ -363,7 +364,7 @@ function openSupplier(name) {
   $("#copyNegotiation").onclick = () => copyNegotiationText();
   $("#exportSupplier").onclick = () => exportSupplierReport(supplier);
   $("#markSupplierReviewed").onclick = () => {
-    supplier.rows.forEach((row) => { if (row.delta > 0) row.reviewed = true; });
+    supplier.rows.forEach((row) => { if (isAlert(row)) row.reviewed = true; });
     render();
     $("#supplierDialog").close();
     showToast(`Alertas de ${supplier.name} revisadas`);
@@ -841,6 +842,16 @@ function saveManualRow(event) {
   showToast("Compra añadida y analizada");
 }
 
+function exportProfessionalReport() {
+  try {
+    if(!window.margenReport)throw Error('El generador de informes no está disponible.');
+    const report=window.margenReport.reportHtml(state.rows,{source:state.source,isDemo:state.isDemo,generatedAt:new Date().toLocaleString('es-ES')});
+    const name='margen-informe-'+new Date().toISOString().slice(0,10)+'.html';
+    downloadFile(name,report,'text/html;charset=utf-8');
+    showToast('Informe descargado. Ábrelo para imprimirlo o guardarlo como PDF.');
+  }catch(error){showToast('No se pudo generar el informe: '+error.message);}
+}
+
 function exportAlerts() {
   const alerts = getAlerts();
   if (!alerts.length) return showToast("No hay alertas para exportar");
@@ -896,7 +907,7 @@ async function restoreWorkspace(file) {
   }
 }
 
-function csvEscape(value) { const text = String(value ?? ""); return /[;"\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text; }
+function csvEscape(value) { return window.margenReport.csvCell(value); }
 function formatDate(value) { const date = new Date(`${value}T12:00:00`); return Number.isNaN(date.getTime()) ? escapeHtml(value) : new Intl.DateTimeFormat("es-ES", { day: "2-digit", month: "short", year: "numeric" }).format(date); }
 function downloadFile(name, content, type) { const url = URL.createObjectURL(new Blob([content], { type })); const a = document.createElement("a"); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url); }
 function escapeHtml(value) { return String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" })[char]); }
@@ -1063,6 +1074,7 @@ function init() {
   $("#loadDemoButton").onclick = loadDemo;
   $("#clearDemoButton").onclick = clearDemo;
   $("#exportButton").onclick = exportAlerts;
+  $("#exportReportButton").onclick = exportProfessionalReport;
   $("#downloadSample").onclick = downloadSample;
   $("#fileInput").onchange = (event) => selectFile(event.target.files[0]);
   $("#importForm").onsubmit = event => event.preventDefault();
