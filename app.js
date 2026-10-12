@@ -662,7 +662,9 @@ function historyKey(row) {
 }
 
 function findPreviousPurchase(row, rows = state.rows) {
-  const map=matchingMap(),canonical=canonicalPurchase(row,map),key=historyKey(canonical);
+  // La búsqueda puede ocurrir mientras se rellena el formulario manual: aún no hay cantidades.
+  const candidate={...row,current:Number.isFinite(row.current)?row.current:0,quantity:Number.isFinite(row.quantity)?row.quantity:0};
+  const map=matchingMap(),canonical=canonicalPurchase(candidate,map),key=historyKey(canonical);
   // Exigir una fecha verificable impide comparar con facturas posteriores.
   if(!canonical.date)return null;
   return rows.map(candidate=>canonicalPurchase(candidate,map))
