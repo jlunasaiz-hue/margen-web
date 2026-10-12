@@ -389,12 +389,13 @@ function showView(view) {
   $("#electricityView").classList.toggle("hidden", view !== "electricity");
   $("#switchView").classList.toggle("hidden", view !== "switch");
   $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "electricity" ? "Factura de luz" : view === "switch" ? "Cambiar compañía" : "Resumen";
-  $$(".nav-item").forEach((item) => {
+  $$("[data-view]").forEach((item) => {
     const active = item.dataset.view === view;
     item.classList.toggle("active", active);
     if (active) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current");
   });
   $("#sidebar").classList.remove("open");
+  $("#menuButton").setAttribute("aria-expanded", "false");
   document.dispatchEvent(new Event("margen:view"));
 }
 
@@ -952,7 +953,7 @@ function init() {
   } catch { loadDemo(); }
   if (state.isDemo) window.margenMetrics?.track("demo_use");
   if (state.rows.length) render();
-  $$("[data-view]").forEach((button) => button.addEventListener("click", () => showView(button.dataset.view)));
+  $$("[data-view]").forEach((button) => button.addEventListener("click", () => { showView(button.dataset.view); window.scrollTo({top: 0, behavior: "instant"}); }));
   $$("[data-action='open-import']").forEach((button) => button.addEventListener("click", openImport));
   $$("[data-action='open-manual']").forEach((button) => button.addEventListener("click", openManual));
   $$("[data-action='open-backup']").forEach((button) => button.addEventListener("click", openBackup));
