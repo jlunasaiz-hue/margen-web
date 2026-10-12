@@ -2,7 +2,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { pathToFileURL } from "node:url";
 
 export const CHECKS = [
-  { path: "./", title: "Página comercial", contains: ['<h1>Margen detecta subidas de precio', 'src="./pilot-request.js'] },
+  { path: "./", title: "Página comercial", contains: ['<h1>ZARVIQO detecta subidas de precio', 'src="./pilot-request.js'] },
   { path: "app.html", title: "Panel de compras", contains: ['id="overviewView"', 'src="./app.js'] },
   { path: "sitemap.xml", title: "Mapa del sitio", contains: ["<urlset", "<loc>https://"] },
   { path: "pilot-request.js", title: "Formulario comercial", contains: ["margenPilot", "contactIsValid"] }
@@ -37,7 +37,7 @@ export async function inspectSite(base, fetcher=fetch) {
   return errors;
 }
 export async function main(site=process.argv[2]) {
-  if(!site)throw Error("Indica la URL pública, por ejemplo https://usuario.github.io/repositorio/");
+  if(!site)throw Error("Indica la URL pública, por ejemplo https://zarviqo.com/");
   const base=parseSiteUrl(site);
   let errors=[];
   for(let attempt=1;attempt<=8;attempt++){
