@@ -450,3 +450,25 @@ select { border: 1px solid var(--line); border-radius: 8px; background: white; p
 .matching-review{margin:22px 0;padding:18px;border:1px solid #a9cdb7;border-radius:12px;background:#f4f9f5}.matching-review p,.matching-saved p{font-size:13px;line-height:1.6}.matching-heading,.matching-actions,.matching-pager{display:flex;align-items:center;flex-wrap:wrap;gap:12px;justify-content:space-between}.matching-heading h3{font-size:18px;margin:0}.matching-card{margin:14px 0;padding:18px;background:white;border:1px solid var(--line);border-radius:10px;min-width:0}.matching-card h4{font-size:16px;margin:0 0 8px;overflow-wrap:anywhere}.matching-card h4 span{font-weight:400}.matching-card label{display:grid;gap:6px;margin-top:12px;font-size:13px;line-height:1.5}.matching-card input,.matching-card select{min-width:0;width:100%;padding:10px;border:1px solid #c8d8ce;border-radius:8px;min-height:44px;background:white;color:var(--ink);font:inherit}.matching-card input[readonly]{background:#eef5ef}.matching-actions{justify-content:flex-start;margin-top:16px}.matching-actions .button,.matching-heading .button{white-space:normal}.matching-pager{margin-top:16px;font-size:12px}.matching-saved{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}.matching-saved div{min-width:0;overflow-wrap:anywhere}.matching-saved .button{flex:none}.matching-saved p{margin:7px 0}
 @media(max-width:600px){.matching-review{padding:14px}.matching-card{padding:14px}.matching-heading,.matching-saved{align-items:stretch;flex-direction:column}.matching-actions .button{width:100%}.matching-pager{gap:8px}.matching-pager .button{padding:9px 12px}}
 .matching-trace{margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.6}.matching-trace summary{cursor:pointer;font-weight:700}.matching-trace p{overflow-wrap:anywhere;margin:10px 0}
+
+/* Importación accesible en pantallas pequeñas y con teclado móvil. */
+#importDialog {max-height: min(92dvh, 1000px); overflow-y:auto; overscroll-behavior:contain;}
+#importDialog .modal-card {min-width:0;}
+#importDialog .modal-actions {position:sticky;bottom:-1px;padding:13px 0 max(10px, env(safe-area-inset-bottom, 0px));border-top:1px solid var(--line);background:#fff;z-index:2;}
+#importDialog .drop-zone {position:relative;}
+#importDialog .drop-zone input[type="file"]{display:block;position:absolute;width:1px;height:1px;opacity:0;clip-path:inset(50%);overflow:hidden;pointer-events:none;}
+#importDialog .drop-zone:focus-within{outline:3px solid #86bda1;outline-offset:2px;}
+#importDialog .mapping-field select{font-size:16px;min-height:44px;padding:9px 30px 9px 11px;max-width:100%;}
+#importDialog .mapping-field span{font-size:12px;}
+#importDialog .mapping-note{font-size:12px;line-height:1.6;overflow-wrap:anywhere;}
+#importDialog .import-review-row input{font-size:16px;min-height:44px;}
+#importDialog .matching-review,#importDialog .import-review-row{min-width:0;}
+@media(max-width:600px){
+  #importDialog{max-width:calc(100vw - 12px);max-height:calc(100dvh - 12px);border-radius:12px;}
+  #importDialog .modal-card{padding:16px;border-radius:12px;}
+  #importDialog .drop-zone{min-height:120px;padding:14px;}
+  #importDialog .modal-header h2{font-size:21px;}
+  #importDialog .mapping-panel{padding:12px;}
+  #importDialog .modal-actions .button{flex:1;min-height:48px;white-space:normal;}
+  #importDialog .import-review-pager .button{min-height:44px;}
+}
