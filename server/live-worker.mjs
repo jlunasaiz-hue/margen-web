@@ -1,9 +1,10 @@
-const RELEASE='20261012-navigation-1';
+import {createErpHandler} from './erp-api.mjs';
+const RELEASE='20261012-margins-1';
 const headers={'x-content-type-options':'nosniff','referrer-policy':'no-referrer'};
 const json=(status,value,extra={})=>new Response(JSON.stringify(value),{status,headers:{...headers,'content-type':'application/json; charset=utf-8','cache-control':'no-store',...extra}});
 function validDate(date){return /^\d{4}-\d{2}-\d{2}$/.test(date)&&!Number.isNaN(Date.parse(date+'T12:00:00Z'))&&new Date(date+'T12:00:00Z').toISOString().slice(0,10)===date;}
 async function boundedJson(response){const reader=response.body.getReader(),decoder=new TextDecoder();let text='',size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>2*1024*1024){await reader.cancel();throw Error('UPSTREAM_TOO_LARGE');}text+=decoder.decode(value,{stream:true});}return JSON.parse(text+decoder.decode());}
-export function createLiveWorker(assets,{fetcher=fetch,now=()=>Date.now(),timeoutMs=12000,maxInflight=8}={}){
+export function createLiveWorker(assets,{fetcher=fetch,now=()=>Date.now(),timeoutMs=12000,maxInflight=8,erpHandler=createErpHandler()}={}){
  const prices=new Map(),inflight=new Map();
  async function load(date){
   const cached=prices.get(date);if(cached&&cached.expires>now())return {...cached,cache:'HIT'};
@@ -29,6 +30,7 @@ export function createLiveWorker(assets,{fetcher=fetch,now=()=>Date.now(),timeou
    try{const value=await load(date);return json(200,value.payload,{'cache-control':'public, max-age=60','x-margen-cache':value.cache,'x-margen-fetched-at':value.fetchedAt,'x-margen-source':'Red Electrica - REData'});}
    catch(error){return json(error.message==='BUSY'?503:error.name==='AbortError'?504:502,{error:error.message==='BUSY'?'TEMPORARILY_BUSY':'OFFICIAL_SOURCE_UNAVAILABLE'});}
   }
+  if(path.startsWith('/api/erp/'))return erpHandler(request);
   if(path.startsWith('/api/'))return json(404,{error:'NOT_FOUND'});
   if(!['GET','HEAD'].includes(request.method))return json(405,{error:'METHOD_NOT_ALLOWED'},{allow:'GET, HEAD'});
   const key=path==='/'?'index.html':path.slice(1);

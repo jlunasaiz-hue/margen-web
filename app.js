@@ -145,6 +145,7 @@ function render() {
   renderAllAlerts(allAlerts);
   renderSuppliers();
   persistDataset();
+  window.margenMargin?.setRows(state.rows, state.isDemo);
 }
 
 function renderFirstMinute() {
@@ -387,8 +388,9 @@ function showView(view) {
   $("#alertsView").classList.toggle("hidden", view !== "alerts");
   $("#suppliersView").classList.toggle("hidden", view !== "suppliers");
   $("#electricityView").classList.toggle("hidden", view !== "electricity");
+  $("#marginView").classList.toggle("hidden", view !== "margin");
   $("#switchView").classList.toggle("hidden", view !== "switch");
-  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "electricity" ? "Factura de luz" : view === "switch" ? "Cambiar compañía" : "Resumen";
+  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "margin" ? "Margen y escenarios" : view === "electricity" ? "Factura de luz" : view === "switch" ? "Cambiar compañía" : "Resumen";
   $$("[data-view]").forEach((item) => {
     const active = item.dataset.view === view;
     item.classList.toggle("active", active);
@@ -788,7 +790,7 @@ function openBackup() {
 }
 
 function exportWorkspace() {
-  const payload = { app: "margen", version: 1, exportedAt: new Date().toISOString(), source: state.source, rows: state.rows };
+  const payload = { app: "margen", version: 1, exportedAt: new Date().toISOString(), source: state.source, rows: state.rows, isDemo: state.isDemo, contribution: window.margenMargin.getModel() };
   const stamp = new Date().toISOString().slice(0, 10);
   downloadFile(`margen-copia-${stamp}.json`, JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
   showToast("Copia de seguridad descargada");
@@ -805,10 +807,12 @@ async function restoreWorkspace(file) {
     if (payload?.app !== "margen" || !Array.isArray(payload.rows)) throw new Error("El archivo no es una copia válida de Margen.");
     const restored = analyze(payload.rows).filter((row) => row.supplier && row.item && Number.isFinite(row.current) && Number.isFinite(row.quantity));
     if (!restored.length) throw new Error("La copia no contiene compras válidas.");
+    if (payload.contribution) window.margenContribution.validate(payload.contribution);
     if (!window.confirm(`Se sustituirán las ${state.rows.length} líneas actuales por ${restored.length} líneas de la copia. ¿Continuar?`)) return;
     state.rows = restored;
     state.source = `Copia restaurada · ${restored.length} líneas`;
-    state.isDemo = false;
+    state.isDemo = payload.isDemo === true;
+    if (payload.contribution) window.margenMargin.restoreModel(payload.contribution);
     render();
     $("#backupDialog").close();
     showView("overview");
@@ -960,6 +964,14 @@ function init() {
   $("#importButton").onclick = openImport;
   $("#firstMinuteImport").onclick = openImport;
   window.margenElectricity.attach(document);
+  window.margenMargin.attach(document, {onErpRows: (purchases) => {
+    const existing = state.isDemo ? [] : state.rows;
+    const incomingIds = new Set(purchases.map(row => "erp:" + row.id));
+    const prices = window.margenContribution.latest(existing);
+    const incoming = purchases.map(row => ({...row, id: "erp:" + row.id, previous: prices.get(window.margenContribution.key(row))?.current ?? row.current}));
+    state.rows = analyze([...existing.filter(row => !incomingIds.has(row.id)), ...incoming]);
+    state.isDemo = false; state.source = "Compras sincronizadas por API"; render();
+  }});
   $("#manualButton").onclick = openManual;
   $("#loadDemoButton").onclick = loadDemo;
   $("#clearDemoButton").onclick = clearDemo;
@@ -1008,3 +1020,5 @@ if (new URLSearchParams(location.search).get("view") === "electricity") showView
 
 
 if (new URLSearchParams(location.search).get("view") === "switch") showView("switch");
+
+if (new URLSearchParams(location.search).get("view") === "margin") showView("margin");
