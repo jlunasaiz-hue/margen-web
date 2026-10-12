@@ -1,51 +1,42 @@
-# Margen — página pública y aplicación
+# ZARVIQO — sitio público y aplicación
 
-Margen es una herramienta para que restaurantes revisen subidas de precios, proveedores y posibles duplicados de compras. Está en fase de validación comercial.
+ZARVIQO es el nuevo nombre comercial de la aplicación de control de costes anteriormente denominada Margen. El repositorio conserva el identificador técnico `margen-web` para no romper integraciones existentes. La funcionalidad de **margen de contribución** mantiene su nombre: es un concepto financiero.
 
-## Direcciones públicas previstas
+## Publicación recomendada: Cloudflare Pages
 
-- Presentación comercial: https://jlunasaiz-hue.github.io/margen-web/
-- Panel de Margen: https://jlunasaiz-hue.github.io/margen-web/app.html
-- Mapa del sitio: https://jlunasaiz-hue.github.io/margen-web/sitemap.xml
+**Dominio principal previsto:** https://zarviqo.com/ (aún se necesita configurar y verificar DNS y despliegue).
+**Panel:** https://zarviqo.com/app.html
 
-La presencia de estas direcciones en el código **no demuestra** que GitHub Pages esté activado o que el despliegue haya terminado correctamente.
+La web es actualmente estática, con datos por navegador; todavía no hay cuentas, base de datos central, sincronización entre clientes ni recepción automática de solicitudes comerciales.
 
-## Activar la publicación
+### Activación por el propietario de la cuenta
 
-El repositorio incluye el flujo `.github/workflows/pages.yml` y el comando `npm run build:pages`. El despliegue se genera en `_site/` con una lista limitada de recursos estáticos; no publica archivos del servidor ni carpetas de pruebas.
+1. Entrar en [Cloudflare Dashboard](https://dash.cloudflare.com/) y crear un proyecto de **Workers & Pages → Pages → Connect to Git** (las etiquetas pueden variar).
+2. Autorizar GitHub y seleccionar el repositorio `jlunasaiz-hue/margen-web`, rama `main`.
+3. Configurar **Framework preset: None**, **Build command: `npm run build:pages`**, **Build output directory: `_site`**. Seleccionar Node.js compatible con `package.json` (Node 24) si se solicita.
+4. Desplegar y probar el enlace temporal `*.pages.dev`. No publicar el repositorio completo como raíz web: `_site` contiene solo los activos públicos permitidos.
+5. En el proyecto Pages, añadir **Custom domains → zarviqo.com** y seguir las instrucciones específicas para enlazar los DNS y verificar el dominio.
+6. Para `www.zarviqo.com`, agregarlo como dominio personalizado y configurar redirección permanente hacia `https://zarviqo.com/`. No crear entradas DNS contradictorias. Si el dominio está registrado fuera de Cloudflare, el proveedor puede requerir transferir la gestión DNS a Cloudflare mediante nameservers para usar el dominio raíz con Pages.
+7. Verificar certificado HTTPS, inicio, panel, importación, descarga e instalación PWA; comprobar desde móvil. Solo entonces anunciar la URL al público.
 
-1. En GitHub, abrir **Settings → Pages** del repositorio `jlunasaiz-hue/margen-web`.
-2. En **Build and deployment → Source**, seleccionar **GitHub Actions**. No es necesario generar otro flujo desde las plantillas.
-3. Abrir **Actions → Publicar Margen en GitHub Pages → Run workflow**, seleccionar `main` y ejecutar. Se puede lanzar también automáticamente con un nuevo commit.
-4. Comprobar el resultado de `build` y `deploy`; después abrir la dirección comercial y el panel desde otro dispositivo o una ventana privada.
+Los dominios secundarios (`.es`, `.app`, `.eu` si se han comprado) **son opcionales** y requieren configuración de DNS y redirección a la URL principal; no hay que alojar cuatro webs.
 
-**Importante:** el acceso público no implica posicionamiento en buscadores. No está configurado ningún dominio propio. La aplicación funciona con datos guardados localmente en cada navegador: el mismo enlace no sincroniza los datos entre dispositivos.
+### Google y SEO
 
-## Solicitar la indexación en Google
+Una vez accesible `https://zarviqo.com/`, registrar la propiedad en [Google Search Console](https://search.google.com/search-console), verificar la propiedad y enviar `https://zarviqo.com/sitemap.xml`. Indexar no es inmediato ni garantizado.
 
-1. Abrir https://search.google.com/search-console y añadir una propiedad de **prefijo de URL**: `https://jlunasaiz-hue.github.io/margen-web/`.
-2. Verificar la propiedad siguiendo el método ofrecido por Google. Si ofrece un archivo HTML, incorporarlo al sitio público antes de validar. La publicación de `_site/` utiliza una lista explícita de archivos y puede requerir incluir la verificación en `scripts/build-pages.mjs`.
-3. En **Sitemaps**, enviar `https://jlunasaiz-hue.github.io/margen-web/sitemap.xml`.
-4. En **Inspección de URLs**, probar `https://jlunasaiz-hue.github.io/margen-web/` y solicitar su indexación si cumple los requisitos.
+## Comprobaciones
 
-El archivo `robots.txt` del subdirectorio del proyecto está incluido para facilitar futuras migraciones, pero **no funciona como robots.txt global** de `github.io`. Por tanto, no sustituye la configuración mediante Search Console.
+- `npm run check`: sintaxis y pruebas.
+- `npm run build:pages`: compila una carpeta `_site` segura para Cloudflare Pages.
+- `npm run smoke:public -- https://zarviqo.com/`: comprobación HTTPS después del despliegue y DNS.
+- El panel (`app.html`) tiene meta `noindex,follow`; la portada comercial puede indexarse.
+- El servicio offline puede conservar archivos antiguos en dispositivos: comprobar actualización y recargar; no borrar almacenamiento de clientes sin consentimiento.
 
-La página comercial permite indexación. El panel `app.html` lleva `noindex,follow`, porque es una herramienta de trabajo y la página comercial es la que debe aparecer en los resultados.
+## Límites comerciales y legales
 
-## Control de calidad y límites conocidos
+El formulario de solicitud permite preparar, copiar y descargar el texto, pero **no envía solicitudes automáticamente**: `PILOT_CONTACT` en `landing.js` no está configurado. No afirmar que existen suscripciones activas o recepción automática de formularios. El análisis se hace localmente en el navegador; no hay todavía infraestructura multiusuario segura para documentos comerciales de terceros. Antes de operar con clientes reales, revisar privacidad, condiciones, facturación, seguridad y permisos apropiados.
 
-- `npm run check`: sintaxis y pruebas automáticas.
-- `npm run build:pages`: prepara la web estática en `_site/` si encuentra los archivos requeridos.
-- `app.html` tiene diseño adaptable e instalación tipo PWA, pero hay que validar el funcionamiento de descarga, PDF y almacenamiento en móviles reales.
-- La extracción de facturas PDF puede requerir mejoras adicionales: algunos documentos escaneados no se leen sin OCR.
-- El formulario del piloto prepara una solicitud, pero **el correo comercial todavía no está configurado**. No se debe afirmar que recibe solicitudes automáticamente.
+## Repositorio técnico
 
-## Validación del enlace público después del despliegue
-
-GitHub Actions ejecuta `scripts/public-smoke.mjs` después de publicar, consultando por HTTPS la página comercial, el panel, el sitemap y el motor de solicitudes. Reintenta para permitir la propagación del despliegue. Si falla, el job se marca como fallido. Esto **no** sustituye las pruebas de Safari, Chrome o dispositivos reales.
-
-Ejemplo manual: `npm run smoke:public -- https://jlunasaiz-hue.github.io/margen-web/`.
-
-## Activar las solicitudes comerciales
-
-El formulario permite preparar, copiar y descargar una solicitud, pero **no la envía mientras no esté configurado un correo comercial**. Para habilitar la opción de abrir el correo del usuario, establecer una dirección pública válida en la constante `PILOT_CONTACT` de `landing.js` y publicar de nuevo. El botón abre un borrador en la aplicación de correo del visitante; no confirma el envío ni acepta pagos. No se recomienda introducir un correo personal privado en un sitio público. Para recepción automática sin intervención de la aplicación de correo se necesita un proveedor con backend y tratamiento de datos apropiado.
+Se mantiene temporalmente `jlunasaiz-hue/margen-web` para conservar su historial y automatizaciones. Cambiar el nombre del repositorio de GitHub no es necesario para que la web pública sea ZARVIQO.
