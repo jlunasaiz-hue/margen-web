@@ -663,7 +663,11 @@ function historyKey(row) {
 
 function findPreviousPurchase(row, rows = state.rows) {
   const map=matchingMap(),canonical=canonicalPurchase(row,map),key=historyKey(canonical);
-  return [...rows].map(candidate=>canonicalPurchase(candidate,map)).sort(compareDates).reverse().find((candidate)=>historyKey(candidate)===key);
+  // Exigir una fecha verificable impide comparar con facturas posteriores.
+  if(!canonical.date)return null;
+  return rows.map(candidate=>canonicalPurchase(candidate,map))
+    .filter(candidate=>candidate.date&&candidate.date<=canonical.date&&historyKey(candidate)===key)
+    .sort(compareDates).reverse()[0]||null;
 }
 
 function mapPendingRows() {
@@ -735,13 +739,18 @@ function compareDates(a, b) {
 }
 
 function normalizeDate(value) {
-  const text = String(value || "").trim();
-  if (!text) return "";
-  const iso = text.match(/^(\d{4})[-/]?(\d{1,2})[-/]?(\d{1,2})$/);
-  if (iso) return `${iso[1]}-${iso[2].padStart(2, "0")}-${iso[3].padStart(2, "0")}`;
-  const european = text.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})$/);
-  if (european) return `${european[3].length === 2 ? `20${european[3]}` : european[3]}-${european[2].padStart(2, "0")}-${european[1].padStart(2, "0")}`;
-  return "";
+  const text=String(value||"").trim();
+  if(!text)return "";
+  const iso=text.match(/^(\d{4})[-/]?(\d{1,2})[-/]?(\d{1,2})$/);
+  const european=text.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})$/);
+  const year=iso?Number(iso[1]):european?Number(european[3].length===2?"20"+european[3]:european[3]):NaN;
+  const month=iso?Number(iso[2]):european?Number(european[2]):NaN;
+  const day=iso?Number(iso[3]):european?Number(european[1]):NaN;
+  if(!Number.isInteger(year)||year<1||year>9999||!Number.isInteger(month)||month<1||month>12||!Number.isInteger(day)||day<1)return "";
+  const leap=year%4===0&&(year%100!==0||year%400===0);
+  const days=[31,leap?29:28,31,30,31,30,31,31,30,31,30,31];
+  if(day>days[month-1])return "";
+  return `${String(year).padStart(4,"0")}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 }
 
 function loadDemo() {
@@ -776,7 +785,7 @@ function updateManualPreview() {
   const previousValue = form.elements.previous.value;
   const currentValue = form.elements.current.value;
   const quantityValue = form.elements.quantity.value;
-  const previousPurchase = previousValue ? null : findPreviousPurchase({ supplier: form.elements.supplier.value, item: form.elements.item.value, unit: form.elements.unit.value });
+  const previousPurchase = previousValue ? null : findPreviousPurchase({ supplier: form.elements.supplier.value, item: form.elements.item.value, unit: form.elements.unit.value, date: form.elements.date.value });
   const prevCanonical=canonicalPurchase({supplier:form.elements.supplier.value,item:form.elements.item.value,unit:form.elements.unit.value,current:0,quantity:0,previous:Number(previousValue)});
   const previous = previousValue ? prevCanonical.previous : previousPurchase?.current;
   const canonical=canonicalPurchase({supplier:form.elements.supplier.value,item:form.elements.item.value,unit:form.elements.unit.value,current:Number(currentValue),quantity:Number(quantityValue),previous:previousValue?Number(previousValue):NaN});
@@ -821,7 +830,7 @@ function saveManualRow(event) {
   } else {
     raw.previousSource = "manual";
   }
-  state.rows.unshift(normalizeRow(raw));
+  state.rows=analyze([normalizeRow(raw),...state.rows]);
   state.source = `Registro manual · ${state.rows.length} líneas`;
   state.isDemo = false;
   render();
@@ -896,7 +905,7 @@ function openImport() {
   state.mapping = {};
   $("#invoicePastedText").value = "";
   $("#fileInput").value = "";
-  $("#dropTitle").textContent = "Arrastra el Excel o CSV aquí";
+  $("#dropTitle").textContent = "Arrastra un PDF, Excel o CSV aquí";
   $("#dropSubtitle").textContent = "o pulsa para seleccionar un archivo";
   $("#importError").textContent = "";
   $("#mappingPanel").classList.add("hidden");
@@ -970,9 +979,13 @@ function resetImportFile() {
 async function selectFile(file) {
   const token=++importReadToken;
   if (!file || !/\.(pdf|csv|xlsx|xls)$/i.test(file.name)) {
+    resetImportFile();
     $("#importError").textContent = "Selecciona PDF con texto, Excel (.xlsx, .xls) o CSV."; return;
   }
-  if(file.size>12*1024*1024){$("#importError").textContent="El archivo supera 12 MB. Divide la importación en archivos más pequeños.";return;}
+  if(file.size>12*1024*1024){
+    resetImportFile();
+    $("#importError").textContent="El archivo supera 12 MB. Divide la importación en archivos más pequeños.";return;
+  }
   state.pendingFile = file;
   $("#removeImportFile").classList.remove("hidden");
   state.rejectedPdfLines = [];
@@ -1051,6 +1064,7 @@ function init() {
   $("#downloadSample").onclick = downloadSample;
   $("#fileInput").onchange = (event) => selectFile(event.target.files[0]);
   $("#importForm").onsubmit = event => event.preventDefault();
+  $("#importDialog").addEventListener("close",resetImportFile);
   $("#closeImport").onclick = () => $("#importDialog").close();
   $("#cancelImport").onclick = () => $("#importDialog").close();
   $("#analyzeButton").onclick = analyzeFile;
@@ -1062,6 +1076,7 @@ function init() {
     try {
       const parsed = window.margenPdfText.parseInvoiceText($("#invoicePastedText").value);
       if (!parsed.records.length) throw Error("No se han detectado líneas con producto, cantidad y precio separados por tabuladores. Revisa el texto original.");
+      importReadToken++;
       state.pendingFile = {name:"Texto de factura revisado"};
       $("#confirmPartialImport").checked = false;
       state.pendingHeaders = parsed.headers;
