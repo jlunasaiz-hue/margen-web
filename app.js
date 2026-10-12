@@ -696,11 +696,11 @@ function reconcileMatchingHistory(rows,map=matchingMap()) {
     const normalized=canonicalPurchase(entry.row,map);
     const key=historyKey(normalized);
     if(['history','first_purchase'].includes(normalized.previousSource)){
-      const previous=latest.get(key);
+      const previous=normalized.date?latest.get(key):null;
       normalized.previous=previous?previous.current:normalized.current;
       normalized.previousSource=previous?'history':'first_purchase';
     }
-    latest.set(key,normalized);
+    if(normalized.date)latest.set(key,normalized);
     result[entry.index]=normalized;
   }
   return result;
@@ -1054,7 +1054,7 @@ function init() {
   }});
   window.margenMatchingUI.attach({getPending:mapPendingRows,getExisting:()=>state.isDemo?[]:state.rows,onRules:rules=>{
     productRules=rules;
-    if(!state.isDemo&&state.rows.some(row=>row.matching)){
+    if(!state.isDemo&&state.rows.length){
       try{state.rows=analyze(reconcileMatchingHistory(state.rows));render();}
       catch(error){showToast('Revisa las equivalencias: '+error.message);}
     }
