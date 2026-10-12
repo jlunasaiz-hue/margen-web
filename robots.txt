@@ -1,0 +1,7 @@
+# Archivo preparado para un futuro dominio propio.
+# En GitHub Pages, las reglas robots solo se aplican desde la raiz del host,
+# no desde /margen-web/robots.txt. El sitemap tambien puede enviarse
+# directamente a Google Search Console.
+User-agent: *
+Allow: /
+Sitemap: https://jlunasaiz-hue.github.io/margen-web/sitemap.xml
