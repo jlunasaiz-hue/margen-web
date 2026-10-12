@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "test": "node --test tests/*.test.cjs",
+    "build:pages": "node scripts/build-pages.mjs",
     "check": "node --check app.js && node --check official-prices.js && node --check electricity.js && node --check pdf-text-parser.js && node --check switch-demo.js && node --check server/switching.mjs && npm test && node --check server/sqlite-repository.mjs && node --check server/switch-api.mjs && node --check server/switch-worker.mjs && node --check server/local-server.mjs && node --check sw.js && node --check offline.js && node --check server/live-worker.mjs && node --check margin-core.js && node --check margin-panel.js && node --check server/erp-api.mjs && node --check server/holded-adapter.mjs && node --check product-matching.js && node --check matching-panel.js && node --check report-core.js",
     "switch:migrate": "node server/migrate.mjs",
     "switch:server": "node server/local-server.mjs"
