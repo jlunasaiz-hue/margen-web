@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <title>Margen — Control de costes</title>
     <link rel="canonical" href="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
-    <link rel="stylesheet" href="./styles.css?v=20261012-margins-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261012-holded-1" />
   <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/margen-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
   <body class="app-page">
@@ -78,7 +78,7 @@
           <button class="menu-button" id="menuButton" aria-label="Abrir menú" aria-expanded="false">☰</button>
           <div>
             <p class="breadcrumb">HOSTELERÍA · CONTROL DE COMPRAS</p>
-            <h1 id="pageTitle">Resumen</h1><small style="font-size:10px;color:#68736d">Versión 11/10 · alertas claras</small>
+            <h1 id="pageTitle">Resumen</h1><small style="font-size:10px;color:#68736d">Versión 12/10 · margen y escenarios</small>
           </div>
           <div class="top-actions">
             <button class="button ghost" id="loadDemoButton" hidden>Cargar demo</button>
@@ -296,7 +296,7 @@
           <section class="panel margin-results"><h3>Contribución por producto</h3><div class="table-wrap"><table><caption>Mismo volumen del periodo · costes por unidad vendida · importes netos.</caption><thead><tr><th>Producto</th><th>Coste variable unitario</th><th>Presupuesto unitario</th><th>Contribución unitaria</th><th>Margen %</th><th>Contribución total</th></tr></thead><tbody id="marginProductResults"></tbody></table></div><p class="margin-help">El resultado tras costes fijos es una estimación antes de impuestos y de otros costes que no hayas incluido. Las unidades pueden ser ventas reales o previsiones introducidas por ti.</p></section>
           <section class="panel margin-results"><h3>Alertas de desviación</h3><div id="marginAlerts" role="status" aria-live="polite"></div><button type="button" class="button ghost" id="marginNotify">Activar avisos del navegador</button><p class="margin-help">Los avisos del panel no necesitan permisos. Los del sistema dependen del navegador y de tu autorización; no hay supervisión cuando cierras Margen.</p></section>
           <section class="panel margin-results"><span class="eyebrow">ESCENARIOS</span><h3>¿Qué pasaría si…?</h3><div class="margin-fields"><label>Cambio en precios de venta (%)<input id="marginScenarioSale" type="number" min="-100" max="1000" step="any" value="0"></label><label>Cambio en precios de insumos (%)<input id="marginScenarioInputs" type="number" min="-100" max="1000" step="any" value="0"></label></div><div class="margin-toolbar"><button class="button ghost" type="button" data-scenario-preset="sale">Venta +5 %</button><button class="button ghost" type="button" data-scenario-preset="inputs">Insumos +10 %</button><button class="button ghost" type="button" data-scenario-preset="both">Ambos cambios</button><button class="button ghost" type="button" data-scenario-preset="reset">Restablecer escenario</button></div><div id="marginScenarioResult" aria-live="polite"></div></section>
-          <section class="panel margin-results"><span class="eyebrow">FACTURACIÓN Y ERP</span><h3>Sincronización de costes por API</h3><p id="marginErpState" role="status">Sin ERP conectado. Falta elegir el sistema y configurar su acceso autorizado.</p><button class="button ghost" type="button" id="marginErpSync">Comprobar conexión y sincronizar</button><p class="margin-help">Tras una primera sincronización válida, se consulta cada 60 segundos mientras la pestaña esté visible y con internet. Solo se leen compras; no se modifican facturas ni pagos. Las recetas, precios de venta y unidades del periodo se configuran en tu ficha.</p></section>
+          <section class="panel margin-results"><span class="eyebrow">FACTURACIÓN Y ERP</span><h3>Holded: primera integración de costes</h3><p id="marginErpState" role="status">Adaptador Holded preparado. Falta conectar una cuenta autorizada y configurar el acceso de Margen.</p><button class="button ghost" type="button" id="marginErpSync">Comprobar conexión y sincronizar</button><p class="margin-help">Tras una primera sincronización válida, se actualiza con la frecuencia configurada para respetar las cuotas de Holded. La lectura del ERP y su fecha se muestran arriba. Se leen facturas de compra aprobadas en euros. Los costes se calculan sin impuestos, aplicando los descuentos. No se incluyen rectificativas ni conversiones de moneda; las unidades no especificadas requieren revisión. Las recetas, precios de venta y unidades del periodo se configuran en tu ficha.</p></section>
         </section>
         <footer class="app-legal"><a href="./">Información del piloto</a><a href="./aviso-legal.html">Aviso legal</a><a href="./privacidad.html">Privacidad</a><a href="./cookies.html">Cookies</a></footer>
       </main>
@@ -405,13 +405,13 @@
     <script defer src="./vendor/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./pdf-text-parser.js?v=20261011-fixtures-5"></script>
     <script src="./electricity.js"></script>
-    <script src="./official-prices.js?v=20261012-margins-1"></script>
+    <script src="./official-prices.js?v=20261012-holded-1"></script>
     <script src="./switch-demo.js?v=20261011-switch-1"></script>
     <script src="./margin-core.js"></script>
     <script src="./margin-panel.js"></script>
-    <script src="./app.js?v=20261012-margins-1"></script>
+    <script src="./app.js?v=20261012-holded-1"></script>
   <dialog id="installHelp" class="install-help"><form method="dialog"><h2>Margen en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
-<script src="./offline.js?v=20261012-margins-1"></script>
+<script src="./offline.js?v=20261012-holded-1"></script>
 </body>
 </html>
 

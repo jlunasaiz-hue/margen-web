@@ -964,12 +964,9 @@ function init() {
   $("#importButton").onclick = openImport;
   $("#firstMinuteImport").onclick = openImport;
   window.margenElectricity.attach(document);
-  window.margenMargin.attach(document, {onErpRows: (purchases) => {
+  window.margenMargin.attach(document, {onErpRows: (purchases, snapshot) => {
     const existing = state.isDemo ? [] : state.rows;
-    const incomingIds = new Set(purchases.map(row => "erp:" + row.id));
-    const prices = window.margenContribution.latest(existing);
-    const incoming = purchases.map(row => ({...row, id: "erp:" + row.id, previous: prices.get(window.margenContribution.key(row))?.current ?? row.current}));
-    state.rows = analyze([...existing.filter(row => !incomingIds.has(row.id)), ...incoming]);
+    state.rows = analyze(window.margenContribution.mergeErpRows(existing, purchases, snapshot));
     state.isDemo = false; state.source = "Compras sincronizadas por API"; render();
   }});
   $("#manualButton").onclick = openManual;

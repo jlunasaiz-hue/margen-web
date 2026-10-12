@@ -1,5 +1,5 @@
 import {createErpHandler} from './erp-api.mjs';
-const RELEASE='20261012-margins-1';
+const RELEASE='20261012-holded-1';
 const headers={'x-content-type-options':'nosniff','referrer-policy':'no-referrer'};
 const json=(status,value,extra={})=>new Response(JSON.stringify(value),{status,headers:{...headers,'content-type':'application/json; charset=utf-8','cache-control':'no-store',...extra}});
 function validDate(date){return /^\d{4}-\d{2}-\d{2}$/.test(date)&&!Number.isNaN(Date.parse(date+'T12:00:00Z'))&&new Date(date+'T12:00:00Z').toISOString().slice(0,10)===date;}
