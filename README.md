@@ -39,3 +39,13 @@ La página comercial permite indexación. El panel `app.html` lleva `noindex,fol
 - `app.html` tiene diseño adaptable e instalación tipo PWA, pero hay que validar el funcionamiento de descarga, PDF y almacenamiento en móviles reales.
 - La extracción de facturas PDF puede requerir mejoras adicionales: algunos documentos escaneados no se leen sin OCR.
 - El formulario del piloto prepara una solicitud, pero **el correo comercial todavía no está configurado**. No se debe afirmar que recibe solicitudes automáticamente.
+
+## Validación del enlace público después del despliegue
+
+GitHub Actions ejecuta `scripts/public-smoke.mjs` después de publicar, consultando por HTTPS la página comercial, el panel, el sitemap y el motor de solicitudes. Reintenta para permitir la propagación del despliegue. Si falla, el job se marca como fallido. Esto **no** sustituye las pruebas de Safari, Chrome o dispositivos reales.
+
+Ejemplo manual: `npm run smoke:public -- https://jlunasaiz-hue.github.io/margen-web/`.
+
+## Activar las solicitudes comerciales
+
+El formulario permite preparar, copiar y descargar una solicitud, pero **no la envía mientras no esté configurado un correo comercial**. Para habilitar la opción de abrir el correo del usuario, establecer una dirección pública válida en la constante `PILOT_CONTACT` de `landing.js` y publicar de nuevo. El botón abre un borrador en la aplicación de correo del visitante; no confirma el envío ni acepta pagos. No se recomienda introducir un correo personal privado en un sitio público. Para recepción automática sin intervención de la aplicación de correo se necesita un proveedor con backend y tratamiento de datos apropiado.
