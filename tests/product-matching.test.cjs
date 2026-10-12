@@ -11,7 +11,7 @@ test('una equivalencia verificada de caja a kilos se recuerda en futuras importa
 test('la decisión queda ligada al proveedor y al formato de origen',()=>{const source=row({item:'PECH POLLO',unit:'kg'}),rule=core.createRule(source,row());assert.equal(core.canonicalize(source,[rule]).item,'Pechuga de pollo');assert.equal(core.canonicalize({...source,supplier:'Otro proveedor'},[rule]).item,'PECH POLLO');assert.equal(core.canonicalize({...source,unit:'caja'},[rule]).item,'PECH POLLO');});
 test('mantener separado también se recuerda y no renombra el producto',()=>{const source=row({item:'Pollo premium'}),rule=core.separate(source);core.validateRules([rule]);const result=core.canonicalize(source,[rule]);assert.equal(result.item,'Pollo premium');assert.equal(result.matching.separate,true);});
 test('rechaza conversiones nulas, negativas, infinitas, destinos no canónicos y reglas duplicadas',()=>{for(const factor of [0,-1,Infinity,NaN])assert.throws(()=>core.createRule(row(),row(),factor));const rule=core.createRule(row(),row());assert.throws(()=>core.validateRules([rule,rule]));assert.throws(()=>core.validateRules([{...rule,target:{item:'Pollo',unit:'KGS'}}]));});
-function engine(){const source=fs.readFileSync('app.js','utf8');const ctx={Intl,console,setTimeout,clearTimeout,URL,Blob,TextDecoder,performance,Map,margenMatching:core};vm.createContext(ctx);vm.runInContext(source.replace(/\ninit\(\);[\s\S]*$/,'\n;globalThis.engine={state,buildImportedRows,parseSpanishNumber,setRules:value=>{productRules=coreRules(value);}};function coreRules(value){return globalThis.margenMatching.validateRules(value);}'),ctx);return ctx.engine;}
+function engine(){const source=fs.readFileSync('app.js','utf8');const ctx={Intl,console,setTimeout,clearTimeout,URL,Blob,TextDecoder,performance,Map,margenMatching:core};vm.createContext(ctx);vm.runInContext(source.replace(/\ninit\(\);[\s\S]*$/,'\n;globalThis.engine={state,buildImportedRows,reconcileMatchingHistory,parseSpanishNumber,setRules:value=>{productRules=coreRules(value);}};function coreRules(value){return globalThis.margenMatching.validateRules(value);}'),ctx);return ctx.engine;}
 function setup(e){e.state.rows=[row({id:'old',date:'2026-09-01',current:7})];e.state.source='Compras propias';e.state.isDemo=false;e.state.mapping={supplier:'Proveedor',item:'Producto',unit:'Unidad',current:'Precio',quantity:'Cantidad',previous:'',invoice:'Factura',date:'Fecha'};}
 test('la importación utiliza el emparejamiento guardado para inferir el precio anterior comparable',()=>{const e=engine();setup(e);e.setRules([core.createRule(row({item:'PECH POLLO',unit:'caja'}),row(),3)]);e.state.pendingRows=[{Proveedor:'Proveedor A',Producto:'PECH POLLO',Unidad:'caja',Precio:'24',Cantidad:'2',Factura:'F-2',Fecha:'01/10/2026'}];const result=e.buildImportedRows();near(result.rows[0].previous,7);near(result.rows[0].current,8);near(result.rows[0].quantity,6);near(result.rows[0].impact,6);assert.equal(result.rows[0].matching.originalUnit,'caja');assert.equal(e.state.rows[0].current,7);});
 test('un precio histórico expresado en gramos se compara con kilos sin falsas subidas',()=>{const e=engine();setup(e);e.state.rows=[row({date:'2026-09-01',unit:'g',current:0.008,quantity:500})];e.state.pendingRows=[{Proveedor:'Proveedor A',Producto:'Pechuga de pollo',Unidad:'kg',Precio:'8',Cantidad:'1',Fecha:'01/10/2026'}];const result=e.buildImportedRows();near(result.rows[0].previous,8);near(result.rows[0].impact,0);});
@@ -49,4 +49,30 @@ test('una regla nueva vuelve a relacionar las compras históricas ya normalizada
   const imported=e.buildImportedRows().rows[0];
   near(imported.previous,8);near(imported.impact,1);
   near(e.state.rows[0].current*e.state.rows[0].quantity,4);
+});
+
+test('al cambiar la equivalencia de cajas, el precio anterior histórico sigue en su unidad correcta',()=>{
+  const e=engine();setup(e);
+  const previous=row({item:'Pechuga de pollo',unit:'kg',current:7,quantity:10,date:'2026-09-01'});
+  const source=row({item:'POLLO CAJA',unit:'caja',current:24,quantity:2,date:'2026-10-01'});
+  const original=core.canonicalize(source,[core.createRule(source,row(),3)]);
+  original.previous=7;original.previousSource='history';
+  e.state.rows=[previous,original];
+  e.setRules([core.createRule(source,row(),6)]);
+  const result=e.reconcileMatchingHistory(e.state.rows);
+  near(result[1].previous,7);near(result[1].current,4);near(result[1].quantity,12);
+  near(result[1].current*result[1].quantity,48);
+  assert.equal(result[1].previousSource,'history');
+});
+test('una compra inicialmente separada recupera el precio anterior al confirmar la coincidencia',()=>{
+  const e=engine();setup(e);
+  const previous=row({item:'Pechuga de pollo',unit:'kg',current:7,date:'2026-09-01'});
+  const source=row({item:'PECH POLLO',unit:'kg',current:9,date:'2026-10-01'});
+  const first=core.canonicalize(source);
+  first.previous=9;first.previousSource='first_purchase';
+  e.state.rows=[previous,first];
+  e.setRules([core.createRule(source,row())]);
+  const result=e.reconcileMatchingHistory(e.state.rows);
+  near(result[1].previous,7);near(result[1].current,9);
+  assert.equal(result[1].previousSource,'history');
 });
