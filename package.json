@@ -1,5 +1,5 @@
 {
-  "name": "margen-web",
+  "name": "zarviqo-web",
   "private": true,
   "scripts": {
     "test": "node --test tests/*.test.cjs",
