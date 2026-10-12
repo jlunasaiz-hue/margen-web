@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <title>Margen — Control de costes</title>
     <link rel="canonical" href="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
-    <link rel="stylesheet" href="./styles.css?v=20261012-holded-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261012-matching-1" />
   <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/margen-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
   <body class="app-page">
@@ -57,6 +57,7 @@
         <button class="nav-item electricity-link" data-view="margin" type="button"><span class="nav-icon" aria-hidden="true">€</span> Margen y escenarios</button>
         <button class="nav-item electricity-link" data-view="electricity" type="button"><span class="nav-icon" aria-hidden="true">⚡</span> Factura de luz</button>
         <button class="nav-item electricity-link" data-view="switch" type="button"><span class="nav-icon" aria-hidden="true">⇄</span> Cambiar compañía</button>
+        <button class="nav-item" type="button" data-action="open-matches">Productos emparejados</button>
         <div class="sidebar-card">
           <span class="eyebrow">MARGEN HOSTELERÍA</span>
           <p>En esta versión, tus archivos se procesan en este navegador.</p>
@@ -331,6 +332,7 @@
           <div class="mapping-heading"><div><span class="eyebrow">PASO 2</span><h3>Relaciona tus columnas</h3></div><span id="mappingRows">0 filas</span></div>
           <p>Hemos propuesto una relación automática. Comprueba los cuatro campos obligatorios.</p>
           <div class="mapping-grid" id="mappingGrid"></div>
+          <section class="matching-review" aria-labelledby="matchingTitle"><div class="matching-heading"><h3 id="matchingTitle">Emparejar productos y unidades</h3><button type="button" class="button ghost" data-action="open-matches">Ver decisiones guardadas</button></div><p>Confirma nombres equivalentes una sola vez. Los cambios se aplican a esta importación y a las siguientes; el historial original se conserva. Gramos y mililitros se expresan como kilos y litros manteniendo el importe total. Las cajas necesitan una equivalencia verificada para convertir su contenido.</p><p id="matchingSummary" role="status" aria-live="polite">Las coincidencias aparecerán después de relacionar las columnas.</p><div id="matchingRows"></div><div class="matching-pager"><button type="button" class="button ghost" id="matchingPrevious">Anterior</button><span id="matchingPage">Página 1</span><button type="button" class="button ghost" id="matchingNext">Siguiente</button></div></section>
           <section id="importReview" class="import-review"><h3>Revisa las compras detectadas</h3><p>Corrige los campos antes de importar. Los cambios no afectan al historial hasta que confirmes.</p><div id="importReviewRows" class="import-review-rows"></div><div class="import-review-pager"><button type="button" class="button ghost" id="reviewPrevious">Anterior</button><span id="importReviewPage">Página 1</span><button type="button" class="button ghost hidden" id="reviewFirstError">Ir al error</button><button type="button" class="button ghost" id="reviewNext">Siguiente</button></div></section>
           <div class="mapping-note"><strong>Historial automático:</strong> si no existe una columna de precio anterior, buscaremos la última compra equivalente guardada.</div>
         </div>
@@ -399,19 +401,22 @@
       <div class="modal-card" id="supplierDetailContent"></div>
     </dialog>
 
+<dialog id="matchingDialog" class="modal"><form method="dialog" class="modal-card"><div class="modal-header"><h2>Decisiones de productos y unidades</h2><button type="submit" class="icon-button" aria-label="Cerrar decisiones">×</button></div><p>Estas reglas se guardan en este dispositivo. Olvidar una decisión modifica las próximas importaciones; no cambia las compras ya registradas.</p><div id="matchingSavedRules"></div><div class="matching-pager"><button type="button" class="button ghost" id="matchingSavedPrevious">Anterior</button><span id="matchingSavedPage"></span><button type="button" class="button ghost" id="matchingSavedNext">Siguiente</button></div><p id="matchingManagerStatus" role="status"></p></form></dialog>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="./vendor/xlsx.full.min.js"></script>
     <script src="./metrics.js"></script>
     <script defer src="./vendor/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./pdf-text-parser.js?v=20261011-fixtures-5"></script>
     <script src="./electricity.js"></script>
-    <script src="./official-prices.js?v=20261012-holded-1"></script>
+    <script src="./official-prices.js?v=20261012-matching-1"></script>
     <script src="./switch-demo.js?v=20261011-switch-1"></script>
+    <script src="./product-matching.js"></script>
+    <script src="./matching-panel.js"></script>
     <script src="./margin-core.js"></script>
     <script src="./margin-panel.js"></script>
-    <script src="./app.js?v=20261012-holded-1"></script>
+    <script src="./app.js?v=20261012-matching-1"></script>
   <dialog id="installHelp" class="install-help"><form method="dialog"><h2>Margen en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
-<script src="./offline.js?v=20261012-holded-1"></script>
+<script src="./offline.js?v=20261012-matching-1"></script>
 </body>
 </html>
 

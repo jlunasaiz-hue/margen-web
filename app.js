@@ -29,6 +29,10 @@ const state = {
   supplier: "all"
 };
 
+let productRules = [];
+function matchingMap(){const core=globalThis.margenMatching;return core?new Map(productRules.map(rule=>[core.sourceKey(rule.source),rule])):null;}
+function canonicalPurchase(row,map=matchingMap()){return row.matching||!globalThis.margenMatching?row:globalThis.margenMatching.canonicalize(row,map||[]);}
+
 const MAPPING_FIELDS = [
   { key: "supplier", label: "Proveedor", required: true, aliases: ["proveedor", "supplier", "empresa", "vendor"] },
   { key: "item", label: "Producto", required: true, aliases: ["producto", "articulo", "descripcion", "concepto", "item", "product"] },
@@ -300,6 +304,7 @@ function openDetail(index) {
       <div class="detail-stat"><span>Variación</span><strong>${row.percent >= 0 ? "+" : ""}${number.format(row.percent)} %</strong></div>
       <div class="detail-stat"><span>Impacto estimado</span><strong>${euros.format(row.impact)}</strong></div>
     </div>
+    ${row.matching ? `<details class="matching-trace"><summary>Ver nombre y unidad del documento original</summary><p><strong>Producto original:</strong> ${escapeHtml(row.matching.originalItem)}.</p><p><strong>Compra original:</strong> ${new Intl.NumberFormat("es-ES",{maximumFractionDigits:9}).format(row.matching.originalQuantity)} ${escapeHtml(row.matching.originalUnit)} a ${new Intl.NumberFormat("es-ES",{maximumFractionDigits:9}).format(row.matching.originalCurrent)} € por ${escapeHtml(row.matching.originalUnit)}.</p><p><strong>Equivalencia aplicada:</strong> 1 ${escapeHtml(row.matching.originalUnit)} = ${new Intl.NumberFormat("es-ES",{maximumFractionDigits:9}).format(row.matching.factor)} ${escapeHtml(row.unit)} · ${row.matching.confirmed ? "emparejamiento confirmado" : "unidad normalizada"}.</p></details>` : ""}
     <div class="recommendation"><strong>Siguiente comprobación:</strong> ${row.possibleDuplicate ? "comprueba en la factura original si esta misma línea se ha contabilizado dos veces." : "verifica que la unidad y el formato sean equivalentes y contrasta el precio con la tarifa, el pedido o la confirmación del proveedor."}</div>
     <div class="modal-actions split-actions"><button class="button danger-ghost" id="deleteDetail">Eliminar línea</button><div><button class="button ghost" id="understoodDetail">Cerrar</button><button class="button primary" id="reviewDetail">${row.reviewed ? "Reabrir alerta" : "Marcar revisada"}</button></div></div>`;
   $("#detailDialog").showModal();
@@ -419,10 +424,10 @@ function parseSpanishNumber(value) {
     text = text.replace(thousands, "").replace(decimal, ".");
   } else if (comma >= 0) {
     const parts = text.split(",");
-    text = parts.length > 2 || (parts[1]?.length === 3 && parts[0].length > 0) ? parts.join("") : text.replace(",", ".");
+    text = parts.length > 2 || (parts[1]?.length === 3 && parts[0].length > 0 && parts[0] !== "0") ? parts.join("") : text.replace(",", ".");
   } else if (dot >= 0) {
     const parts = text.split(".");
-    if (parts.length > 2 || (parts[1]?.length === 3 && parts[0].length > 0)) text = parts.join("");
+    if (parts.length > 2 || (parts[1]?.length === 3 && parts[0].length > 0 && parts[0] !== "0")) text = parts.join("");
   }
   const parsed = Number(text);
   return negative ? -parsed : parsed;
@@ -547,7 +552,7 @@ function suggestMapping(headers) {
 function renderImportReview() {
   const box = $("#importReviewRows");
   box.replaceChildren();
-  const fields = [["supplier","Proveedor"],["item","Producto"],["quantity","Cantidad"],["current","Precio unitario"]];
+  const fields = [["supplier","Proveedor"],["item","Producto"],["unit","Unidad o formato"],["quantity","Cantidad"],["current","Precio unitario"]];
   const pageSize=20;
   const pages=Math.max(1,Math.ceil(state.pendingRows.length/pageSize));
   state.reviewPage=Math.max(0,Math.min(state.reviewPage,pages-1));
@@ -563,14 +568,15 @@ function renderImportReview() {
       const heading=state.mapping[key];
       const wrap=document.createElement("label");wrap.textContent=label;
       const input=document.createElement("input");
-      input.type="text";input.value=heading ? String(record[heading] ?? "") : "";
+      input.type="text";input.value=heading ? String(record[heading] ?? "") : key==="unit" ? String(record.__margenUnit || "sin especificar") : "";
       input.setAttribute("aria-label",label+" línea "+(index+1));
       input.addEventListener("input",()=>{
-        if(heading) record[heading]=input.value;
+        if(heading) record[heading]=input.value;else if(key==="unit")record.__margenUnit=input.value;
         const value=input.value.trim();
         const valid=(key==="quantity"||key==="current") ? Number.isFinite(parseSpanishNumber(value)) && parseSpanishNumber(value)>0 : Boolean(value);
         input.setAttribute("aria-invalid", String(!valid));
         validateMapping();
+        window.margenMatchingUI?.schedule();
       });
       wrap.append(input);card.append(wrap);
     }
@@ -584,12 +590,13 @@ function renderMapping() {
   $("#mappingGrid").innerHTML = MAPPING_FIELDS.map((field) => `<label class="mapping-field"><span>${field.label}${field.required ? " <em>*</em>" : ""}</span><select data-map="${field.key}">${options}</select></label>`).join("");
   $$('[data-map]').forEach((select) => {
     select.value = state.mapping[select.dataset.map] || "";
-    select.onchange = () => { state.mapping[select.dataset.map] = select.value; validateMapping(); renderImportReview(); };
+    select.onchange = () => { state.mapping[select.dataset.map] = select.value; validateMapping(); renderImportReview(); window.margenMatchingUI?.refresh(); };
   });
   $("#mappingRows").textContent = `${state.pendingRows.length} filas detectadas`;
   $("#mappingPanel").classList.remove("hidden");
   validateMapping();
   renderImportReview();
+  window.margenMatchingUI?.refresh();
 }
 
 function invalidImportRowIndices() {
@@ -627,17 +634,17 @@ function historyKey(row) {
 }
 
 function findPreviousPurchase(row, rows = state.rows) {
-  const key = historyKey(row);
-  return [...rows].sort(compareDates).reverse().find((candidate) => historyKey(candidate) === key);
+  const map=matchingMap(),canonical=canonicalPurchase(row,map),key=historyKey(canonical);
+  return [...rows].map(candidate=>canonicalPurchase(candidate,map)).sort(compareDates).reverse().find((candidate)=>historyKey(candidate)===key);
 }
 
-function buildImportedRows() {
-  const mapped = state.pendingRows.map((record, index) => {
+function mapPendingRows() {
+  return state.pendingRows.map((record, index) => {
     const get = (key) => state.mapping[key] ? record[state.mapping[key]] : "";
     return {
       supplier: String(get("supplier") || "").trim(),
       item: String(get("item") || "").trim(),
-      unit: String(get("unit") || "unidad").trim() || "unidad",
+      unit: String(get("unit") || record.__margenUnit || "sin especificar").trim() || "sin especificar",
       current: parseSpanishNumber(get("current")),
       previous: parseSpanishNumber(get("previous")),
       quantity: parseSpanishNumber(get("quantity")),
@@ -646,10 +653,15 @@ function buildImportedRows() {
       sourceRow: index + 2
     };
   });
+}
+
+function buildImportedRows() {
+  const map=matchingMap();
+  const mapped=mapPendingRows().map(row=>canonicalPurchase(row,map));
   const invalid = mapped.filter((row) => !row.supplier || !row.item || !Number.isFinite(row.current) || !Number.isFinite(row.quantity) || row.quantity <= 0);
   const valid = mapped.filter((row) => !invalid.includes(row));
-  const baseRows = state.source.startsWith("Demostración") ? [] : [...state.rows];
-  const history = [...baseRows].sort(compareDates);
+  const baseRows = state.isDemo ? [] : [...state.rows];
+  const history = baseRows.map(row=>canonicalPurchase(row,map)).sort(compareDates);
   const latestByProduct = new Map();
   history.forEach((row) => latestByProduct.set(historyKey(row), row));
   const importedRows = [];
@@ -719,9 +731,11 @@ function updateManualPreview() {
   const currentValue = form.elements.current.value;
   const quantityValue = form.elements.quantity.value;
   const previousPurchase = previousValue ? null : findPreviousPurchase({ supplier: form.elements.supplier.value, item: form.elements.item.value, unit: form.elements.unit.value });
-  const previous = previousValue ? Number(previousValue) : previousPurchase?.current;
-  const current = Number(currentValue);
-  const quantity = Number(quantityValue);
+  const prevCanonical=canonicalPurchase({supplier:form.elements.supplier.value,item:form.elements.item.value,unit:form.elements.unit.value,current:0,quantity:0,previous:Number(previousValue)});
+  const previous = previousValue ? prevCanonical.previous : previousPurchase?.current;
+  const canonical=canonicalPurchase({supplier:form.elements.supplier.value,item:form.elements.item.value,unit:form.elements.unit.value,current:Number(currentValue),quantity:Number(quantityValue),previous:previousValue?Number(previousValue):NaN});
+  const current = canonical.current;
+  const quantity = canonical.quantity;
   const preview = $("#manualPreview");
   if (!currentValue || !quantityValue || !Number.isFinite(previous) || ![current, quantity].every(Number.isFinite) || quantity <= 0) {
     preview.innerHTML = `<span>Impacto estimado</span><strong>${previousValue ? "Completa los precios y la cantidad" : "Completa el producto para buscar su historial"}</strong>`;
@@ -738,7 +752,7 @@ function saveManualRow(event) {
   const form = event.currentTarget;
   const data = new FormData(form);
   const previousValue = data.get("previous");
-  const raw = {
+  let raw = {
     supplier: data.get("supplier").trim(),
     invoice: data.get("invoice").trim(),
     date: data.get("date"),
@@ -753,6 +767,7 @@ function saveManualRow(event) {
     $("#manualError").textContent = "Revisa los campos obligatorios y utiliza importes válidos.";
     return;
   }
+  try{raw=canonicalPurchase(raw);}catch(error){$("#manualError").textContent=error.message;return;}
   if (!Number.isFinite(raw.previous)) {
     const previous = findPreviousPurchase(raw);
     raw.previous = previous ? previous.current : raw.current;
@@ -790,7 +805,7 @@ function openBackup() {
 }
 
 function exportWorkspace() {
-  const payload = { app: "margen", version: 1, exportedAt: new Date().toISOString(), source: state.source, rows: state.rows, isDemo: state.isDemo, contribution: window.margenMargin.getModel() };
+  const payload = { app: "margen", version: 1, exportedAt: new Date().toISOString(), source: state.source, rows: state.rows, isDemo: state.isDemo, contribution: window.margenMargin.getModel(), matchingRules: window.margenMatchingUI.getRules() };
   const stamp = new Date().toISOString().slice(0, 10);
   downloadFile(`margen-copia-${stamp}.json`, JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
   showToast("Copia de seguridad descargada");
@@ -808,11 +823,13 @@ async function restoreWorkspace(file) {
     const restored = analyze(payload.rows).filter((row) => row.supplier && row.item && Number.isFinite(row.current) && Number.isFinite(row.quantity));
     if (!restored.length) throw new Error("La copia no contiene compras válidas.");
     if (payload.contribution) window.margenContribution.validate(payload.contribution);
+    if (payload.matchingRules) window.margenMatching.validateRules(payload.matchingRules);
     if (!window.confirm(`Se sustituirán las ${state.rows.length} líneas actuales por ${restored.length} líneas de la copia. ¿Continuar?`)) return;
     state.rows = restored;
     state.source = `Copia restaurada · ${restored.length} líneas`;
     state.isDemo = payload.isDemo === true;
     if (payload.contribution) window.margenMargin.restoreModel(payload.contribution);
+    if (payload.matchingRules) window.margenMatchingUI.restore(payload.matchingRules);
     render();
     $("#backupDialog").close();
     showView("overview");
@@ -969,6 +986,7 @@ function init() {
     state.rows = analyze(window.margenContribution.mergeErpRows(existing, purchases, snapshot));
     state.isDemo = false; state.source = "Compras sincronizadas por API"; render();
   }});
+  window.margenMatchingUI.attach({getPending:mapPendingRows,getExisting:()=>state.isDemo?[]:state.rows,onRules:rules=>{productRules=rules;}});
   $("#manualButton").onclick = openManual;
   $("#loadDemoButton").onclick = loadDemo;
   $("#clearDemoButton").onclick = clearDemo;
