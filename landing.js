@@ -48,7 +48,7 @@ if (pilotEmailAddress) {
   document.querySelector("#pilotContactNotice").textContent = "La solicitud se abrirá en tu programa de correo. Tendrás que enviarla tú.";
   pilotEmailButton.hidden = false;
 } else {
-  document.querySelector("#pilotContactNotice").textContent = "Todavía no hay correo comercial configurado. Puedes preparar, copiar o descargar la solicitud, pero no enviarla desde Margen.";
+  document.querySelector("#pilotContactNotice").textContent = "Todavía no hay correo comercial configurado. Puedes preparar, copiar o descargar la solicitud, pero no enviarla desde ZARVIQO.";
 }
 pilotForm?.addEventListener("input", () => {
   if (pilotPreview) pilotPreview.hidden = true;
