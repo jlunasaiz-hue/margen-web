@@ -21,7 +21,7 @@
   }
   function summarize(rows){
     if(!Array.isArray(rows))throw Error("Se necesita un historial de compras válido.");
-    let spending=0,price=0,duplicate=0,toReview=0,pending=0,reviewed=0;
+    let spending=0,price=0,duplicate=0,toReview=0,pendingAmount=0,pending=0,reviewed=0;
     const suppliers=new Set();
     for(const row of rows){
       if(!row||typeof row!=="object")throw Error("Hay una compra no válida.");
@@ -31,11 +31,11 @@
       if(typeof row.supplier==="string"&&row.supplier.trim())suppliers.add(row.supplier.trim());
       if(isAlert(row)){
         const x=amount(row);price+=x.price;duplicate+=x.duplicate;toReview+=x.toReview;
-        if(row.reviewed)reviewed++;else pending++;
+        if(row.reviewed)reviewed++;else{pending++;pendingAmount+=x.toReview;}
       }
     }
-    if([spending,price,duplicate,toReview].some(x=>!Number.isFinite(x)||x>1e15))throw Error("Total fuera de rango.");
-    return {lines:rows.length,suppliers:suppliers.size,spending,price,duplicate,toReview,pending,reviewed,alerts:pending+reviewed};
+    if([spending,price,duplicate,toReview,pendingAmount].some(x=>!Number.isFinite(x)||x>1e15))throw Error("Total fuera de rango.");
+    return {lines:rows.length,suppliers:suppliers.size,spending,price,duplicate,toReview,pendingAmount,pending,reviewed,alerts:pending+reviewed};
   }
   function csvCell(value){
     const numeric=typeof value==="number"&&Number.isFinite(value);
@@ -93,7 +93,7 @@
       +'<section class="metrics" aria-label="Indicadores"><div class="metric"><span>Compras analizadas</span><strong>'+totals.lines+'</strong></div>'
       +'<div class="metric"><span>Proveedores</span><strong>'+totals.suppliers+'</strong></div>'
       +'<div class="metric"><span>Alertas pendientes</span><strong>'+totals.pending+'</strong></div>'
-      +'<div class="metric"><span>Importe a revisar</span><strong>'+EUR.format(totals.toReview)+'</strong></div></section>'
+      +'<div class="metric"><span>Importe pendiente de revisión</span><strong>'+EUR.format(totals.pendingAmount)+'</strong></div></section>'
       +'<div class="notice"><strong>Importante:</strong> los importes son indicios para revisar y no equivalen a sobrecargos comprobados ni a ahorro recuperado. '
       +'Una misma línea que parece duplicada y tiene una subida no se suma dos veces. '
       +'Confirma factura, tarifas, descuentos, IVA y equivalencias con los documentos originales. '
