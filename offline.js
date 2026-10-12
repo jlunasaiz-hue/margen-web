@@ -1,7 +1,7 @@
 (function(){'use strict';
 const text=document.getElementById('offlineStatusText'),update=document.getElementById('offlineUpdateButton'),install=document.getElementById('offlineInstallButton');if(!text)return;
 let ready=false,waiting=null,prompt=null;
-function render(){text.textContent=navigator.onLine?(ready?'Disponible sin conexión en este dispositivo.':'Preparando acceso sin conexión…'):(ready?'Sin conexión: puedes usar las funciones locales.':'Sin conexión: abre Margen con internet para prepararlo.');text.parentElement.classList.toggle('is-offline',!navigator.onLine);}
+function render(){text.textContent=navigator.onLine?(ready?'Disponible sin conexión en este dispositivo.':'Preparando acceso sin conexión…'):(ready?'Sin conexión: puedes usar las funciones locales.':'Sin conexión: abre ZARVIQO con internet para prepararlo.');text.parentElement.classList.toggle('is-offline',!navigator.onLine);}
 window.addEventListener('online',render);window.addEventListener('offline',render);render();
 install.addEventListener('click',async()=>{if(prompt){await prompt.prompt();await prompt.userChoice;prompt=null;}else document.getElementById('installHelp').showModal();});
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();prompt=event;});
