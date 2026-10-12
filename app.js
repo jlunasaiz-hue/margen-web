@@ -31,7 +31,18 @@ const state = {
 
 let productRules = [];
 function matchingMap(){const core=globalThis.margenMatching;return core?new Map(productRules.map(rule=>[core.sourceKey(rule.source),rule])):null;}
-function canonicalPurchase(row,map=matchingMap()){return row.matching||!globalThis.margenMatching?row:globalThis.margenMatching.canonicalize(row,map||[]);}
+function canonicalPurchase(row,map=matchingMap()){
+  const core=globalThis.margenMatching;
+  if(!core)return row;
+  const trace=row.matching;
+  if(!trace)return core.canonicalize(row,map||[]);
+  if(typeof trace.originalItem!=='string'||typeof trace.originalUnit!=='string'||!Number.isFinite(trace.originalCurrent)||!Number.isFinite(trace.originalQuantity)||!Number.isFinite(trace.factor)||trace.factor<=0)return row;
+  const raw={...row,item:trace.originalItem,unit:trace.originalUnit,current:trace.originalCurrent,quantity:trace.originalQuantity,previous:Number.isFinite(trace.originalPrevious)?trace.originalPrevious:Number.isFinite(row.previous)?row.previous*trace.factor:NaN};
+  delete raw.matching;
+  const next=core.canonicalize(raw,map||[]);
+  if(trace.originalPrevious===null)next.matching.originalPrevious=null;
+  return next;
+}
 
 const MAPPING_FIELDS = [
   { key: "supplier", label: "Proveedor", required: true, aliases: ["proveedor", "supplier", "empresa", "vendor"] },
@@ -986,7 +997,13 @@ function init() {
     state.rows = analyze(window.margenContribution.mergeErpRows(existing, purchases, snapshot));
     state.isDemo = false; state.source = "Compras sincronizadas por API"; render();
   }});
-  window.margenMatchingUI.attach({getPending:mapPendingRows,getExisting:()=>state.isDemo?[]:state.rows,onRules:rules=>{productRules=rules;}});
+  window.margenMatchingUI.attach({getPending:mapPendingRows,getExisting:()=>state.isDemo?[]:state.rows,onRules:rules=>{
+    productRules=rules;
+    if(!state.isDemo&&state.rows.some(row=>row.matching)){
+      try{state.rows=analyze(state.rows.map(row=>canonicalPurchase(row)));render();}
+      catch(error){showToast('Revisa las equivalencias: '+error.message);}
+    }
+  }});
   $("#manualButton").onclick = openManual;
   $("#loadDemoButton").onclick = loadDemo;
   $("#clearDemoButton").onclick = clearDemo;
