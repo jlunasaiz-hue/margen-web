@@ -43,6 +43,16 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Descargar código para validación
+        uses: actions/checkout@v4
+      - name: Preparar Node.js para validación
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - name: Publicar web
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Comprobar URL publicada
+        env:
+          PUBLIC_URL: ${{ steps.deployment.outputs.page_url }}
+        run: node scripts/public-smoke.mjs "$PUBLIC_URL"
