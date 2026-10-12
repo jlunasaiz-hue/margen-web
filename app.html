@@ -3,27 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Margen controla las subidas de precio de proveedores para restaurantes y negocios de hostelería." />
+    <meta name="description" content="ZARVIQO controla las subidas de precio de proveedores para restaurantes y negocios de hostelería." />
     <meta name="theme-color" content="#f6f5f0" />
     <meta name="referrer" content="no-referrer" />
     <meta name="robots" content="noindex,follow" />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Demo de Margen — Control de compras" />
-    <meta property="og:description" content="Prueba con datos ficticios cómo Margen señala subidas y posibles duplicados." />
-    <meta property="og:url" content="https://jlunasaiz-hue.github.io/margen-web/app.html" />
-    <title>Margen — Control de costes</title>
-    <link rel="canonical" href="https://jlunasaiz-hue.github.io/margen-web/app.html" />
-    <link rel="stylesheet" href="./styles.css?v=20261012-report-2" />
+    <meta property="og:title" content="Demo de ZARVIQO — Control de compras" />
+    <meta property="og:description" content="Prueba con datos ficticios cómo ZARVIQO señala subidas y posibles duplicados." />
+    <meta property="og:url" content="https://zarviqo.com/app.html" />
+    <title>ZARVIQO — Control de costes</title>
+    <link rel="canonical" href="https://zarviqo.com/app.html" />
+    <link rel="stylesheet" href="./styles.css?v=20261012-zarviqo-1" />
   <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/margen-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
   <body class="app-page">
     <a class="skip-link" href="#appMain">Saltar al contenido</a>
     <div class="app-shell">
       <aside class="sidebar" id="sidebar">
-        <a class="brand" href="#" aria-label="Margen, inicio">
-          <span class="brand-mark" aria-hidden="true">M</span>
-          <span>margen</span>
+        <a class="brand" href="#" aria-label="ZARVIQO, inicio">
+          <span class="brand-mark" aria-hidden="true">Z</span>
+          <span>ZARVIQO</span>
         </a>
 
         <nav class="nav" aria-label="Navegación principal">
@@ -59,13 +59,13 @@
         <button class="nav-item electricity-link" data-view="switch" type="button"><span class="nav-icon" aria-hidden="true">⇄</span> Cambiar compañía</button>
         <button class="nav-item" type="button" data-action="open-matches">Productos emparejados</button>
         <div class="sidebar-card">
-          <span class="eyebrow">MARGEN HOSTELERÍA</span>
+          <span class="eyebrow">ZARVIQO · HOSTELERÍA</span>
           <p>En esta versión, tus archivos se procesan en este navegador.</p>
           <span class="privacy-pill"><span></span> Excel y CSV locales</span>
         </div>
 
         <div class="sidebar-footer">
-          <div class="avatar">MG</div>
+          <div class="avatar">ZQ</div>
           <div>
             <strong>Mi restaurante</strong>
             <span>Espacio de trabajo</span>
@@ -74,7 +74,7 @@
       </aside>
 
       <main class="main" id="appMain">
-        <aside class="connectivity-strip" aria-label="Conexión"><span id="offlineStatusText" role="status" aria-live="polite">Preparando acceso sin conexión…</span><div><button type="button" id="offlineUpdateButton" hidden>Actualizar versión</button><button type="button" id="offlineInstallButton">Instalar Margen</button></div></aside>
+        <aside class="connectivity-strip" aria-label="Conexión"><span id="offlineStatusText" role="status" aria-live="polite">Preparando acceso sin conexión…</span><div><button type="button" id="offlineUpdateButton" hidden>Actualizar versión</button><button type="button" id="offlineInstallButton">Instalar ZARVIQO</button></div></aside>
         <header class="topbar">
           <button class="menu-button" id="menuButton" aria-label="Abrir menú" aria-expanded="false">☰</button>
           <div>
@@ -87,7 +87,7 @@
             <button class="button primary" id="importButton" hidden><span aria-hidden="true">↑</span> Probar con mis datos</button>
           </div>
         </header>
-        <nav class="section-nav" aria-label="Secciones del panel"><button type="button" data-view="overview" class="active" aria-current="page">Compras</button><button type="button" data-view="margin">Margen</button><button type="button" data-view="electricity">Luz</button><button type="button" data-view="switch">Compañía</button></nav>
+        <nav class="section-nav" aria-label="Secciones del panel"><button type="button" data-view="overview" class="active" aria-current="page">Compras</button><button type="button" data-view="margin">ZARVIQO</button><button type="button" data-view="electricity">Luz</button><button type="button" data-view="switch">Compañía</button></nav>
 
         <aside id="marginGlobalAlert" class="margin-global" hidden role="status" aria-live="polite"><span id="marginGlobalAlertText"></span><button type="button" class="button ghost" data-view="margin">Revisar margen</button></aside>
         <section class="content" id="overviewView">
@@ -101,7 +101,7 @@
           <aside class="demo-notice" id="demoNotice" aria-label="Aviso de datos de ejemplo">
             <div>
               <span class="demo-badge">DEMO</span>
-              <p><strong>Estás viendo datos de ejemplo.</strong> Son compras ficticias de un restaurante para que puedas probar Margen sin subir ningún archivo.</p>
+              <p><strong>Estás viendo datos de ejemplo.</strong> Son compras ficticias de un restaurante para que puedas probar ZARVIQO sin subir ningún archivo.</p>
             </div>
             <button class="button ghost" id="clearDemoButton" type="button">Vaciar y usar mis datos</button>
           </aside>
@@ -262,7 +262,7 @@
             <p class="energy-note">La media simple no calcula tu factura: el coste depende de tu consumo en cada hora. Estos precios no incluyen potencia, alquiler ni impuestos. Revisa que tu suministro sea elegible para PVPC.</p>
             <p class="energy-source">Fuente: <a href="https://www.ree.es/es/datos/apidatos" target="_blank" rel="noopener noreferrer">Red Eléctrica (REData)</a> · <a href="https://www.esios.ree.es/es/pvpc" target="_blank" rel="noopener noreferrer">www.esios.ree.es</a></p>
           </section>
-          <section class="energy-connections" aria-label="Estado de acceso a datos"><article><span class="eyebrow">CONSUMO DEL SUMINISTRO</span><h3>Datadis: pendiente de conexión</h3><p>El consumo particular requiere una cuenta y acceso autorizado al suministro. Margen todavía no lo consulta. Los datos llegan con la actualización de la distribuidora.</p><a href="https://datadis.es/" target="_blank" rel="noopener noreferrer">Consultar Datadis</a></article><article><span class="eyebrow">TARIFA CONTRATADA</span><h3>Utiliza tu contrato o factura</h3><p>La consulta de PVPC no proporciona las tarifas negociadas de todas las comercializadoras. El comparador inferior utiliza únicamente los importes que introduces.</p></article></section>
+          <section class="energy-connections" aria-label="Estado de acceso a datos"><article><span class="eyebrow">CONSUMO DEL SUMINISTRO</span><h3>Datadis: pendiente de conexión</h3><p>El consumo particular requiere una cuenta y acceso autorizado al suministro. ZARVIQO todavía no lo consulta. Los datos llegan con la actualización de la distribuidora.</p><a href="https://datadis.es/" target="_blank" rel="noopener noreferrer">Consultar Datadis</a></article><article><span class="eyebrow">TARIFA CONTRATADA</span><h3>Utiliza tu contrato o factura</h3><p>La consulta de PVPC no proporciona las tarifas negociadas de todas las comercializadoras. El comparador inferior utiliza únicamente los importes que introduces.</p></article></section>
           <form id="electricityForm" class="electricity-form">
             <div class="electricity-columns">
               <fieldset class="electricity-panel"><legend>Factura anterior</legend>
@@ -284,21 +284,21 @@
           <p class="electricity-disclaimer">Compara periodos de duración similar y usa precios y conceptos de la misma base fiscal. En tarifas con periodos horarios, el precio medio debe calcularse con el consumo de cada periodo. No es asesoramiento tarifario ni un ahorro garantizado.</p>
         </section>
         <section class="content hidden" id="switchView">
-          <div class="electricity-intro"><span class="eyebrow">CAMBIO DE COMERCIALIZADORA</span><h2>Revisa la oferta. Autoriza el cambio.</h2><p>El objetivo de Margen es tramitar el cambio después de tu autorización y mostrarte su estado hasta que la compañía confirme la activación.</p></div>
-          <section class="panel energy-live"><div class="energy-live-heading"><div><span class="eyebrow">DISPONIBILIDAD ACTUAL</span><h3>Tramitación real pendiente de integración</h3><p>Margen todavía no tiene una comercializadora conectada para contratar. La consulta de precios PVPC y el acceso a consumo no tramitan cambios de compañía.</p></div><span class="energy-state">Sin conexión de contratación</span></div><button class="button primary" type="button" disabled aria-describedby="switchUnavailable">Autorizar cambio de compañía</button><p id="switchUnavailable">Se habilitará cuando exista una oferta vigente para tu suministro, un contrato revisable, tu autorización verificable y una conexión de contratación operativa.</p><button class="button ghost" type="button" id="switchDemoOpen">Ver ejemplo del flujo</button></section>
+          <div class="electricity-intro"><span class="eyebrow">CAMBIO DE COMERCIALIZADORA</span><h2>Revisa la oferta. Autoriza el cambio.</h2><p>El objetivo de ZARVIQO es tramitar el cambio después de tu autorización y mostrarte su estado hasta que la compañía confirme la activación.</p></div>
+          <section class="panel energy-live"><div class="energy-live-heading"><div><span class="eyebrow">DISPONIBILIDAD ACTUAL</span><h3>Tramitación real pendiente de integración</h3><p>ZARVIQO todavía no tiene una comercializadora conectada para contratar. La consulta de precios PVPC y el acceso a consumo no tramitan cambios de compañía.</p></div><span class="energy-state">Sin conexión de contratación</span></div><button class="button primary" type="button" disabled aria-describedby="switchUnavailable">Autorizar cambio de compañía</button><p id="switchUnavailable">Se habilitará cuando exista una oferta vigente para tu suministro, un contrato revisable, tu autorización verificable y una conexión de contratación operativa.</p><button class="button ghost" type="button" id="switchDemoOpen">Ver ejemplo del flujo</button></section>
           <div class="switch-steps" aria-label="Proceso previsto"><article><span>01</span><h3>Oferta completa</h3><p>Consumo, energía, potencia, servicios, impuestos y costes de salida en un mismo periodo.</p></article><article><span>02</span><h3>Tu autorización</h3><p>Aceptas la oferta y el contrato concretos. El cambio se solicita una sola vez.</p></article><article><span>03</span><h3>Seguimiento automático</h3><p>Solicitud recibida, aceptación y activación son estados distintos. La activación la confirma la compañía.</p></article></div>
           <section class="panel energy-live" id="switchDemo" hidden aria-labelledby="switchDemoTitle"><span class="demo-badge">DEMOSTRACIÓN · DATOS FICTICIOS</span><h3 id="switchDemoTitle">Así sería la revisión de una oferta</h3><p>Compañía A y Compañía B son nombres ficticios. Los importes son un ejemplo del mismo suministro durante 12 meses; no son tarifas disponibles para contratar.</p><div class="table-wrap"><table><caption>Ejemplo anual para 3.000 kWh · importes en euros</caption><thead><tr><th>Concepto</th><th>Actual · A</th><th>Oferta · B</th></tr></thead><tbody><tr><td>Energía</td><td>570 €</td><td>465 €</td></tr><tr><td>Potencia</td><td>120 €</td><td>120 €</td></tr><tr><td>Impuestos y otros conceptos</td><td>65 €</td><td>60 €</td></tr><tr><td>Servicios adicionales</td><td>60 €</td><td>0 €</td></tr><tr><td>Coste de contratación</td><td>0 €</td><td>35 €</td></tr><tr><td>Penalización de salida del contrato actual</td><td>0 €</td><td>20 €</td></tr><tr><th>Total del periodo</th><td>815 €</td><td>700 €</td></tr></tbody></table></div><p><strong>Diferencia estimada del ejemplo: 115 € en 12 meses.</strong> Depende del consumo y de las condiciones del contrato; no es ahorro confirmado.</p><details><summary>Condiciones ficticias del ejemplo</summary><p>Precio de energía: 0,155 €/kWh. Periodo comparado: 12 meses. Sin permanencia ni servicios adicionales en la oferta B. Costes de contratación y de salida incluidos arriba. Este ejemplo no contiene un contrato firmable.</p></details><label class="switch-consent"><input type="checkbox" id="switchDemoConsent"><span>Quiero probar la autorización de esta oferta ficticia. Entiendo que esta demostración no firma un contrato ni solicita un cambio real.</span></label><div class="switch-actions"><button class="button primary" type="button" id="switchDemoAuthorize" disabled>Simular autorización con un clic</button><button class="button ghost" type="button" id="switchDemoClose">Cerrar ejemplo</button></div><p id="switchDemoStatus" role="status" aria-live="polite"></p></section>
           <p class="electricity-disclaimer">El nuevo comercializador tramita el cambio con la distribuidora tras el consentimiento y la contratación. <a href="https://www.cnmc.es/sectores-que-regulamos/energia/cambio-de-comercializador-en-espa%C3%B1a/guia-informativa" target="_blank" rel="noopener noreferrer">Consultar la guía de la CNMC</a>.</p>
         </section>
         <section class="content hidden" id="marginView" aria-labelledby="marginTitle">
           <div class="electricity-intro"><span class="eyebrow">COSTES · PRESUPUESTO · HIPÓTESIS</span><h2 id="marginTitle">Tu margen, actualizado al cambiar los costes.</h2><p>Define los insumos de cada producto, su precio neto de venta y las unidades del mismo periodo. La contribución resta los costes variables; el resultado inferior descuenta después los costes fijos.</p></div>
-          <div class="margin-toolbar"><span id="marginModelBadge" class="demo-badge">FICHA PROPIA</span><button type="button" class="button ghost" id="marginLoadExample">Cargar ejemplo ficticio</button><button type="button" class="button primary" id="marginNewProduct">Añadir producto propio</button></div><p id="marginPurchaseState" class="margin-help"></p><p class="margin-help">Introduce precios sin IVA y verifica que los precios importados también sean netos. Crear una ficha propia sustituye la ficha de ejemplo. La ficha se guarda en este dispositivo; los avisos automáticos funcionan mientras Margen esté abierto.</p>
+          <div class="margin-toolbar"><span id="marginModelBadge" class="demo-badge">FICHA PROPIA</span><button type="button" class="button ghost" id="marginLoadExample">Cargar ejemplo ficticio</button><button type="button" class="button primary" id="marginNewProduct">Añadir producto propio</button></div><p id="marginPurchaseState" class="margin-help"></p><p class="margin-help">Introduce precios sin IVA y verifica que los precios importados también sean netos. Crear una ficha propia sustituye la ficha de ejemplo. La ficha se guarda en este dispositivo; los avisos automáticos funcionan mientras ZARVIQO esté abierto.</p>
           <form id="marginForm" class="panel margin-form" novalidate><h3>Periodo y presupuesto</h3><div class="margin-fields"><label>Periodo de cálculo<input id="marginPeriod" type="text" required maxlength="120"></label><label>Costes fijos reales del periodo (€)<input id="marginFixed" type="number" min="0" step="any" required></label><label>Costes fijos presupuestados (€)<input id="marginBudgetFixed" type="number" min="0" step="any" required></label><label>Avisar al superar el presupuesto en (%)<input id="marginThreshold" type="number" min="0" max="1000" step="any" required></label></div><div class="margin-product-picker"><label>Producto que quieres editar<select id="marginProduct"></select></label><button type="button" class="button ghost" id="marginRemoveProduct">Eliminar producto</button></div><div id="marginEditor"></div></form>
           <p id="marginSaveState" class="margin-help" role="status"></p><p id="marginStatus" role="status" aria-live="polite"></p><div id="marginMetrics" class="margin-metrics"></div>
-          <section class="panel margin-results"><h3>Contribución por producto</h3><div class="table-wrap"><table><caption>Mismo volumen del periodo · costes por unidad vendida · importes netos.</caption><thead><tr><th>Producto</th><th>Coste variable unitario</th><th>Presupuesto unitario</th><th>Contribución unitaria</th><th>Margen %</th><th>Contribución total</th></tr></thead><tbody id="marginProductResults"></tbody></table></div><p class="margin-help">El resultado tras costes fijos es una estimación antes de impuestos y de otros costes que no hayas incluido. Las unidades pueden ser ventas reales o previsiones introducidas por ti.</p></section>
-          <section class="panel margin-results"><h3>Alertas de desviación</h3><div id="marginAlerts" role="status" aria-live="polite"></div><button type="button" class="button ghost" id="marginNotify">Activar avisos del navegador</button><p class="margin-help">Los avisos del panel no necesitan permisos. Los del sistema dependen del navegador y de tu autorización; no hay supervisión cuando cierras Margen.</p></section>
+          <section class="panel margin-results"><h3>Contribución por producto</h3><div class="table-wrap"><table><caption>Mismo volumen del periodo · costes por unidad vendida · importes netos.</caption><thead><tr><th>Producto</th><th>Coste variable unitario</th><th>Presupuesto unitario</th><th>Contribución unitaria</th><th>ZARVIQO %</th><th>Contribución total</th></tr></thead><tbody id="marginProductResults"></tbody></table></div><p class="margin-help">El resultado tras costes fijos es una estimación antes de impuestos y de otros costes que no hayas incluido. Las unidades pueden ser ventas reales o previsiones introducidas por ti.</p></section>
+          <section class="panel margin-results"><h3>Alertas de desviación</h3><div id="marginAlerts" role="status" aria-live="polite"></div><button type="button" class="button ghost" id="marginNotify">Activar avisos del navegador</button><p class="margin-help">Los avisos del panel no necesitan permisos. Los del sistema dependen del navegador y de tu autorización; no hay supervisión cuando cierras ZARVIQO.</p></section>
           <section class="panel margin-results"><span class="eyebrow">ESCENARIOS</span><h3>¿Qué pasaría si…?</h3><div class="margin-fields"><label>Cambio en precios de venta (%)<input id="marginScenarioSale" type="number" min="-100" max="1000" step="any" value="0"></label><label>Cambio en precios de insumos (%)<input id="marginScenarioInputs" type="number" min="-100" max="1000" step="any" value="0"></label></div><div class="margin-toolbar"><button class="button ghost" type="button" data-scenario-preset="sale">Venta +5 %</button><button class="button ghost" type="button" data-scenario-preset="inputs">Insumos +10 %</button><button class="button ghost" type="button" data-scenario-preset="both">Ambos cambios</button><button class="button ghost" type="button" data-scenario-preset="reset">Restablecer escenario</button></div><div id="marginScenarioResult" aria-live="polite"></div></section>
-          <section class="panel margin-results"><span class="eyebrow">FACTURACIÓN Y ERP</span><h3>Holded: primera integración de costes</h3><p id="marginErpState" role="status">Adaptador Holded preparado. Falta conectar una cuenta autorizada y configurar el acceso de Margen.</p><button class="button ghost" type="button" id="marginErpSync">Comprobar conexión y sincronizar</button><p class="margin-help">Tras una primera sincronización válida, se actualiza con la frecuencia configurada para respetar las cuotas de Holded. La lectura del ERP y su fecha se muestran arriba. Se leen facturas de compra aprobadas en euros. Los costes se calculan sin impuestos, aplicando los descuentos. No se incluyen rectificativas ni conversiones de moneda; las unidades no especificadas requieren revisión. Las recetas, precios de venta y unidades del periodo se configuran en tu ficha.</p></section>
+          <section class="panel margin-results"><span class="eyebrow">FACTURACIÓN Y ERP</span><h3>Holded: primera integración de costes</h3><p id="marginErpState" role="status">Adaptador Holded preparado. Falta conectar una cuenta autorizada y configurar el acceso de ZARVIQO.</p><button class="button ghost" type="button" id="marginErpSync">Comprobar conexión y sincronizar</button><p class="margin-help">Tras una primera sincronización válida, se actualiza con la frecuencia configurada para respetar las cuotas de Holded. La lectura del ERP y su fecha se muestran arriba. Se leen facturas de compra aprobadas en euros. Los costes se calculan sin impuestos, aplicando los descuentos. No se incluyen rectificativas ni conversiones de moneda; las unidades no especificadas requieren revisión. Las recetas, precios de venta y unidades del periodo se configuran en tu ficha.</p></section>
         </section>
         <footer class="app-legal"><a href="./">Información del piloto</a><a href="./aviso-legal.html">Aviso legal</a><a href="./privacidad.html">Privacidad</a><a href="./cookies.html">Cookies</a></footer>
       </main>
@@ -356,7 +356,7 @@
         <p class="modal-copy">Descarga todo tu historial y los estados de las alertas en un único archivo. Podrás restaurarlo en este u otro dispositivo.</p>
         <div class="backup-options">
           <button class="backup-card" type="button" id="exportWorkspace"><span class="backup-icon">↓</span><span><strong>Descargar espacio</strong><small>Historial, alertas y proveedores</small></span></button>
-          <label class="backup-card" for="workspaceInput"><span class="backup-icon">↑</span><span><strong>Restaurar una copia</strong><small>Importar un archivo .json de Margen</small></span><input id="workspaceInput" type="file" accept="application/json,.json" /></label>
+          <label class="backup-card" for="workspaceInput"><span class="backup-icon">↑</span><span><strong>Restaurar una copia</strong><small>Importar un archivo .json de ZARVIQO</small></span><input id="workspaceInput" type="file" accept="application/json,.json" /></label>
         </div>
         <p class="form-error" id="backupError" role="alert"></p>
         <div class="privacy-callout"><strong>Importante:</strong> esta copia contiene datos de tus compras. Guárdala en un lugar seguro.</div>
@@ -372,7 +372,7 @@
           </div>
           <button class="icon-button" type="button" id="closeManual" aria-label="Cerrar">×</button>
         </div>
-        <p class="modal-copy">Introduce una línea de factura. Margen calculará automáticamente la variación y el importe que conviene revisar.</p>
+        <p class="modal-copy">Introduce una línea de factura. ZARVIQO calculará automáticamente la variación y el importe que conviene revisar.</p>
         <div class="form-grid">
           <label class="field field-wide"><span>Proveedor</span><input name="supplier" required autocomplete="organization" placeholder="Ej. Distribuciones Costa" /></label>
           <label class="field"><span>N.º de factura</span><input name="invoice" placeholder="Ej. FAC-2048" /></label>
@@ -417,7 +417,7 @@
     <script src="./margin-panel.js"></script>
     <script src="./report-core.js?v=20261012-report-1"></script>
     <script src="./app.js?v=20261012-report-1"></script>
-  <dialog id="installHelp" class="install-help"><form method="dialog"><h2>Margen en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
+  <dialog id="installHelp" class="install-help"><form method="dialog"><h2>ZARVIQO en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
 <script src="./offline.js?v=20261012-matching-1"></script>
 </body>
 </html>
