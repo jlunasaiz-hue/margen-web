@@ -171,7 +171,7 @@ function renderFirstMinute() {
   if (!first) {
     section.classList.toggle("hidden", !state.isDemo && state.rows.length > 0);
     $("#firstMinuteLabel").textContent = state.isDemo ? "EJEMPLO CON DATOS FICTICIOS" : "CONTROL DE PRECIOS";
-    $("#firstMinuteTitle").textContent = state.rows.length ? "Sin subidas pendientes detectadas" : "Prueba Margen con tus compras";
+    $("#firstMinuteTitle").textContent = state.rows.length ? "Sin subidas pendientes detectadas" : "Prueba ZARVIQO con tus compras";
     $("#firstMinuteDetail").textContent = "Las diferencias detectadas requieren revisión; no son ahorro confirmado.";
     return;
   }
@@ -396,7 +396,7 @@ function exportSupplierReport(supplier) {
   const headers = ["proveedor","producto","unidad","precio_anterior","precio_actual","cantidad","variacion_porcentaje","impacto","factura","estado"];
   const rows = supplier.rows.map((row) => [row.supplier,row.item,row.unit,row.previous,row.current,row.quantity,row.percent.toFixed(2),row.impact.toFixed(2),row.invoice,row.reviewed ? "revisada" : "pendiente"]);
   const safeName = supplier.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  downloadFile(`margen-${safeName || "proveedor"}.csv`, [headers, ...rows].map((row) => row.map(csvEscape).join(";")).join("\n"), "text/csv;charset=utf-8");
+  downloadFile(`zarviqo-${safeName || "proveedor"}.csv`, [headers, ...rows].map((row) => row.map(csvEscape).join(";")).join("\n"), "text/csv;charset=utf-8");
   showToast("Informe de proveedor exportado");
 }
 
