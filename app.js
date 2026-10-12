@@ -666,6 +666,23 @@ function mapPendingRows() {
   });
 }
 
+function reconcileMatchingHistory(rows,map=matchingMap()) {
+  const ordered=rows.map((row,index)=>({row,index})).sort((a,b)=>compareDates(a.row,b.row));
+  const latest=new Map(),result=Array(rows.length);
+  for(const entry of ordered){
+    const normalized=canonicalPurchase(entry.row,map);
+    const key=historyKey(normalized);
+    if(['history','first_purchase'].includes(normalized.previousSource)){
+      const previous=latest.get(key);
+      normalized.previous=previous?previous.current:normalized.current;
+      normalized.previousSource=previous?'history':'first_purchase';
+    }
+    latest.set(key,normalized);
+    result[entry.index]=normalized;
+  }
+  return result;
+}
+
 function buildImportedRows() {
   const map=matchingMap();
   const mapped=mapPendingRows().map(row=>canonicalPurchase(row,map));
@@ -1000,7 +1017,7 @@ function init() {
   window.margenMatchingUI.attach({getPending:mapPendingRows,getExisting:()=>state.isDemo?[]:state.rows,onRules:rules=>{
     productRules=rules;
     if(!state.isDemo&&state.rows.some(row=>row.matching)){
-      try{state.rows=analyze(state.rows.map(row=>canonicalPurchase(row)));render();}
+      try{state.rows=analyze(reconcileMatchingHistory(state.rows));render();}
       catch(error){showToast('Revisa las equivalencias: '+error.message);}
     }
   }});
