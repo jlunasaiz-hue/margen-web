@@ -472,3 +472,11 @@ select { border: 1px solid var(--line); border-radius: 8px; background: white; p
   #importDialog .modal-actions .button{flex:1;min-height:48px;white-space:normal;}
   #importDialog .import-review-pager .button{min-height:44px;}
 }
+
+/* Informe de compras: botones accesibles sin recortes en pantallas pequeñas. */
+@media(max-width:600px){
+  .table-actions{display:flex;flex-wrap:wrap;align-items:stretch;gap:9px;width:100%;min-width:0}
+  .table-actions .search-box{width:100%;min-width:0}
+  .table-actions select{width:100%;min-width:0;min-height:44px;font-size:16px}
+  .table-actions #exportButton,.table-actions #exportReportButton{flex:1 1 100%;width:100%;min-height:44px;white-space:normal;line-height:1.35;text-align:center}
+}
