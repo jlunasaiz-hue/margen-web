@@ -37,6 +37,20 @@
     if([spending,price,duplicate,toReview,pendingAmount].some(x=>!Number.isFinite(x)||x>1e15))throw Error("Total fuera de rango.");
     return {lines:rows.length,suppliers:suppliers.size,spending,price,duplicate,toReview,pendingAmount,pending,reviewed,alerts:pending+reviewed};
   }
+  function supplierPriority(rows){
+    const grouped=new Map();
+    for(const row of rows){
+      if(!isAlert(row))continue;
+      const name=String(row.supplier||"Sin proveedor").trim()||"Sin proveedor";
+      if(!grouped.has(name))grouped.set(name,{supplier:name,alerts:0,pending:0,reviewed:0,pendingAmount:0,totalAmount:0});
+      const value=grouped.get(name),cost=amount(row).toReview;
+      value.alerts++;
+      value.totalAmount+=cost;
+      if(row.reviewed)value.reviewed++;
+      else{value.pending++;value.pendingAmount+=cost;}
+    }
+    return [...grouped.values()].sort((a,b)=>b.pendingAmount-a.pendingAmount||b.pending-a.pending||a.supplier.localeCompare(b.supplier,"es"));
+  }
   function csvCell(value){
     const numeric=typeof value==="number"&&Number.isFinite(value);
     let s=String(value??"");
@@ -56,6 +70,8 @@
       const current=number(m.originalCurrent);
       return "Documento original: "+original+" · "+EUR.format(current)+" / "+unit+(m.confirmed?" · Coincidencia confirmada":" · Sin coincidencia confirmada");
     };
+    const priorities=supplierPriority(rows);
+    const prioritiesHtml=priorities.slice(0,10).map(entry=>'<tr><td>'+escape(entry.supplier)+'</td><td>'+entry.pending+'</td><td>'+EUR.format(entry.pendingAmount)+'</td><td>'+entry.reviewed+'</td></tr>').join('')||'<tr><td colspan="4">No hay alertas pendientes por proveedor.</td></tr>';
     const alerts=rows.filter(isAlert);
     const sorted=alerts.slice().sort((a,b)=>amount(b).toReview-amount(a).toReview);
     const lines=sorted.map(row=>{
@@ -98,10 +114,13 @@
       +'Una misma línea que parece duplicada y tiene una subida no se suma dos veces. '
       +'Confirma factura, tarifas, descuentos, IVA y equivalencias con los documentos originales. '
       +(demo?"<strong>Todos los importes de este informe proceden de datos de ejemplo.</strong>":"")+'</div>'
+      +'<p><strong>Gasto registrado:</strong> '+EUR.format(totals.spending)+' · <strong>Total de incidencias detectadas:</strong> '+EUR.format(totals.toReview)+' · <strong>Incidencias revisadas:</strong> '+totals.reviewed+'. No son importes recuperados.</p>'
+      +'<h2>Proveedores prioritarios</h2><p>Ordenados por importe pendiente de revisar, no por una valoración de su conducta.</p>'
+      +'<div class="table-scroll"><table><thead><tr><th>Proveedor</th><th>Alertas pendientes</th><th>Importe pendiente</th><th>Alertas revisadas</th></tr></thead><tbody>'+prioritiesHtml+'</tbody></table></div>'
       +'<h2>Alertas documentadas ('+totals.alerts+')</h2><div class="table-scroll"><table><thead><tr>'
       +'<th>Producto y trazabilidad</th><th>Proveedor</th><th>Factura y fecha</th><th>Cantidad</th><th>Precio anterior</th><th>Precio actual</th><th>Motivo y estado</th><th>Revisión estimada</th>'
       +'</tr></thead><tbody>'+body+'</tbody></table></div>'
       +'<footer>Margen · Informe local. Revisa este documento antes de compartirlo; puede contener información comercial sensible.</footer></body></html>';
   }
-  return {escape,csvCell,amount,isAlert,summarize,reportHtml};
+  return {escape,csvCell,amount,isAlert,summarize,supplierPriority,reportHtml};
 });
