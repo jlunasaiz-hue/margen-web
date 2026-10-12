@@ -41,11 +41,11 @@
     if (!validated || validated.ok !== true) throw Error("Valida los campos antes de preparar la solicitud.");
     const d = validated.data;
     return [
-      "Asunto: Solicitud de piloto Margen · " + d.restaurant,
+      "Asunto: Solicitud de piloto ZARVIQO · " + d.restaurant,
       "",
       "Hola,",
       "",
-      "Quiero solicitar información sobre el piloto de Margen.",
+      "Quiero solicitar información sobre el piloto de ZARVIQO.",
       "",
       "Restaurante: " + d.restaurant,
       "Persona de contacto: " + d.name,
@@ -65,7 +65,7 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address))
       throw Error("Todavía no hay un correo comercial de destino válido.");
     const body = message(validated).split("\n").slice(1).join("\n").trim();
-    const subject = "Solicitud de piloto Margen · " + validated.data.restaurant;
+    const subject = "Solicitud de piloto ZARVIQO · " + validated.data.restaurant;
     return "mailto:" + encodeURIComponent(address) +
       "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
   }
@@ -74,7 +74,7 @@
     const slug = validated.data.restaurant.normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "").toLowerCase()
       .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 42);
-    return "solicitud-margen-" + (slug || "restaurante") + ".txt";
+    return "solicitud-zarviqo-" + (slug || "restaurante") + ".txt";
   }
   return { formats, validate, message, emailUrl, filename, contactIsValid };
 });
