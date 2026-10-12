@@ -49,7 +49,7 @@ test("prepara correo dirigido con contenido codificado cuando se configure",()=>
   const valid=pilot.validate(sample({restaurant:"Bar Azul & Verde",problem:"Subieron 10 % los precios."}));
   const url=pilot.emailUrl("pilotos@ejemplo.es",valid);
   assert.match(url,/^mailto:pilotos%40ejemplo\.es\?/);
-  assert.match(url,/subject=Solicitud%20de%20piloto%20Margen/);
+  assert.match(url,/subject=Solicitud%20de%20piloto%20ZARVIQO/);
   assert.match(url,/body=/);
   assert.ok(!url.includes("\n"));
   assert.ok(!url.includes("undefined"));
@@ -57,7 +57,7 @@ test("prepara correo dirigido con contenido codificado cuando se configure",()=>
 test("nombres de descarga seguros incluso con caracteres especiales",()=>{
   const valid=pilot.validate(sample({restaurant:"Bar Café/Mar <prueba>"}));
   const name=pilot.filename(valid);
-  assert.match(name,/^solicitud-margen-[a-z0-9-]+\.txt$/);
+  assert.match(name,/^solicitud-zarviqo-[a-z0-9-]+\.txt$/);
   assert.doesNotMatch(name,/[<>/\\]/);
 });
 test("la interfaz presenta el estado real de la solicitud y botones disponibles",()=>{
