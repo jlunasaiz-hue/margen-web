@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
     <title>Margen — Control de costes</title>
     <link rel="canonical" href="https://margen-control-costes.jammychair16.chatgpt.site/app.html" />
-    <link rel="stylesheet" href="./styles.css?v=20261012-matching-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261012-import-1" />
   <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/margen-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
   <body class="app-page">
@@ -310,7 +310,7 @@
             <span class="eyebrow">NUEVO ANÁLISIS</span>
             <h2>Importa tus compras</h2>
           </div>
-          <button class="icon-button" value="cancel" aria-label="Cerrar">×</button>
+          <button class="icon-button" type="button" id="closeImport" aria-label="Cerrar">×</button>
         </div>
         <p class="modal-copy">Sube CSV, Excel o PDF con texto seleccionable. Revisarás los campos antes de guardar las compras. Los PDF escaneados necesitan OCR (todavía no disponible).</p>
         <label class="drop-zone" id="dropZone" for="fileInput">
@@ -340,7 +340,7 @@
         <label class="mapping-note hidden" id="partialImportConfirmation"><input id="confirmPartialImport" type="checkbox" /> He revisado las líneas descartadas y acepto importar solo las válidas.</label>
         <p class="form-error" id="importError" role="alert"></p>
         <div class="modal-actions">
-          <button class="button ghost" value="cancel">Cancelar</button>
+          <button class="button ghost" type="button" id="cancelImport">Cancelar</button>
           <button class="button primary" type="button" id="analyzeButton" disabled>Importar y analizar</button>
         </div>
       </form>
@@ -410,11 +410,11 @@
     <script src="./electricity.js"></script>
     <script src="./official-prices.js?v=20261012-matching-1"></script>
     <script src="./switch-demo.js?v=20261011-switch-1"></script>
-    <script src="./product-matching.js?v=20261012-matching-2"></script>
+    <script src="./product-matching.js?v=20261012-import-1"></script>
     <script src="./matching-panel.js?v=20261012-matching-2"></script>
     <script src="./margin-core.js"></script>
     <script src="./margin-panel.js"></script>
-    <script src="./app.js?v=20261012-matching-2"></script>
+    <script src="./app.js?v=20261012-import-1"></script>
   <dialog id="installHelp" class="install-help"><form method="dialog"><h2>Margen en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
 <script src="./offline.js?v=20261012-matching-1"></script>
 </body>
