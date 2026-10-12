@@ -178,3 +178,14 @@ html,body {max-width:100%}
 @media(max-width:960px){.tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.workspace-nav a{font-size:12px;padding:8px 3px}}
 @media(max-width:520px){.tool-grid{grid-template-columns:1fr}}
+
+/* Preparación transparente de solicitudes de piloto, adaptable a móvil. */
+.pilot-contact-notice{margin:0;padding:12px 15px;border:1px solid #d4dcd6;border-radius:10px;background:#f5f8f5;color:var(--ink);font-size:13px;line-height:1.55}
+.pilot-preview{min-width:0;padding:18px;border:1px solid #b9d4c3;border-radius:12px;background:#f4f9f6}
+.pilot-preview>strong{display:block;font-size:16px;color:var(--green-dark)}
+.pilot-preview>p{font-size:12px;line-height:1.65;color:var(--muted)}
+.pilot-preview pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:340px;overflow:auto;padding:14px;background:white;border:1px solid var(--line);border-radius:9px;font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pilot-preview[hidden],#pilotEmailButton[hidden]{display:none!important}
+.pilot-form input,.pilot-form textarea,.pilot-form select{min-height:44px;min-width:0;font-size:16px}
+.pilot-form .primary-cta,.pilot-form .secondary-cta{min-height:48px;white-space:normal;line-height:1.4;text-align:center}
+@media(max-width:520px){.pilot-preview{padding:12px}.pilot-preview pre{font-size:12px;padding:10px}.pilot-contact-notice{font-size:12px}}
