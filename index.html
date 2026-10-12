@@ -29,7 +29,7 @@
       "inLanguage": "es-ES",
       "description": "Herramienta de control de costes para restaurantes y hostelería que ayuda a comparar precios de proveedores y revisar facturas."
     }</script>
-    <link rel="stylesheet" href="./landing.css?v=20261012-matching-1" />
+    <link rel="stylesheet" href="./landing.css?v=20261012-pilot-1" />
   <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/margen-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
   <body>
@@ -127,17 +127,26 @@
         <div>
           <span class="kicker">SOLICITAR EL PILOTO</span>
           <h2>Cuéntanos brevemente cómo revisas tus compras.</h2>
-          <p>El formulario prepara una solicitud, pero no la envía automáticamente. Configura el correo de contacto antes de activar el envío. No subas facturas aquí.</p>
+          <p>Prepara una solicitud del piloto para revisarla, copiarla o guardarla. No envíes facturas ni datos personales de terceros en este formulario.</p>
         </div>
         <form id="pilotForm" class="pilot-form">
-          <label>Nombre del restaurante<input name="restaurant" required autocomplete="organization" /></label>
-          <label>Tu nombre<input name="name" required autocomplete="name" /></label>
-          <label>Correo o teléfono de contacto<input name="contact" required autocomplete="email" /></label>
+          <label>Nombre del restaurante<input name="restaurant" minlength="2" maxlength="120" required autocomplete="organization" /></label>
+          <label>Tu nombre<input name="name" minlength="2" maxlength="100" required autocomplete="name" /></label>
+          <label>Correo o teléfono de contacto<input name="contact" required maxlength="120" autocomplete="off" placeholder="correo@empresa.es o teléfono" /></label>
           <label>Formato habitual<select name="format" required><option value="">Selecciona uno</option><option>PDF</option><option>Papel</option><option>WhatsApp</option><option>Excel</option><option>ERP o programa de facturación</option><option>Varios formatos</option></select></label>
-          <label class="wide">¿Qué cambio de precio o problema has tenido recientemente?<textarea name="problem" rows="4" required></textarea></label>
+          <label class="wide">¿Qué cambio de precio o problema has tenido recientemente?<textarea name="problem" rows="4" minlength="10" maxlength="600" required></textarea></label>
           <label class="consent wide"><input type="checkbox" name="consent" required /> <span>He leído la información de privacidad y acepto que se utilicen estos datos para responder a mi solicitud.</span></label>
           <p class="form-message wide" id="pilotFormMessage" role="alert"></p>
-          <button class="primary-cta wide" type="submit">Preparar solicitud por correo</button><p class="contact-placeholder wide">Correo de contacto pendiente de configurar: <strong>[TU_CORREO_DE_CONTACTO]</strong></p><button class="secondary-cta wide" type="button" id="copyPilotButton">Copiar solicitud para enviarla manualmente</button><p class="form-explainer wide">El formulario no envía datos automáticamente. Comprueba que el mensaje se haya enviado desde tu correo. No adjuntes facturas con datos personales a la primera solicitud.</p>
+          <button class="primary-cta wide" type="submit">Preparar y revisar solicitud</button>
+          <p class="pilot-contact-notice wide" id="pilotContactNotice">El correo comercial no está configurado. No se recibirán solicitudes desde esta página todavía.</p>
+          <section class="pilot-preview wide" id="pilotPreview" hidden aria-label="Vista previa de solicitud">
+            <strong>Vista previa — antes de enviar</strong>
+            <p>Este documento solo está preparado en tu navegador. No se ha enviado ni se ha reservado ningún piloto.</p>
+            <pre id="pilotPreviewText"></pre>
+          </section>
+          <button class="secondary-cta wide" type="button" id="copyPilotButton">Copiar solicitud</button>
+          <button class="secondary-cta wide" type="button" id="downloadPilotButton">Descargar solicitud (.txt)</button>
+          <button class="primary-cta wide" type="button" id="pilotEmailButton" hidden>Abrir correo para enviarla</button><p class="form-explainer wide">Los datos permanecen en este dispositivo mientras rellenas el formulario. Descargar o copiar no equivale a enviarlo. El piloto no se contrata ni se paga aquí.</p>
         </form>
       </section>
       <section class="problem section-shell">
@@ -195,7 +204,8 @@
       <nav aria-label="Información legal"><a href="./aviso-legal.html">Aviso legal</a><a href="./privacidad.html">Privacidad</a><a href="./cookies.html">Cookies</a></nav>
     </footer>
     <script src="./metrics.js"></script>
-    <script src="./landing.js"></script>
+    <script src="./pilot-request.js?v=20261012-pilot-1"></script>
+    <script src="./landing.js?v=20261012-pilot-1"></script>
   <dialog id="installHelp" class="install-help"><form method="dialog"><h2>Margen en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
 <script src="./offline.js?v=20261012-matching-1"></script>
 </body>
