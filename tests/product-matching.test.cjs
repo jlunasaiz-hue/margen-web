@@ -18,3 +18,35 @@ test('un precio histórico expresado en gramos se compara con kilos sin falsas s
 test('una fila ya normalizada no vuelve a multiplicar su factor en futuras comparaciones',()=>{const e=engine();setup(e);e.state.rows=[core.canonicalize(row({date:'2026-09-01',unit:'g',current:0.008,quantity:500}))];e.state.pendingRows=[{Proveedor:'Proveedor A',Producto:'Pechuga de pollo',Unidad:'kg',Precio:'9',Cantidad:'1',Fecha:'01/10/2026'}];const result=e.buildImportedRows();near(result.rows[0].previous,8);near(result.rows[0].impact,1);});
 test('las cantidades decimales que empiezan por cero no se interpretan como miles',()=>{const e=engine();near(e.parseSpanishNumber('0,125'),0.125);near(e.parseSpanishNumber('0.125'),0.125);assert.equal(e.parseSpanishNumber('1.234'),1234);});
 test('códigos numéricos distintos no se proponen como el mismo producto',()=>{assert.equal(core.score('Producto 123','Producto 124'),0);assert.equal(core.score('Refresco 6x1L','Refresco 12x1L'),0);});
+
+test('centilitros se convierten a litros sin alterar el importe',()=>{
+  const before=row({unit:'cl',current:0.15,quantity:33});
+  const normalized=core.canonicalize(before);
+  assert.equal(normalized.unit,'litro');near(normalized.quantity,0.33);near(normalized.current,15);near(normalized.current*normalized.quantity,4.95);
+});
+test('las cajas, garrafas y botellas requieren siempre equivalencia comprobada incluso con el mismo nombre de unidad',()=>{
+  for(const unit of ['caja','garrafa','botella'])assert.equal(core.autoFactor(row({unit}),row({unit})),null);
+  const source=row({item:'Agua 1 L',unit:'caja',current:18,quantity:2}),target=row({item:'Agua 1 L',unit:'caja'});
+  assert.throws(()=>core.createRule(source,target));
+  const matched=core.canonicalize(source,[core.createRule(source,target,1)]);
+  near(matched.current*matched.quantity,36);
+});
+test('formatos declarados distintos impiden equivalencias automáticas aunque ambas unidades sean litros',()=>{
+  assert.equal(core.autoFactor(row({item:'Aceite de oliva 1 L',unit:'litros'}),row({item:'Aceite de oliva 5 L',unit:'litros'})),null);
+  assert.equal(core.autoFactor(row({item:'Aceite de oliva 500 ml',unit:'ml'}),row({item:'Aceite de oliva 0,5 L',unit:'litros'})),0.001);
+});
+test('rechaza factores ínfimos y conversiones que producirían números no finitos',()=>{
+  const source=row({unit:'caja'}),target=row({unit:'kg'});
+  assert.throws(()=>core.createRule(source,target,1e-300));
+  assert.throws(()=>core.canonicalize(row({current:1e308,unit:'g'})),/rango permitido/);
+});
+test('una regla nueva vuelve a relacionar las compras históricas ya normalizadas sin aplicar dos veces el factor',()=>{
+  const e=engine();setup(e);
+  const old=row({item:'PECH POLLO',unit:'gr',date:'2026-09-01',current:0.008,quantity:500});
+  e.state.rows=[core.canonicalize(old)];
+  e.setRules([core.createRule(old,row())]);
+  e.state.pendingRows=[{Proveedor:'Proveedor A',Producto:'Pechuga de pollo',Unidad:'kg',Precio:'9',Cantidad:'1',Fecha:'01/10/2026'}];
+  const imported=e.buildImportedRows().rows[0];
+  near(imported.previous,8);near(imported.impact,1);
+  near(e.state.rows[0].current*e.state.rows[0].quantity,4);
+});
