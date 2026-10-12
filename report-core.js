@@ -25,8 +25,8 @@
     const suppliers=new Set();
     for(const row of rows){
       if(!row||typeof row!=="object")throw Error("Hay una compra no válida.");
-      const qty=number(row.quantity),current=number(row.current);
-      if(qty<0||current<0||!Number.isFinite(qty*current))throw Error("La compra contiene un importe fuera de rango.");
+      const qty=row.quantity,current=row.current;
+      if(typeof qty!=="number"||typeof current!=="number"||!Number.isFinite(qty)||!Number.isFinite(current)||qty<0||current<0||!Number.isFinite(qty*current))throw Error("La compra contiene un importe fuera de rango.");
       spending+=qty*current;
       if(typeof row.supplier==="string"&&row.supplier.trim())suppliers.add(row.supplier.trim());
       if(isAlert(row)){
