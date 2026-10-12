@@ -80,10 +80,10 @@ test('si el usuario cambia de archivo se ignora la lectura anterior',async()=>{
  let resolveOld;
  const oldBuffer=new Promise(resolve=>{resolveOld=resolve;});
  const first={name:'primero.csv',size:200,arrayBuffer:()=>oldBuffer};
- const second={name:'segundo.csv',size:200,arrayBuffer:async()=>new TextEncoder().encode('proveedor;producto;precio_actual;cantidad\\nB;Merluza;12;2').buffer};
+ const second={name:'segundo.csv',size:200,arrayBuffer:async()=>new TextEncoder().encode('proveedor;producto;precio_actual;cantidad\nB;Merluza;12;2').buffer};
  const p1=api.selectFile(first);
  await api.selectFile(second);
- resolveOld(new TextEncoder().encode('proveedor;producto;precio_actual;cantidad\\nA;Pollo;9;2').buffer);
+ resolveOld(new TextEncoder().encode('proveedor;producto;precio_actual;cantidad\nA;Pollo;9;2').buffer);
  await p1;
  assert.equal(api.state.pendingFile.name,'segundo.csv');
  assert.equal(api.state.pendingRows[0].proveedor,'B');
@@ -94,7 +94,7 @@ test('cancelar una lectura pendiente impide que escriba compras después',async(
  const pending=new Promise(resolve=>{finish=resolve;});
  const p=api.selectFile({name:'anterior.csv',size:200,arrayBuffer:()=>pending});
  api.resetImportFile();
- finish(new TextEncoder().encode('proveedor;producto;precio_actual;cantidad\\nA;Pollo;9;2').buffer);
+ finish(new TextEncoder().encode('proveedor;producto;precio_actual;cantidad\nA;Pollo;9;2').buffer);
  await p;
  assert.equal(api.state.pendingFile,null);
  assert.equal(api.state.pendingRows.length,0);
