@@ -1,7 +1,7 @@
 'use strict';
-const RELEASE='20261016-zarviqo-hero-1';
+const RELEASE='20261016-zarviqo-motion-1';
 const BASE=new URL(self.registration.scope),PREFIX='margen-shell:'+BASE.pathname+':',CACHE=PREFIX+RELEASE;
-const FILES=['index.html','app.html','offline.html','aviso-legal.html','privacidad.html','cookies.html','landing.css','styles.css','legal.css','landing.js','hero-3d.js','pilot-request.js','app.js','margin-core.js','margin-panel.js','sourcing-core.js','sourcing-panel.js','product-matching.js','matching-panel.js','report-core.js','metrics.js','pdf-text-parser.js','electricity.js','official-prices.js','switch-demo.js','offline.js','manifest.webmanifest','icons/zarviqo-192.png','icons/zarviqo-512.png','icons/zarviqo.svg','vendor/xlsx.full.min.js','vendor/pdf.min.js','vendor/pdf.worker.min.js'];
+const FILES=['index.html','app.html','offline.html','aviso-legal.html','privacidad.html','cookies.html','landing.css','experience.css','styles.css','legal.css','landing.js','experience.js','hero-3d.js','pilot-request.js','app.js','margin-core.js','margin-panel.js','sourcing-core.js','sourcing-panel.js','product-matching.js','matching-panel.js','report-core.js','metrics.js','pdf-text-parser.js','electricity.js','official-prices.js','switch-demo.js','offline.js','manifest.webmanifest','icons/zarviqo-192.png','icons/zarviqo-512.png','icons/zarviqo.svg','vendor/xlsx.full.min.js','vendor/pdf.min.js','vendor/pdf.worker.min.js'];
 const PATHS=new Set(FILES.map(path=>new URL(path,BASE).pathname));
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(FILES.map(path=>new Request(new URL(path,BASE),{cache:'reload'})));})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith(PREFIX)&&key!==CACHE).map(key=>caches.delete(key)));await self.clients.claim();})()));
