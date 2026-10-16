@@ -32,5 +32,5 @@ test("el efecto no descarga bibliotecas externas y respeta preferencias de ahorr
 test("los archivos 3D se sirven como recursos propios de Pages y PWA",()=>{
   assert.match(html,/src="\.\/hero-3d\.js\?v=/);
   assert.match(worker,/'hero-3d\.js'/);
-  assert.match(worker,/20261016-zarviqo-hero-1/);
+  assert.match(worker,/20261016-zarviqo-motion-1/);
 });
