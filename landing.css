@@ -296,3 +296,9 @@ html,body {max-width:100%}
   .hero-stage .hero-orb-fallback{opacity:1}
   .hero-stage #heroMotionToggle{display:none}
 }
+
+/* Mantener la navegación inferior móvil ya existente. */
+@media(max-width:760px){
+  .workspace-nav{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:40;display:flex;justify-content:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));gap:7px;background:#0a241cf7;border-top:1px solid #37634c;box-shadow:0 -4px 22px #06190f40}
+  .workspace-nav a{flex:1;min-width:0;min-height:48px;padding:8px 3px;font-size:12px}
+}
