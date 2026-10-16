@@ -29,7 +29,7 @@
       "inLanguage": "es-ES",
       "description": "Herramienta de control de costes para restaurantes y hostelería que ayuda a comparar precios de proveedores y revisar facturas."
     }</script>
-    <link rel="stylesheet" href="./landing.css?v=20261012-zarviqo-2" />
+    <link rel="stylesheet" href="./landing.css?v=20261016-hero-1" />
   <link rel="icon" type="image/svg+xml" href="./icons/zarviqo.svg"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/zarviqo.svg"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
   <body>
@@ -42,27 +42,34 @@
 
     <aside class="connectivity-strip" aria-label="Conexión"><span id="offlineStatusText" role="status" aria-live="polite">Preparando acceso sin conexión…</span><div><button type="button" id="offlineUpdateButton" hidden>Actualizar versión</button><button type="button" id="offlineInstallButton">Instalar ZARVIQO</button></div></aside>
     <main id="contenido">
-      <section class="tool-launcher" aria-labelledby="toolsTitle"><span class="kicker">ENTRA EN TU PANEL</span><h2 id="toolsTitle">¿Qué quieres revisar?</h2><div class="tool-grid"><a href="./app.html?view=sourcing"><strong>Radar de proveedores <span aria-hidden="true">→</span></strong><span>Compara precios históricos entre proveedores del mismo producto y prepara solicitudes de presupuesto.</span></a><a href="./app.html?view=margin"><strong>Margen y escenarios <span aria-hidden="true">→</span></strong><span>Calcula la contribución, revisa desviaciones y simula cambios de precios.</span></a><a href="./app.html"><strong>Compras y proveedores <span aria-hidden="true">→</span></strong><span>Revisa subidas y posibles duplicados en tus compras.</span></a><a href="./app.html?view=electricity"><strong>Factura de luz <span aria-hidden="true">→</span></strong><span>Consulta precios horarios y compara dos facturas.</span></a><a href="./app.html?view=switch"><strong>Cambiar compañía <span aria-hidden="true">→</span></strong><span>Consulta el estado de integración y prueba el ejemplo del cambio.</span></a></div></section>
-      <section class="hero">
+      <section class="hero hero-experience" aria-labelledby="heroTitle">
         <div class="hero-copy">
-          <span class="kicker">CONTROL DE COMPRAS PARA RESTAURANTES</span>
-          <h1>ZARVIQO detecta subidas de precio y posibles facturas duplicadas de tus proveedores, para que sepas qué revisar, reclamar o negociar.</h1>
-          <p>Revisamos tus facturas y albaranes para localizar cambios de precio, posibles duplicados e importes que merece la pena comprobar.</p>
-          <p class="clear-warning"><strong>Importante:</strong> las diferencias de coste son importes a revisar, no cobros incorrectos ni dinero recuperado o recuperable confirmado. Los archivos Excel y CSV de la aplicación se procesan en tu navegador.</p><div class="hero-actions"><a class="primary-cta" href="#solicitud">Solicitar el piloto</a><a class="secondary-cta" href="./app.html?demo=1" data-demo-link>Probar la demo con datos ficticios</a></div>
-          <small>39 € · 30 días · hasta 30 documentos</small>
+          <span class="kicker hero-kicker"><span class="hero-live-dot" aria-hidden="true"></span> INTELIGENCIA DE COMPRAS · ZARVIQO</span>
+          <h1 id="heroTitle">ZARVIQO detecta subidas de precio. <span class="hero-gradient">Tú decides dónde mejorar tu margen.</span></h1>
+          <p>Convierte las compras de tu restaurante en decisiones: descubre cambios de precio, posibles duplicados y alternativas entre proveedores.</p>
+          <div class="hero-actions"><a class="primary-cta hero-primary" href="./app.html?demo=1" data-demo-link>Explorar la demo <span aria-hidden="true">↗</span></a><a class="secondary-cta hero-secondary" href="#simulador">Descubre cómo funciona <span aria-hidden="true">↓</span></a></div>
+          <div class="hero-trust"><span><span aria-hidden="true">✓</span> Sin instalar programas</span><span><span aria-hidden="true">✓</span> Datos de ejemplo disponibles</span><span><span aria-hidden="true">✓</span> Compras en tu navegador</span></div>
+          <p class="hero-legal">Las diferencias detectadas son importes pendientes de verificar, no ahorros confirmados. La aplicación procesa Excel y CSV localmente en el navegador.</p>
         </div>
-        <aside class="result-card" aria-label="Ejemplo de resultado del análisis">
-          <span>Ejemplo de análisis</span>
-          <strong>40,80 €</strong>
-          <p>Ejemplo: aceite de 31,80 € a 36,90 € · 8 garrafas</p>
-          <ul>
-            <li><b>5,10 €</b> de diferencia por garrafa</li>
-            <li><b>8</b> garrafas compradas</li>
-            <li><b>40,80 €</b> de diferencia total</li>
-          </ul>
-          <small>Datos ficticios. El resultado real depende de tus documentos.</small>
-        </aside>
+        <div class="hero-stage" id="heroStage">
+          <div class="hero-stage-aura" aria-hidden="true"></div>
+          <div class="hero-orb-fallback" aria-hidden="true"><span class="orb-ring orb-ring-one"></span><span class="orb-ring orb-ring-two"></span><span class="orb-ring orb-ring-three"></span><span class="orb-core"></span></div>
+          <canvas id="heroCanvas" aria-hidden="true"></canvas>
+          <span class="hero-stage-label hero-stage-label-top" aria-hidden="true"><span class="hero-signal"></span> ZARVIQO INTELLIGENCE <span class="hero-label-index">/ 01</span></span>
+          <span class="hero-stage-label hero-stage-label-bottom" aria-hidden="true">DATOS <span>→</span> DECISIONES <span>→</span> RENTABILIDAD</span>
+          <button id="heroMotionToggle" type="button" aria-pressed="false" hidden>Pausar animación</button>
+          <div class="hero-stage-chip hero-chip-one" aria-hidden="true"><span>↗</span> DETECCIÓN DE CAMBIOS</div>
+          <div class="hero-stage-chip hero-chip-two" aria-hidden="true"><span>◎</span> ANÁLISIS DE PROVEEDORES</div>
+        </div>
       </section>
+      <section class="hero-proof" aria-label="Ejemplo de cálculo, datos ficticios">
+        <div class="hero-proof-inner">
+          <div><span class="kicker">EL VALOR ESTÁ EN LOS DATOS</span><strong>Un cambio pequeño puede ser importante.</strong></div>
+          <div class="hero-proof-equation"><span>31,80 € <b>→</b> 36,90 €</span><strong>+40,80 €</strong><small>Ejemplo ficticio: 8 garrafas · diferencia de coste a revisar, no ahorro confirmado</small></div>
+          <a href="./app.html?view=sourcing">Ver Radar de proveedores <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+      <section class="tool-launcher" aria-labelledby="toolsTitle"><span class="kicker">ENTRA EN TU PANEL</span><h2 id="toolsTitle">¿Qué quieres revisar?</h2><div class="tool-grid"><a href="./app.html?view=sourcing"><strong>Radar de proveedores <span aria-hidden="true">→</span></strong><span>Compara precios históricos entre proveedores del mismo producto y prepara solicitudes de presupuesto.</span></a><a href="./app.html?view=margin"><strong>Margen y escenarios <span aria-hidden="true">→</span></strong><span>Calcula la contribución, revisa desviaciones y simula cambios de precios.</span></a><a href="./app.html"><strong>Compras y proveedores <span aria-hidden="true">→</span></strong><span>Revisa subidas y posibles duplicados en tus compras.</span></a><a href="./app.html?view=electricity"><strong>Factura de luz <span aria-hidden="true">→</span></strong><span>Consulta precios horarios y compara dos facturas.</span></a><a href="./app.html?view=switch"><strong>Cambiar compañía <span aria-hidden="true">→</span></strong><span>Consulta el estado de integración y prueba el ejemplo del cambio.</span></a></div></section>
 
       <section class="calculator section-shell" id="simulador">
         <div class="section-heading">
@@ -206,6 +213,7 @@
     <script src="./metrics.js"></script>
     <script src="./pilot-request.js?v=20261012-zarviqo-2"></script>
     <script src="./landing.js?v=20261012-zarviqo-2"></script>
+    <script defer src="./hero-3d.js?v=20261016-hero-1"></script>
   <dialog id="installHelp" class="install-help"><form method="dialog"><h2>ZARVIQO en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
 <script src="./offline.js?v=20261012-matching-1"></script>
 </body>
