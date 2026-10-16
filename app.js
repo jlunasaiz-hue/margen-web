@@ -10,7 +10,9 @@ const SAMPLE_ROWS = [
   { supplier: "Bebidas Sureste", item: "Cerveza lager 33 cl", unit: "caja", previous: 18.4, current: 18.4, quantity: 6, invoice: "BS-2219", date: "2026-10-02" },
   { supplier: "Bebidas Sureste", item: "Cerveza lager 33 cl", unit: "caja", previous: 18.4, current: 18.4, quantity: 6, invoice: "BS-2219", date: "2026-10-02" },
   { supplier: "Limpieza Sol", item: "Lavavajillas industrial", unit: "garrafa", previous: 12.4, current: 14.25, quantity: 6, invoice: "LS-770", date: "2026-10-03" },
-  { supplier: "Limpieza Sol", item: "Papel secamanos", unit: "caja", previous: 18.6, current: 17.9, quantity: 4, invoice: "LS-770", date: "2026-10-03" }
+  { supplier: "Limpieza Sol", item: "Papel secamanos", unit: "caja", previous: 18.6, current: 17.9, quantity: 4, invoice: "LS-770", date: "2026-10-03" },
+  { supplier: "Mercados Costa", item: "Pechuga de pollo", unit: "kg", previous: 6.95, current: 6.95, quantity: 8, invoice: "MC-101", date: "2026-10-04" },
+  { supplier: "Mercados Costa", item: "Pan rústico", unit: "unidad", previous: 0.6, current: 0.6, quantity: 20, invoice: "MC-101", date: "2026-10-04" }
 ];
 
 const state = {
@@ -1075,6 +1077,10 @@ function init() {
   }});
   $("#manualButton").onclick = openManual;
   $("#loadDemoButton").onclick = loadDemo;
+  $("#sourcingDemoButton").onclick = () => {
+    if (!state.isDemo && state.rows.length && !window.confirm("Cargar el ejemplo sustituirá las compras actuales de este navegador. ¿Quieres continuar?")) return;
+    loadDemo(); showView("sourcing");
+  };
   $("#clearDemoButton").onclick = clearDemo;
   $("#exportButton").onclick = exportAlerts;
   $("#exportReportButton").onclick = exportProfessionalReport;
