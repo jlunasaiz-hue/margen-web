@@ -12,7 +12,7 @@ const cookies = fs.readFileSync(path.join(dist, "cookies.html"), "utf8");
 const metrics = fs.readFileSync(path.join(dist, "metrics.js"), "utf8");
 
 test("la landing y la aplicación son páginas independientes", () => {
-  assert.match(landing, /<h1(?:\\s+[^>]*)?>ZARVIQO detecta subidas de precio/);
+  assert.match(landing, /<h1(?:\s+[^>]*)?>ZARVIQO detecta subidas de precio/);
   assert.match(app, /id="overviewView"/);
 });
 
