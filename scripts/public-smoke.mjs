@@ -2,7 +2,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { pathToFileURL } from "node:url";
 
 export const CHECKS = [
-  { path: "./", title: "Página comercial", contains: ['<h1>ZARVIQO detecta subidas de precio', 'src="./pilot-request.js'] },
+  { path: "./", title: "Página comercial", contains: ['<h1 id="heroTitle">ZARVIQO detecta subidas de precio', 'src="./hero-3d.js', 'src="./pilot-request.js'] },
   { path: "app.html", title: "Panel de compras", contains: ['id="overviewView"', 'src="./app.js'] },
   { path: "sitemap.xml", title: "Mapa del sitio", contains: ["<urlset", "<loc>https://"] },
   { path: "pilot-request.js", title: "Formulario comercial", contains: ["margenPilot", "contactIsValid"] }
