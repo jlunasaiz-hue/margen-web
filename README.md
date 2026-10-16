@@ -4,7 +4,8 @@ ZARVIQO es el nuevo nombre comercial de la aplicación de control de costes ante
 
 ## Publicación recomendada: Cloudflare Pages
 
-**Dominio principal previsto:** https://zarviqo.com/ (aún se necesita configurar y verificar DNS y despliegue).
+**Sitio publicado en Cloudflare Pages:** https://zarviqo.pages.dev/ (despliegue inicial confirmado por el propietario; los cambios posteriores requieren verificación).
+**Dominio principal previsto:** https://zarviqo.com/ (pendiente de confirmar DNS y dominio personalizado).
 **Panel:** https://zarviqo.com/app.html
 
 La web es actualmente estática, con datos por navegador; todavía no hay cuentas, base de datos central, sincronización entre clientes ni recepción automática de solicitudes comerciales.
@@ -24,6 +25,12 @@ Los dominios secundarios (`.es`, `.app`, `.eu` si se han comprado) **son opciona
 ### Google y SEO
 
 Una vez accesible `https://zarviqo.com/`, registrar la propiedad en [Google Search Console](https://search.google.com/search-console), verificar la propiedad y enviar `https://zarviqo.com/sitemap.xml`. Indexar no es inmediato ni garantizado.
+
+## Radar de alternativas entre proveedores
+
+La sección **Radar de proveedores** (`app.html?view=sourcing`) compara precios de compras históricas entre proveedores para el **mismo nombre de producto normalizado y la misma unidad**, sin adivinar equivalencias. Usa la última compra registrada por proveedor, ignora posibles duplicados, excluye registros futuros y de más de 180 días, y exige que las fechas de las dos compras estén dentro del rango seleccionado (30, 90 o 180 días). Calcula la diferencia de precios aplicada a la cantidad de la compra comparada, **sin extrapolación mensual/anual ni afirmaciones de ahorro conseguido**. Incluye estados locales de revisión y solicitud de presupuesto para copiar manualmente. No contacta con proveedores, no consulta tarifas actuales ni contrata nada.
+
+En la demostración, los proveedores y los precios son ficticios. El radar tiene pruebas unitarias en `tests/sourcing.test.cjs`. No usar sus comparaciones como decisiones comerciales sin confirmar condiciones, unidades, calidad, impuestos y transporte.
 
 ## Comprobaciones
 
