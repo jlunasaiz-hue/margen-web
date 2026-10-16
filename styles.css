@@ -480,3 +480,28 @@ select { border: 1px solid var(--line); border-radius: 8px; background: white; p
   .table-actions select{width:100%;min-width:0;min-height:44px;font-size:16px}
   .table-actions #exportButton,.table-actions #exportReportButton{flex:1 1 100%;width:100%;min-height:44px;white-space:normal;line-height:1.35;text-align:center}
 }
+
+
+/* Radar de alternativas: datos historicos, no ofertas verificadas. */
+.sourcing-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}
+.sourcing-kpis article{min-width:0;background:#fff;border:1px solid #e2e8e4;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.sourcing-kpis span{font-size:12px;color:#596960;font-weight:650}
+.sourcing-kpis strong{font-size:clamp(22px,2.6vw,32px);line-height:1.1;color:#163627}
+.sourcing-filters{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:16px 20px;margin-bottom:14px}
+.sourcing-filters label{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:650;color:#243f31}
+.sourcing-filters select,.sourcing-select{max-width:100%;min-height:40px;border:1px solid #b9c7bd;border-radius:9px;padding:8px 12px;background:#fff;color:#1c3126;font:inherit}
+.sourcing-filters .sourcing-check{gap:8px}
+.sourcing-check input{width:18px;height:18px;accent-color:#166d43}
+.sourcing-list{display:grid;gap:14px;margin:16px 0}
+.sourcing-card{min-width:0;border:1px solid #dce5de;background:#fff;border-radius:16px;padding:20px;box-shadow:0 3px 12px rgba(14,38,25,.035)}
+.sourcing-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.sourcing-card h3{font-size:17px;line-height:1.35;margin:0;color:#153325;overflow-wrap:anywhere}
+.sourcing-amount{color:#146c42;font-size:21px;white-space:nowrap}
+.sourcing-subline,.sourcing-proof,.sourcing-disclaimer{font-size:13px;line-height:1.55;margin:6px 0;overflow-wrap:anywhere}
+.sourcing-proof{color:#485b4e}
+.sourcing-disclaimer{color:#66736b}
+.sourcing-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:15px}
+.sourcing-actions button{min-height:42px;white-space:normal;text-align:center}
+.sourcing-empty{border:1px dashed #bacac0;border-radius:14px;background:#f7faf8;padding:22px;color:#42584a;line-height:1.55}
+#sourcingStatus textarea{display:block;width:100%;min-height:125px;border:1px solid #9cad9f;border-radius:8px;padding:10px}
+@media(max-width:760px){.sourcing-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.sourcing-kpis article{padding:12px}.sourcing-filters{align-items:stretch;flex-direction:column}.sourcing-filters label{flex-wrap:wrap}.sourcing-card{padding:16px}.sourcing-actions>*{width:100%}}
