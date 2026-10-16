@@ -1,6 +1,7 @@
 const test=require("node:test");
 const assert=require("node:assert/strict");
-const {compare}=require("../sourcing-core.js");
+const engine=require("../sourcing-core.js");
+const compare=(rows,options={})=>engine.compare(rows,{asOf:"2026-10-16",...options});
 const row=(supplier,item,current,quantity,date="2026-10-12",unit="kg",extra={})=>({supplier,item,current,quantity,date,unit,...extra});
 test("compares only exact normalized product and unit across suppliers",()=>{
   const result=compare([row("A","Pechuga de pollo",7.28,36),row("B","pechuga DE pollo",6.85,12)]);
@@ -36,4 +37,8 @@ test("does not multiply the estimate by an invented monthly frequency",()=>{
 test("rejects invalid options and input",()=>{
   assert.throws(()=>compare({}),/lista/);
   assert.throws(()=>compare([], {maxAgeDays:-1}),/Antigüedad/);
+});
+test("rejects stale prices and future dated purchases",()=>{
+  assert.deepEqual(compare([row("A","Arroz",4,10,"2026-10-12"),row("B","Arroz",3,10,"2025-10-12")]),[]);
+  assert.deepEqual(compare([row("A","Arroz",4,10,"2026-10-12"),row("B","Arroz",3,10,"2026-11-01")]),[]);
 });
