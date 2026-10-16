@@ -10,7 +10,7 @@
   const connection=navigator.connection;
   const slow=Boolean(connection&&(connection.saveData||/^(slow-2g|2g)$/.test(connection.effectiveType||"")));
   let gl,program,raf=0,paused=false,visible=true,disposed=false,elapsed=0,last=0;
-  let pointer={x:0,y:0},target={x:0,y:0},scroll=0,frame=0;
+  let pointer={x:0,y:0},target={x:0,y:0},scroll=0,previousFrame=0;
   const objects=[],uniforms={};
 
   const vertex=`#version 300 es
@@ -166,10 +166,6 @@
     if(!gl)return false;
     program=createProgram();
     gl.useProgram(program);
-    for(const key of ["uProjection","uView","uModel","uCamera","uTint","uTime","uType"]){
-      uniforms[key.replace("u","").toLowerCase()]=gl.getUniformLocation(program,key);
-    }
-    // Se usan nombres explícitos para evitar dependencias de mapeos dinámicos.
     uniforms.projection=gl.getUniformLocation(program,"uProjection");
     uniforms.view=gl.getUniformLocation(program,"uView");
     uniforms.model=gl.getUniformLocation(program,"uModel");
@@ -203,6 +199,9 @@
   }
   function render(time){
     if(!gl||disposed||!visible||document.hidden||paused)return;
+    const interval=innerWidth<700?1000/30:1000/45;
+    if(previousFrame&&time-previousFrame<interval){raf=requestAnimationFrame(render);return;}
+    previousFrame=time;
     if(!last)last=time;
     const delta=Math.min((time-last)/1000,.05);last=time;
     elapsed+=delta;
@@ -235,10 +234,9 @@
     draw(objects.satellites[0],translation(Math.cos(a)*1.66,Math.sin(a*.8)*.5,Math.sin(a)*1.66),elapsed);
     draw(objects.satellites[1],translation(Math.sin(a*1.2)*1.94,Math.cos(a)*.9,Math.cos(a*1.2)*1.94),elapsed);
     gl.depthMask(true);
-    frame++;
     raf=requestAnimationFrame(render);
   }
-  function start(){if(gl&&!paused&&visible&&!document.hidden&&!disposed&&!raf){last=0;raf=requestAnimationFrame(render);}}
+  function start(){if(gl&&!paused&&visible&&!document.hidden&&!disposed&&!raf){last=0;previousFrame=0;raf=requestAnimationFrame(render);}}
   function stop(){if(raf)cancelAnimationFrame(raf);raf=0;last=0;}
   function onPointer(e){
     const r=stage.getBoundingClientRect();
@@ -270,6 +268,7 @@
     window.addEventListener("scroll",onScroll,{passive:true});
     window.addEventListener("resize",resize,{passive:true});
     document.addEventListener("visibilitychange",()=>{if(document.hidden)stop();else start();});
+    motion.addEventListener?.("change",event=>{if(event.matches){destroy();toggle.hidden=true;}});
     const observer=new IntersectionObserver(entries=>{
       visible=entries[0]?.isIntersecting||false;
       if(visible)start();else stop();
