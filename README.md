@@ -38,6 +38,12 @@ La página principal incorpora **ZARVIQO Intelligence**, un hero de visualizaci�
 
 **Rendimiento y accesibilidad:** sin pantalla de carga bloqueante; texto y botones visibles incluso sin JavaScript; fallback CSS cuando falta WebGL2, el navegador solicita reducir movimiento o se ha activado ahorro de datos/conexión lenta; botón de pausa; pausa al salir del viewport o cambiar de pestaña; resolución limitada y frecuencia máxima de 30 FPS en pantallas estrechas y 45 FPS en escritorio. La prueba `tests/hero.test.cjs` verifica la integración estática, pero el rendimiento real en móviles requiere medir con Lighthouse y dispositivos físicos. Si aparecen problemas de GPU, la escena debe simplificarse o desactivarse, nunca impedir la navegación.
 
+## Experiencia visual de toda la portada
+
+Además del hero WebGL2, la portada incorpora `experience.css` y `experience.js`: un relato visual de **tres escenas** (factura, comparación de proveedores y margen), con panel tridimensional fijo que evoluciona durante el scroll, profundidad de tarjetas al mover el ratón, apariciones suaves de secciones y barra de progreso. Las escenas son ilustraciones conceptuales CSS 3D y HTML, no gráficos conectados a datos en tiempo real. La animación solo mejora la presentación; los enlaces y el contenido funcionan sin JavaScript.
+
+**Límites deliberados:** no añadir WebGL a todas las secciones ni al panel operativo: encarecería el renderizado y podría perjudicar la legibilidad de tablas y formularios. Se respeta `prefers-reduced-motion`, el ahorro de datos, la navegación táctil y la alternativa estática. Los tests `tests/experience.test.cjs` comprueban la estructura y el empaquetado, pero no sustituyen una revisión real en Safari/iPad, Android y ordenador ni un informe Lighthouse.
+
 ## Comprobaciones
 
 - `npm run check`: sintaxis y pruebas.
