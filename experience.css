@@ -111,3 +111,7 @@
   .story-scene:not(.is-current){display:none}
   .story-step{opacity:1}
 }
+
+/* Preserve pointer-driven tilt after scroll reveal has completed. */
+.motion-enabled .fx-visible.fx-tilt{transform:perspective(900px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg))}
+@media(prefers-reduced-motion:reduce){.motion-enabled .fx-visible.fx-tilt{transform:none!important}}
