@@ -40,6 +40,7 @@
             <span class="nav-icon" aria-hidden="true">◎</span>
             Proveedores
           </button>
+          <button class="nav-item" data-view="sourcing" type="button"><span class="nav-icon" aria-hidden="true">↔</span> Radar de proveedores</button>
           <button class="nav-item" data-action="open-import">
             <span class="nav-icon" aria-hidden="true">↑</span>
             Importar compras
@@ -87,7 +88,7 @@
             <button class="button primary" id="importButton" hidden><span aria-hidden="true">↑</span> Probar con mis datos</button>
           </div>
         </header>
-        <nav class="section-nav" aria-label="Secciones del panel"><button type="button" data-view="overview" class="active" aria-current="page">Compras</button><button type="button" data-view="margin">ZARVIQO</button><button type="button" data-view="electricity">Luz</button><button type="button" data-view="switch">Compañía</button></nav>
+        <nav class="section-nav" aria-label="Secciones del panel"><button type="button" data-view="overview" class="active" aria-current="page">Compras</button><button type="button" data-view="margin">ZARVIQO</button><button type="button" data-view="sourcing">Radar</button><button type="button" data-view="electricity">Luz</button><button type="button" data-view="switch">Compañía</button></nav>
 
         <aside id="marginGlobalAlert" class="margin-global" hidden role="status" aria-live="polite"><span id="marginGlobalAlertText"></span><button type="button" class="button ghost" data-view="margin">Revisar margen</button></aside>
         <section class="content" id="overviewView">
@@ -290,6 +291,29 @@
           <section class="panel energy-live" id="switchDemo" hidden aria-labelledby="switchDemoTitle"><span class="demo-badge">DEMOSTRACIÓN · DATOS FICTICIOS</span><h3 id="switchDemoTitle">Así sería la revisión de una oferta</h3><p>Compañía A y Compañía B son nombres ficticios. Los importes son un ejemplo del mismo suministro durante 12 meses; no son tarifas disponibles para contratar.</p><div class="table-wrap"><table><caption>Ejemplo anual para 3.000 kWh · importes en euros</caption><thead><tr><th>Concepto</th><th>Actual · A</th><th>Oferta · B</th></tr></thead><tbody><tr><td>Energía</td><td>570 €</td><td>465 €</td></tr><tr><td>Potencia</td><td>120 €</td><td>120 €</td></tr><tr><td>Impuestos y otros conceptos</td><td>65 €</td><td>60 €</td></tr><tr><td>Servicios adicionales</td><td>60 €</td><td>0 €</td></tr><tr><td>Coste de contratación</td><td>0 €</td><td>35 €</td></tr><tr><td>Penalización de salida del contrato actual</td><td>0 €</td><td>20 €</td></tr><tr><th>Total del periodo</th><td>815 €</td><td>700 €</td></tr></tbody></table></div><p><strong>Diferencia estimada del ejemplo: 115 € en 12 meses.</strong> Depende del consumo y de las condiciones del contrato; no es ahorro confirmado.</p><details><summary>Condiciones ficticias del ejemplo</summary><p>Precio de energía: 0,155 €/kWh. Periodo comparado: 12 meses. Sin permanencia ni servicios adicionales en la oferta B. Costes de contratación y de salida incluidos arriba. Este ejemplo no contiene un contrato firmable.</p></details><label class="switch-consent"><input type="checkbox" id="switchDemoConsent"><span>Quiero probar la autorización de esta oferta ficticia. Entiendo que esta demostración no firma un contrato ni solicita un cambio real.</span></label><div class="switch-actions"><button class="button primary" type="button" id="switchDemoAuthorize" disabled>Simular autorización con un clic</button><button class="button ghost" type="button" id="switchDemoClose">Cerrar ejemplo</button></div><p id="switchDemoStatus" role="status" aria-live="polite"></p></section>
           <p class="electricity-disclaimer">El nuevo comercializador tramita el cambio con la distribuidora tras el consentimiento y la contratación. <a href="https://www.cnmc.es/sectores-que-regulamos/energia/cambio-de-comercializador-en-espa%C3%B1a/guia-informativa" target="_blank" rel="noopener noreferrer">Consultar la guía de la CNMC</a>.</p>
         </section>
+        <section class="content hidden" id="sourcingView" aria-labelledby="sourcingTitle">
+          <div class="electricity-intro">
+            <span class="eyebrow">INTELIGENCIA DE COMPRAS · COMPARACIÓN VERIFICABLE</span>
+            <h2 id="sourcingTitle">Radar de alternativas entre proveedores.</h2>
+            <p>Encuentra diferencias entre precios históricos del mismo producto y unidad. Solo se comparan compras de los últimos 180 días y se excluyen líneas duplicadas. Ningún precio es una oferta vigente hasta que el proveedor lo confirme.</p>
+          </div>
+          <aside class="demo-notice" id="sourcingDemo" hidden><strong>DEMOSTRACIÓN</strong><p>Estos resultados proceden de datos ficticios y no representan ofertas comerciales reales.</p></aside>
+          <div class="sourcing-kpis" aria-label="Estado del radar">
+            <article><span>Comparaciones</span><strong id="sourcingCount">0</strong></article>
+            <article><span>Pendientes</span><strong id="sourcingPending">0</strong></article>
+            <article><span>Revisadas</span><strong id="sourcingReviewed">0</strong></article>
+            <article><span>Descartadas</span><strong id="sourcingDismissed">0</strong></article>
+          </div>
+          <div class="panel sourcing-filters">
+            <label>Máxima diferencia entre fechas
+              <select id="sourcingAge"><option value="30">30 días</option><option value="90" selected>90 días</option><option value="180">180 días</option></select>
+            </label>
+            <label class="sourcing-check"><input id="sourcingOnlyPending" type="checkbox" checked> Solo pendientes</label>
+          </div>
+          <p class="margin-help">El importe de cada comparación aplica la diferencia unitaria a la cantidad de la última compra del proveedor más caro. No se extrapola al mes o al año y no equivale a un ahorro conseguido. Comprueba calidad, IVA, transporte, mínimos y disponibilidad antes de cambiar de proveedor.</p>
+          <div id="sourcingResults" class="sourcing-list" aria-live="polite"></div>
+          <p id="sourcingStatus" class="margin-help" role="status"></p>
+        </section>
         <section class="content hidden" id="marginView" aria-labelledby="marginTitle">
           <div class="electricity-intro"><span class="eyebrow">COSTES · PRESUPUESTO · HIPÓTESIS</span><h2 id="marginTitle">Tu margen, actualizado al cambiar los costes.</h2><p>Define los insumos de cada producto, su precio neto de venta y las unidades del mismo periodo. La contribución resta los costes variables; el resultado inferior descuenta después los costes fijos.</p></div>
           <div class="margin-toolbar"><span id="marginModelBadge" class="demo-badge">FICHA PROPIA</span><button type="button" class="button ghost" id="marginLoadExample">Cargar ejemplo ficticio</button><button type="button" class="button primary" id="marginNewProduct">Añadir producto propio</button></div><p id="marginPurchaseState" class="margin-help"></p><p class="margin-help">Introduce precios sin IVA y verifica que los precios importados también sean netos. Crear una ficha propia sustituye la ficha de ejemplo. La ficha se guarda en este dispositivo; los avisos automáticos funcionan mientras ZARVIQO esté abierto.</p>
@@ -416,7 +440,9 @@
     <script src="./margin-core.js"></script>
     <script src="./margin-panel.js"></script>
     <script src="./report-core.js?v=20261012-report-1"></script>
-    <script src="./app.js?v=20261012-report-1"></script>
+    <script src="./sourcing-core.js?v=20261016-1"></script>
+    <script src="./sourcing-panel.js?v=20261016-1"></script>
+    <script src="./app.js?v=20261016-sourcing-1"></script>
   <dialog id="installHelp" class="install-help"><form method="dialog"><h2>ZARVIQO en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
 <script src="./offline.js?v=20261012-matching-1"></script>
 </body>
