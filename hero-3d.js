@@ -203,9 +203,6 @@
     if(previousFrame&&time-previousFrame<interval){raf=requestAnimationFrame(render);return;}
     previousFrame=time;
     if(!last)last=time;
-    const interval=window.innerWidth<760?1000/30:1000/60;
-    if(previousPaint&&time-previousPaint<interval){raf=requestAnimationFrame(render);return;}
-    previousPaint=time;
     const delta=Math.min((time-last)/1000,.05);last=time;
     elapsed+=delta;
     pointer.x+=(target.x-pointer.x)*Math.min(1,delta*3.2);
