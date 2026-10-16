@@ -29,11 +29,12 @@
       "inLanguage": "es-ES",
       "description": "Herramienta de control de costes para restaurantes y hostelería que ayuda a comparar precios de proveedores y revisar facturas."
     }</script>
-    <link rel="stylesheet" href="./landing.css?v=20261016-hero-1" />
+    <link rel="stylesheet" href="./landing.css?v=20261016-motion-1" />
   <link rel="icon" type="image/svg+xml" href="./icons/zarviqo.svg"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/zarviqo.svg"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <div id="siteProgress" class="site-progress" aria-hidden="true"></div>
     <header class="landing-header">
       <a class="landing-brand" href="./" aria-label="ZARVIQO, inicio"><span aria-hidden="true">Z</span> ZARVIQO</a>
       <nav class="header-nav" aria-label="Enlaces principales"><a href="./app.html" class="demo-link">Abrir panel</a><a class="pilot-link" href="#solicitud">Solicitar el piloto</a></nav>
@@ -70,6 +71,44 @@
         </div>
       </section>
       <section class="tool-launcher" aria-labelledby="toolsTitle"><span class="kicker">ENTRA EN TU PANEL</span><h2 id="toolsTitle">¿Qué quieres revisar?</h2><div class="tool-grid"><a href="./app.html?view=sourcing"><strong>Radar de proveedores <span aria-hidden="true">→</span></strong><span>Compara precios históricos entre proveedores del mismo producto y prepara solicitudes de presupuesto.</span></a><a href="./app.html?view=margin"><strong>Margen y escenarios <span aria-hidden="true">→</span></strong><span>Calcula la contribución, revisa desviaciones y simula cambios de precios.</span></a><a href="./app.html"><strong>Compras y proveedores <span aria-hidden="true">→</span></strong><span>Revisa subidas y posibles duplicados en tus compras.</span></a><a href="./app.html?view=electricity"><strong>Factura de luz <span aria-hidden="true">→</span></strong><span>Consulta precios horarios y compara dos facturas.</span></a><a href="./app.html?view=switch"><strong>Cambiar compañía <span aria-hidden="true">→</span></strong><span>Consulta el estado de integración y prueba el ejemplo del cambio.</span></a></div></section>
+
+      <section class="story-section" id="zarviqoJourney" aria-labelledby="journeyTitle">
+        <div class="story-heading">
+          <span class="kicker">UNA NUEVA FORMA DE ENTENDER TUS COMPRAS</span>
+          <h2 id="journeyTitle">De una factura a una <em>decisión inteligente.</em></h2>
+          <p>Desliza y descubre cómo ZARVIQO transforma los datos de compras en información útil. Ejemplo visual con datos ficticios.</p>
+        </div>
+        <div class="story-layout">
+          <div class="story-visual" aria-label="Ejemplos visuales de tres etapas del análisis">
+            <div class="story-visual-grid" aria-hidden="true"></div>
+            <div class="story-halo" aria-hidden="true"></div>
+            <div class="story-visual-top"><span class="story-indicator"></span> ZARVIQO / PROCESSING <span class="story-index">01—03</span></div>
+            <div class="story-scene is-current" data-story-visual>
+              <div class="story-document"><div class="story-doc-top"><span>FACTURA / EJEMPLO</span><span>001</span></div><div class="story-doc-line wide"></div><div class="story-doc-line"></div><div class="story-doc-line medium"></div><div class="story-doc-item"><span>ACEITE DE OLIVA</span><strong>36,90 €</strong></div><div class="story-doc-item"><span>POLLO FRESCO</span><strong>7,28 €</strong></div><div class="story-doc-bottom">ANÁLISIS DE COMPRAS</div></div>
+              <div class="story-floating-chip story-chip-a">↗ CAMBIO DETECTADO</div>
+              <div class="story-floating-chip story-chip-b">◎ REVISIÓN PENDIENTE</div>
+            </div>
+            <div class="story-scene" data-story-visual>
+              <div class="story-orbit story-orbit-outer"></div><div class="story-orbit story-orbit-inner"></div>
+              <div class="story-center-node">Z<span>+</span></div>
+              <div class="story-price-node story-node-a"><small>PROVEEDOR A</small><strong>7,28 €/kg</strong></div>
+              <div class="story-price-node story-node-b"><small>PROVEEDOR B</small><strong>6,95 €/kg</strong></div>
+              <div class="story-connection-line"></div>
+            </div>
+            <div class="story-scene" data-story-visual>
+              <div class="story-dashboard"><div class="story-dash-heading"><span>CONTROL DE MARGEN</span><span>↗</span></div><div class="story-dash-value">+40,80 €</div><div class="story-dash-sub">Diferencia de compra a revisar</div><div class="story-bars"><span style="--bar:38%"></span><span style="--bar:56%"></span><span style="--bar:45%"></span><span style="--bar:77%"></span><span style="--bar:65%"></span><span style="--bar:92%"></span><span style="--bar:72%"></span></div><div class="story-dash-foot">DATOS FICTICIOS · NO ES AHORRO CONFIRMADO</div></div>
+              <div class="story-floating-chip story-chip-c">✓ INFORMACIÓN PARA DECIDIR</div>
+            </div>
+            <div class="story-visual-footer"><span>DETECTA</span><span>COMPARA</span><span>DECIDE</span></div>
+          </div>
+          <div class="story-steps">
+            <article class="story-step is-current" data-journey-step><span class="story-step-number">01 / 03</span><h3>Los costes hablan.<br><em>Escúchalos.</em></h3><p>Detecta cambios en los precios de tus proveedores y posibles duplicados. Cada alerta señala algo concreto que merece comprobarse.</p><a href="./app.html?demo=1" data-demo-link>Ver compras de ejemplo ↗</a></article>
+            <article class="story-step" data-journey-step><span class="story-step-number">02 / 03</span><h3>Compara antes<br>de <em>negociar.</em></h3><p>Consulta diferencias históricas de precio entre proveedores del mismo producto y unidad. Verifica las condiciones antes de tomar decisiones.</p><a href="./app.html?view=sourcing">Explorar el radar ↗</a></article>
+            <article class="story-step" data-journey-step><span class="story-step-number">03 / 03</span><h3>Convierte datos<br>en <em>criterio.</em></h3><p>Simula escenarios y prioriza las decisiones que podrían mejorar tu margen. Sin confundir estimaciones con dinero realmente recuperado.</p><a href="./app.html?view=margin">Explorar el margen ↗</a></article>
+          </div>
+        </div>
+        <div class="story-bottom"><span>01</span><div class="story-progress-rail"><div class="story-progress-fill"></div></div><span>03</span></div>
+      </section>
 
       <section class="calculator section-shell" id="simulador">
         <div class="section-heading">
@@ -215,6 +254,7 @@
     <script src="./landing.js?v=20261012-zarviqo-2"></script>
 
     <script defer src="./hero-3d.js?v=20261016-hero-1"></script>
+    <script defer src="./experience.js?v=20261016-motion-1"></script>
   <dialog id="installHelp" class="install-help"><form method="dialog"><h2>ZARVIQO en tu dispositivo</h2><p>En iPhone o iPad, abre esta web en Safari y utiliza Compartir → Añadir a pantalla de inicio. En otros navegadores, busca la opción de instalar la aplicación.</p><p>Espera al aviso «Disponible sin conexión» antes de desconectarte. El navegador puede eliminar la copia si borras los datos del sitio o necesita espacio.</p><button type="submit">Entendido</button></form></dialog>
 <script src="./offline.js?v=20261012-matching-1"></script>
 </body>
