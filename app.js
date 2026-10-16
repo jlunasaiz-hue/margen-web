@@ -162,6 +162,7 @@ function render() {
   renderSuppliers();
   persistDataset();
   window.margenMargin?.setRows(state.rows, state.isDemo);
+  window.zarviqoSourcingUI?.setRows(state.rows, state.isDemo);
 }
 
 function renderFirstMinute() {
@@ -406,8 +407,9 @@ function showView(view) {
   $("#suppliersView").classList.toggle("hidden", view !== "suppliers");
   $("#electricityView").classList.toggle("hidden", view !== "electricity");
   $("#marginView").classList.toggle("hidden", view !== "margin");
+  $("#sourcingView").classList.toggle("hidden", view !== "sourcing");
   $("#switchView").classList.toggle("hidden", view !== "switch");
-  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "margin" ? "Margen y escenarios" : view === "electricity" ? "Factura de luz" : view === "switch" ? "Cambiar compañía" : "Resumen";
+  $("#pageTitle").textContent = view === "alerts" ? "Alertas" : view === "suppliers" ? "Proveedores" : view === "margin" ? "Margen y escenarios" : view === "sourcing" ? "Radar de proveedores" : view === "electricity" ? "Factura de luz" : view === "switch" ? "Cambiar compañía" : "Resumen";
   $$("[data-view]").forEach((item) => {
     const active = item.dataset.view === view;
     item.classList.toggle("active", active);
@@ -1049,6 +1051,7 @@ function init() {
     const saved = JSON.parse(localStorage.getItem("margen-dataset"));
     if (saved && Array.isArray(saved.rows)) { state.rows = analyze(saved.rows); state.source = saved.source || "Datos guardados"; state.isDemo = Boolean(saved.isDemo); } else loadDemo();
   } catch { loadDemo(); }
+  window.zarviqoSourcingUI?.attach();
   if (state.isDemo) window.margenMetrics?.track("demo_use");
   if (state.rows.length) render();
   $$("[data-view]").forEach((button) => button.addEventListener("click", () => { showView(button.dataset.view); window.scrollTo({top: 0, behavior: "instant"}); }));
@@ -1126,3 +1129,4 @@ if (new URLSearchParams(location.search).get("view") === "electricity") showView
 if (new URLSearchParams(location.search).get("view") === "switch") showView("switch");
 
 if (new URLSearchParams(location.search).get("view") === "margin") showView("margin");
+if (new URLSearchParams(location.search).get("view") === "sourcing") showView("sourcing");
