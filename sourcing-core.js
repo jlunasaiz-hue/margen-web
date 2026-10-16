@@ -14,10 +14,16 @@
     if(!Array.isArray(rows))throw Error("Las compras deben ser una lista.");
     if(rows.length>100000)throw Error("Demasiadas líneas para una comparación local.");
     const maxAge=options.maxAgeDays===undefined?90:options.maxAgeDays;
+    const maxLookback=options.maxLookbackDays===undefined?180:options.maxLookbackDays;
+    const asOf=options.asOf||new Date().toISOString().slice(0,10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(asOf)||Number.isNaN(Date.parse(asOf+"T00:00:00Z")))throw Error("Fecha de referencia no válida.");
+    if(!Number.isInteger(maxLookback)||maxLookback<0||maxLookback>3650)throw Error("Vigencia máxima no válida.");
     if(!Number.isInteger(maxAge)||maxAge<0||maxAge>3650)throw Error("Antigüedad máxima no válida.");
     const latest=new Map();
     for(const row of rows){
       if(!valid(row))continue;
+      const daysOld=(Date.parse(asOf+"T00:00:00Z")-Date.parse(row.date+"T00:00:00Z"))/86400000;
+      if(daysOld<0||daysOld>maxLookback)continue;
       const productKey=JSON.stringify([normalize(row.item),normalize(row.unit)]);
       const supplierKey=normalize(row.supplier);
       const key=JSON.stringify([productKey,supplierKey]);
