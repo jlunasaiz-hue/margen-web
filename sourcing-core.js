@@ -7,8 +7,13 @@
   function normalize(value){
     return String(value||"").trim().toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ");
   }
+  function dateTime(value){
+    if(typeof value!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(value))return NaN;
+    const time=Date.parse(value+"T00:00:00Z");
+    return Number.isFinite(time)&&new Date(time).toISOString().slice(0,10)===value?time:NaN;
+  }
   function valid(row){
-    return row&&typeof row.item==="string"&&row.item.trim()&&typeof row.unit==="string"&&row.unit.trim()&&typeof row.supplier==="string"&&row.supplier.trim()&&Number.isFinite(row.current)&&row.current>=0&&row.current<=1e9&&Number.isFinite(row.quantity)&&row.quantity>0&&row.quantity<=1e9&&!row.possibleDuplicate&&/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||""))&&!Number.isNaN(Date.parse(row.date+"T00:00:00Z"));
+    return row&&typeof row.item==="string"&&row.item.trim()&&typeof row.unit==="string"&&row.unit.trim()&&typeof row.supplier==="string"&&row.supplier.trim()&&Number.isFinite(row.current)&&row.current>0&&row.current<=1e9&&Number.isFinite(row.quantity)&&row.quantity>0&&row.quantity<=1e9&&!row.possibleDuplicate&&/^\d{4}-\d{2}-\d{2}$/.test(String(row.date||""))&&Number.isFinite(dateTime(row.date));
   }
   function compare(rows,options={}){
     if(!Array.isArray(rows))throw Error("Las compras deben ser una lista.");
@@ -16,13 +21,13 @@
     const maxAge=options.maxAgeDays===undefined?90:options.maxAgeDays;
     const maxLookback=options.maxLookbackDays===undefined?180:options.maxLookbackDays;
     const asOf=options.asOf||new Date().toISOString().slice(0,10);
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(asOf)||Number.isNaN(Date.parse(asOf+"T00:00:00Z")))throw Error("Fecha de referencia no válida.");
+    if(!Number.isFinite(dateTime(asOf)))throw Error("Fecha de referencia no válida.");
     if(!Number.isInteger(maxLookback)||maxLookback<0||maxLookback>3650)throw Error("Vigencia máxima no válida.");
     if(!Number.isInteger(maxAge)||maxAge<0||maxAge>3650)throw Error("Antigüedad máxima no válida.");
     const latest=new Map();
     for(const row of rows){
       if(!valid(row))continue;
-      const daysOld=(Date.parse(asOf+"T00:00:00Z")-Date.parse(row.date+"T00:00:00Z"))/86400000;
+      const daysOld=(dateTime(asOf)-dateTime(row.date))/86400000;
       if(daysOld<0||daysOld>maxLookback)continue;
       const productKey=JSON.stringify([normalize(row.item),normalize(row.unit)]);
       const supplierKey=normalize(row.supplier);
@@ -42,7 +47,7 @@
       const best=ordered[0];
       for(const current of ordered.slice(1)){
         if(current.current<=best.current||current.supplierKey===best.supplierKey)continue;
-        const age=Math.abs(Date.parse(current.date+"T00:00:00Z")-Date.parse(best.date+"T00:00:00Z"))/86400000;
+        const age=Math.abs(dateTime(current.date)-dateTime(best.date))/86400000;
         if(age>maxAge)continue;
         const difference=current.current-best.current;
         const amount=Math.round((difference*current.quantity+Number.EPSILON)*100)/100;
