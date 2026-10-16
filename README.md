@@ -32,6 +32,12 @@ La sección **Radar de proveedores** (`app.html?view=sourcing`) compara precios 
 
 En la demostración, los proveedores y los precios son ficticios. El radar tiene pruebas unitarias en `tests/sourcing.test.cjs`. No usar sus comparaciones como decisiones comerciales sin confirmar condiciones, unidades, calidad, impuestos y transporte.
 
+## Presentación tridimensional de la portada
+
+La página principal incorpora **ZARVIQO Intelligence**, un hero de visualización conceptual WebGL2 (archivo `hero-3d.js`) con esfera de cristal estilizado, tres órbitas, nodos y cuadrícula de profundidad. No es una representación de datos reales ni una captura de precios en vivo. Responde al cursor y al desplazamiento mientras el hero está visible. No utiliza Three.js, Spline, CDNs ni recursos 3D externos, de modo que el despliegue sigue siendo estático y compatible con Cloudflare Pages.
+
+**Rendimiento y accesibilidad:** sin pantalla de carga bloqueante; texto y botones visibles incluso sin JavaScript; fallback CSS cuando falta WebGL2, el navegador solicita reducir movimiento o se ha activado ahorro de datos/conexión lenta; botón de pausa; pausa al salir del viewport o cambiar de pestaña; resolución limitada y frecuencia máxima de 30 FPS en pantallas estrechas y 45 FPS en escritorio. La prueba `tests/hero.test.cjs` verifica la integración estática, pero el rendimiento real en móviles requiere medir con Lighthouse y dispositivos físicos. Si aparecen problemas de GPU, la escena debe simplificarse o desactivarse, nunca impedir la navegación.
+
 ## Comprobaciones
 
 - `npm run check`: sintaxis y pruebas.
