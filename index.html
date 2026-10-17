@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ZARVIQO ayuda a restaurantes a controlar costes, comparar precios de proveedores y detectar subidas y posibles duplicados en facturas. Prueba una demo." />
+    <meta name="description" content="ZARVIQO: software de control de costes para restaurantes. Compara proveedores, detecta subidas de precios y posibles facturas duplicadas. Prueba la demo." />
     <meta name="theme-color" content="#10251c" />
     <meta name="referrer" content="no-referrer" />
     <meta name="robots" content="index,follow" />
@@ -15,6 +15,7 @@
     <title>ZARVIQO | Control de costes y proveedores para restaurantes</title>
     <link rel="canonical" href="https://zarviqo.com/" />
     <meta property="og:site_name" content="ZARVIQO" />
+    <meta name="application-name" content="ZARVIQO" />
     <meta property="og:image" content="https://zarviqo.com/icons/zarviqo.svg" />
     <meta property="og:image:alt" content="Identidad visual de ZARVIQO, control de costes" />
     <meta name="twitter:card" content="summary" />
@@ -23,11 +24,43 @@
     <link rel="sitemap" type="application/xml" title="Sitemap de ZARVIQO" href="./sitemap.xml" />
     <script type="application/ld+json">{
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "ZARVIQO",
-      "url": "https://zarviqo.com/",
-      "inLanguage": "es-ES",
-      "description": "Herramienta de control de costes para restaurantes y hostelería que ayuda a comparar precios de proveedores y revisar facturas."
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://zarviqo.com/#organization",
+          "name": "ZARVIQO",
+          "url": "https://zarviqo.com/",
+          "logo": "https://zarviqo.com/icons/zarviqo.svg",
+          "description": "ZARVIQO desarrolla herramientas para analizar compras, costes y proveedores en restaurantes."
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://zarviqo.com/#website",
+          "name": "ZARVIQO",
+          "url": "https://zarviqo.com/",
+          "inLanguage": "es-ES",
+          "publisher": {"@id": "https://zarviqo.com/#organization"},
+          "description": "Software de control de costes para restaurantes y hostelería: compara precios de proveedores y detecta cambios en compras."
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://zarviqo.com/#software",
+          "name": "ZARVIQO",
+          "url": "https://zarviqo.com/",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "inLanguage": "es-ES",
+          "publisher": {"@id": "https://zarviqo.com/#organization"},
+          "description": "Herramienta web para restaurantes que permite analizar compras, comparar precios históricos de proveedores, detectar subidas y revisar posibles facturas duplicadas.",
+          "featureList": [
+            "Análisis de costes de compras",
+            "Comparación de precios históricos entre proveedores",
+            "Detección de cambios de precio",
+            "Revisión de posibles facturas duplicadas",
+            "Simulación de márgenes"
+          ]
+        }
+      ]
     }</script>
     <link rel="stylesheet" href="./landing.css?v=20261016-motion-1" />
     <link rel="stylesheet" href="./experience.css?v=20261016-motion-1" />
